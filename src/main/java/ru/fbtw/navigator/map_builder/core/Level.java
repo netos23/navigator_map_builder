@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
+import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 
 public class Level{
 	public static final String DEFAULT_NAME = "Level ";
@@ -16,16 +17,18 @@ public class Level{
 	private StringProperty name;
 
 	private CanvasController controller;
+	private CanvasProperties properties;
 
 	private static Callback<Level, Observable[]> callback = param -> new Observable[]{param.name};
 
-	public Level(int id) {
+	public Level(int id,CanvasProperties properties) {
+		this.properties = properties;
 		this.isBackground = false;
 		this.isTmpNodes = true;
 		this.name = new SimpleStringProperty(DEFAULT_NAME +id);
 		this.background = null;
 
-		controller = new CanvasController();
+		controller = new CanvasController(properties);
 
 	}
 
@@ -44,6 +47,7 @@ public class Level{
 
 	public void setUseBackground(boolean background) {
 		isBackground = background;
+		controller.enableBackground(background);
 	}
 
 	public boolean isTmpNodes() {

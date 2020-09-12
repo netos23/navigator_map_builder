@@ -3,6 +3,7 @@ package ru.fbtw.navigator.map_builder;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.*;
 
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
+import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.tools.DrawingTool;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
@@ -47,6 +50,8 @@ public class App extends Application {
 	private int selectedLevel;
 	private StackPane rootCanvas;
 
+	private CanvasProperties properties;
+
 
 	@Override
 	public void init() throws Exception {
@@ -65,14 +70,21 @@ public class App extends Application {
 		levelName = new TextField();
 		nameUpdater = new Button("Update name");
 
-		levelListWidget = new ListView<Level>(levels);
+		levelListWidget = new ListView<>(levels);
 		levelListWidget.setMaxHeight(300.0);
+
+		properties = CanvasProperties.DEFAULT_PROPERTIES;
 
 
 		btns = new ArrayList<ToggleButton>();
-		for(int i =0;i<16;i++){
+		/*for(int i =0;i<16;i++){
 			ToggleButton button = new ToggleButton("Button "+i);
 			btns.add(button);
+		}*/
+		for(DrawingTool tool : CanvasController.tools){
+			ToggleButton toggleButton = new ToggleButton(tool.toString());
+			toggleButton.setOnAction(this::selectTool);
+			btns.add(toggleButton);
 		}
 
 		mainColor = new ColorPicker(Color.BLACK);
@@ -285,11 +297,15 @@ public class App extends Application {
 
 	}
 
+	private  void selectTool(ActionEvent event){
+		properties.setTool(btns.indexOf(event.getSource()));
+	}
+
 	private void createLevel(File img) {
 		try {
 			Image tmp = new Image(new FileInputStream(img));
 
-			Level level = new Level(levels.size());
+			Level level = new Level(levels.size(),properties);
 			level.setUseBackground(true);
 			level.setBackground(tmp);
 
@@ -302,6 +318,7 @@ public class App extends Application {
 			e.printStackTrace();
 		}
 	}
+
 
 	public static void main(String[] args) {
 		launch(args);
