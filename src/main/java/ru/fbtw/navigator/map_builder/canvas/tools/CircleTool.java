@@ -2,21 +2,21 @@ package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
-public class EllipseTool extends DrawingTool implements Positionable {
-	private Ellipse curShape;
+public class CircleTool extends DrawingTool implements Positionable {
+	private Circle curShape;
 	private Vector2 origin;
 
 	@Override
 	public Shape onPressed(MouseEvent event, CanvasProperties properties) {
-		curShape = new Ellipse();
+		curShape = new Circle();
 		origin = new Vector2(event.getX(), event.getY());
 		curShape.setCenterX(origin.getX());
-		curShape.setCenterY(origin.getY());
+		curShape.setCenterX(origin.getY());
 
 		curShape.setFill(properties.isUseFill()
 				? properties.getFillColor()
@@ -32,13 +32,13 @@ public class EllipseTool extends DrawingTool implements Positionable {
 
 			double radiusX = Math.abs(origin.getX() - curPos.getX()) / 2;
 			double radiusY = Math.abs(origin.getY() - curPos.getY()) / 2;
-			curShape.setRadiusX(radiusX);
-			curShape.setRadiusY(radiusY);
+			curShape.setRadius(Math.max(radiusX,radiusY));
+
 
 			Vector2 normalizedOrigin = getNormalizedOrigin(origin, curPos);
 
-			curShape.setCenterX(normalizedOrigin.getX() + radiusX);
-			curShape.setCenterY(normalizedOrigin.getY() + radiusY);
+			curShape.setCenterX(normalizedOrigin.getX() + curShape.getRadius());
+			curShape.setCenterY(normalizedOrigin.getY() + curShape.getRadius());
 
 		}
 	}
@@ -51,6 +51,6 @@ public class EllipseTool extends DrawingTool implements Positionable {
 
 	@Override
 	public String toString() {
-		return "Ellipse";
+		return "Circle";
 	}
 }

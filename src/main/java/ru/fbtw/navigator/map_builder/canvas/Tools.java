@@ -1,5 +1,6 @@
 package ru.fbtw.navigator.map_builder.canvas;
 
+@Deprecated
 public final class Tools {
 	// decorations code = 0
 	public static final int LINE = 0;

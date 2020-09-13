@@ -5,10 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
-import ru.fbtw.navigator.map_builder.canvas.tools.DrawingTool;
-import ru.fbtw.navigator.map_builder.canvas.tools.EllipseTool;
-import ru.fbtw.navigator.map_builder.canvas.tools.LineTool;
-import ru.fbtw.navigator.map_builder.canvas.tools.RectangleTool;
+import ru.fbtw.navigator.map_builder.canvas.tools.*;
 
 
 public class CanvasController{
@@ -22,16 +19,17 @@ public class CanvasController{
 			new LineTool(),
 			new RectangleTool(),
 			new EllipseTool(),
+			new CircleTool(),
 	};
 
 	public CanvasController(CanvasProperties properties) {
 		this.properties = properties;
 
-		layers = new Pane[6];
+		layers = new Pane[5];
 		for (int i = 0; i < layers.length; i++) {
 			layers[i] = new Pane();
 		}
-		inputLayer = layers[5];
+		inputLayer = layers[4];
 
 
 		/*currentTool = properties.getTool();
