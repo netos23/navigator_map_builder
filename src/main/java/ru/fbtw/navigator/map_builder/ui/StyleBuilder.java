@@ -29,4 +29,9 @@ public class StyleBuilder {
 		target.setStyle(buffer.toString());
 		buffer = new StringBuilder();
 	}
+
+	public void clear(){
+		buffer = new StringBuilder();
+	}
+
 }

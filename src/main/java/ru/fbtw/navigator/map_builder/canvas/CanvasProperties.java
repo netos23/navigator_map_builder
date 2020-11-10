@@ -3,8 +3,6 @@ package ru.fbtw.navigator.map_builder.canvas;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-import javax.xml.bind.annotation.XmlType;
-
 public class CanvasProperties {
 	private Paint color;
 	private Paint fillColor;
@@ -12,12 +10,14 @@ public class CanvasProperties {
 	private double lineWidth;
 
 	private int tool;
+	private CanvasController source;
 
 	public CanvasProperties(Paint color, Paint fillColor, boolean useFill, double lineWidth) {
 		this.color = color;
 		this.fillColor = fillColor;
 		this.useFill = useFill;
 		this.lineWidth = lineWidth;
+		this.source = null;
 	}
 
 	public Paint getColor() {
@@ -58,6 +58,14 @@ public class CanvasProperties {
 
 	public void setTool(int tool) {
 		this.tool = tool;
+	}
+
+	public CanvasController getSource() {
+		return source;
+	}
+
+	public void setSource(CanvasController source) {
+		this.source = source;
 	}
 
 	public static final CanvasProperties DEFAULT_PROPERTIES =

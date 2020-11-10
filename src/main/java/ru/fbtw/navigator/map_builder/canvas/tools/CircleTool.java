@@ -1,3 +1,4 @@
+/*
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.input.MouseEvent;
@@ -5,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.shapes.Holder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 public class CircleTool extends DrawingTool implements Positionable {
@@ -12,7 +14,7 @@ public class CircleTool extends DrawingTool implements Positionable {
 	private Vector2 origin;
 
 	@Override
-	public Shape onPressed(MouseEvent event, CanvasProperties properties) {
+	public Holder onPressed(MouseEvent event, CanvasProperties properties) {
 		curShape = new Circle();
 		origin = new Vector2(event.getX(), event.getY());
 		curShape.setCenterX(origin.getX());
@@ -54,3 +56,4 @@ public class CircleTool extends DrawingTool implements Positionable {
 		return "Circle";
 	}
 }
+*/

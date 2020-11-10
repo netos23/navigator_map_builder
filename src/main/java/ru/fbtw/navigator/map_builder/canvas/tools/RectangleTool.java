@@ -1,3 +1,4 @@
+/*
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.input.MouseEvent;
@@ -53,3 +54,4 @@ public class RectangleTool extends DrawingTool implements Positionable{
 		return "Rectangle";
 	}
 }
+*/

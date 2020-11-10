@@ -4,34 +4,52 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.shapes.LineHolder;
+import ru.fbtw.navigator.map_builder.probe.Probe;
+
 
 public class LineTool extends DrawingTool {
 	private Line curShape;
+	private Probe start, end;
 
 	@Override
-	public Shape onPressed(MouseEvent event, CanvasProperties properties) {
+	public Shape onPressed(Probe start, CanvasProperties properties) {
+		this.start = start;
 		curShape = new Line();
 
-		curShape.setStartX(event.getX());
-		curShape.setStartY(event.getY());
-		onDragged(event);
+		curShape.setStartX(start.getX());
+		curShape.setStartY(start.getY());
+
+		curShape.setEndX(start.getX());
+		curShape.setEndY(start.getY());
+
 
 		return super.onPressed(properties,curShape);
 	}
 
 	@Override
-	public void onDragged(MouseEvent event) {
+	public void onDragged(double x, double y) {
 		if(curShape!=null) {
-			curShape.setEndX(event.getX());
-			curShape.setEndY(event.getY());
+			curShape.setEndX(x);
+			curShape.setEndY(y);
 		}
 	}
 
 	@Override
-	public void onReleased(MouseEvent event) {
-		onDragged(event);
-		curShape = null;
+	public LineHolder onReleased(Probe end) {
+		this.end = end;
+
+		onDragged(end.getX(),end.getY());
+
+		/*curShape = null;
+		start = null;
+		end = null;*/
+		return new LineHolder(curShape, start,end);
 	}
+
+
+
+
 
 	@Override
 	public String toString() {

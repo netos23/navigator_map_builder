@@ -1,3 +1,4 @@
+/*
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.shape.Line;
@@ -14,3 +15,4 @@ public class StairsTool {
 	public StairsTool() {
 	}
 }
+*/

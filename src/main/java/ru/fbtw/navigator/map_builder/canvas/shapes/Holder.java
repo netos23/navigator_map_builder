@@ -2,6 +2,7 @@ package ru.fbtw.navigator.map_builder.canvas.shapes;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
+import ru.fbtw.navigator.map_builder.probe.Probe;
 
 import java.util.ArrayList;
 

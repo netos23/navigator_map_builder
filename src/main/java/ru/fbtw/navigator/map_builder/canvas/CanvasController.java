@@ -5,25 +5,35 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
+import ru.fbtw.navigator.map_builder.canvas.shapes.Holder;
+import ru.fbtw.navigator.map_builder.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.tools.*;
+import ru.fbtw.navigator.map_builder.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.utils.Vector2;
+
+import java.util.ArrayList;
 
 
 public class CanvasController{
 	private Pane[] layers;
 	private Pane inputLayer;
+	private ProbeManager manager;
 	//private int currentTool, toolGroup;
 
 	private CanvasProperties properties;
 
 	public static DrawingTool[] tools = new DrawingTool[]{
 			new LineTool(),
-			new RectangleTool(),
+			/*new RectangleTool(),
 			new EllipseTool(),
-			new CircleTool(),
+			new CircleTool(),*/
 	};
 
 	public CanvasController(CanvasProperties properties) {
 		this.properties = properties;
+		this.properties.setSource(this);
+
+		manager = new ProbeManager(this);
 
 		layers = new Pane[5];
 		for (int i = 0; i < layers.length; i++) {
@@ -39,10 +49,13 @@ public class CanvasController{
 	}
 
 	private void setOnClicks() {
+
 		inputLayer.setOnMousePressed(event -> {
+			Probe curPos = manager.getPosOfExistingPoint(event);
+
 			switch (ToolGroup.getToolGroupById(properties.getTool())){
 				case 0:
-					Shape tmp = tools[properties.getTool()].onPressed(event,properties);
+					Shape tmp = tools[properties.getTool()].onPressed(curPos, properties);
 					layers[1].getChildren().add(tmp);
 					break;
 				case 1:
@@ -60,9 +73,10 @@ public class CanvasController{
 
 
 		inputLayer.setOnMouseDragged(event -> {
+			Vector2 curPos = manager.getPosOfExistingTempPoint(event);
 			switch (ToolGroup.getToolGroupById(properties.getTool())){
 				case 0:
-					tools[properties.getTool()].onDragged(event);
+					tools[properties.getTool()].onDragged(curPos.getX(),curPos.getY());
 					break;
 				case 1:
 					useNode();
@@ -77,9 +91,11 @@ public class CanvasController{
 		});
 
 		inputLayer.setOnMouseReleased(event -> {
+			Probe curPos = manager.getPosOfExistingPoint(event);
 			switch (ToolGroup.getToolGroupById(properties.getTool())){
 				case 0:
-					tools[properties.getTool()].onReleased(event);
+					Holder tmp = tools[properties.getTool()].onReleased(curPos);
+					tmp.splitLayers(layers);
 					break;
 				case 1:
 					useNode();
@@ -96,9 +112,6 @@ public class CanvasController{
 
 
 
-	private void useDecoration(){
-
-	}
 
 	private void useNode(){
 
@@ -130,4 +143,7 @@ public class CanvasController{
 		return tools;
 	}
 
+	public ProbeManager getManager() {
+		return manager;
+	}
 }

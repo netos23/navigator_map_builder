@@ -32,6 +32,11 @@ public class Level{
 
 	}
 
+
+	public CanvasProperties getProperties() {
+		return properties;
+	}
+
 	public Image getBackground() {
 		return background;
 	}

@@ -1,6 +1,7 @@
 package ru.fbtw.navigator.map_builder;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -76,7 +77,7 @@ public class App extends Application {
 		properties = CanvasProperties.DEFAULT_PROPERTIES;
 
 
-		btns = new ArrayList<ToggleButton>();
+		btns = new ArrayList<>();
 		/*for(int i =0;i<16;i++){
 			ToggleButton button = new ToggleButton("Button "+i);
 			btns.add(button);
@@ -91,6 +92,7 @@ public class App extends Application {
 		fillColor = new ColorPicker(Color.WHITE);
 
 		widthPicker = new Slider(5,50,10);
+		widthPicker.setValue(5);
 		widthPicker.setShowTickLabels(true);
 		widthPicker.setShowTickMarks(true);
 
@@ -105,7 +107,7 @@ public class App extends Application {
 
 	}
 
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage){
 		BorderPane mainLayout = new BorderPane();
 		setOnClicks(primaryStage);
 
@@ -203,13 +205,48 @@ public class App extends Application {
 		});
 
 		isTmpNodes.setOnAction(event -> {
-			if (selectedLevel >= 0) {
-				levels.get(selectedLevel)
-						.setUseBackground(isTmpNodes.isSelected());
-			} else {
-				isTmpNodes.setSelected(false);
-			}
+			// todo: вырезать?
+			//todo: алерт об отсутствии функции
 		});
+
+		widthPicker.valueProperty()
+				.addListener((observable,oldVal,newVal) -> {
+
+			if(!levels.isEmpty()) {
+				levels.get(selectedLevel)
+						.getProperties()
+						.setLineWidth((Double) newVal);
+			}/*else{
+				//todo: алерт об отсутствии уровней
+				showAlert(Alert.AlertType.ERROR, "Level list is empty");
+			}*/
+		});
+
+		mainColor.valueProperty()
+				.addListener((observable, oldVal, newVal) ->{
+					if(!levels.isEmpty()) {
+						levels.get(selectedLevel)
+								.getProperties()
+								.setColor(newVal);
+					}/*else{
+				//todo: алерт об отсутствии уровней
+				showAlert(Alert.AlertType.ERROR, "Level list is empty");
+			}*/
+		});
+
+		fillColor.valueProperty()
+				.addListener((observable, oldVal, newVal) ->{
+					if(!levels.isEmpty()) {
+						levels.get(selectedLevel)
+								.getProperties()
+								.setFillColor(newVal);
+					}/*else{
+				//todo: алерт об отсутствии уровней
+				showAlert(Alert.AlertType.ERROR, "Level list is empty");
+			}*/
+		});
+
+
 
 	}
 

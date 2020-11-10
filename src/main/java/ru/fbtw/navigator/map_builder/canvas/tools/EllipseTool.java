@@ -1,3 +1,4 @@
+/*
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.input.MouseEvent;
@@ -54,3 +55,4 @@ public class EllipseTool extends DrawingTool implements Positionable {
 		return "Ellipse";
 	}
 }
+*/
