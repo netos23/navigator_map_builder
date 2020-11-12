@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.probe;
+package ru.fbtw.navigator.map_builder.canvas.probe;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -8,8 +8,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
-
-import static ru.fbtw.navigator.map_builder.utils.MathUtils.sqr;
 
 public class Probe {
 	public static final double VISUAL_RADIUS = 10;
@@ -42,6 +40,7 @@ public class Probe {
 		hitBox.setOnMouseExited(event -> hitBox.setFill(Color.TRANSPARENT));
 
 		attachedShapes = new ArrayList<>();
+		//todo: отдельный слой для проб
 	}
 
 

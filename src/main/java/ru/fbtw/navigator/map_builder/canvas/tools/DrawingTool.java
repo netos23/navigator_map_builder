@@ -3,8 +3,8 @@ package ru.fbtw.navigator.map_builder.canvas.tools;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
-import ru.fbtw.navigator.map_builder.canvas.shapes.Holder;
-import ru.fbtw.navigator.map_builder.probe.Probe;
+import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
+import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 
 import java.util.ArrayList;
 
@@ -29,6 +29,7 @@ public abstract class DrawingTool {
 		shape.setSmooth(true);
 	}
 
+	@Deprecated
 	boolean setExistProbe(Probe probe, MouseEvent event){
 		for(Probe existProbe : probes){
 			if(probe.isContainsPoint(event.getX(), event.getY())){

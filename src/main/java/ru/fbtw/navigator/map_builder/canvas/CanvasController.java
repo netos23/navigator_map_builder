@@ -5,13 +5,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
-import ru.fbtw.navigator.map_builder.canvas.shapes.Holder;
-import ru.fbtw.navigator.map_builder.probe.Probe;
+import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
+import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.tools.*;
-import ru.fbtw.navigator.map_builder.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
-
-import java.util.ArrayList;
 
 
 public class CanvasController{
@@ -24,9 +22,9 @@ public class CanvasController{
 
 	public static DrawingTool[] tools = new DrawingTool[]{
 			new LineTool(),
-			/*new RectangleTool(),
+			new RectangleTool(),
 			new EllipseTool(),
-			new CircleTool(),*/
+			new CircleTool()
 	};
 
 	public CanvasController(CanvasProperties properties) {
@@ -95,7 +93,9 @@ public class CanvasController{
 			switch (ToolGroup.getToolGroupById(properties.getTool())){
 				case 0:
 					Holder tmp = tools[properties.getTool()].onReleased(curPos);
+
 					tmp.splitLayers(layers);
+					tmp.extractProbes(manager);
 					break;
 				case 1:
 					useNode();

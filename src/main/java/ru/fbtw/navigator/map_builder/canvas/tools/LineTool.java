@@ -1,16 +1,15 @@
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
-import ru.fbtw.navigator.map_builder.canvas.shapes.LineHolder;
-import ru.fbtw.navigator.map_builder.probe.Probe;
+import ru.fbtw.navigator.map_builder.canvas.holder.LineHolder;
+import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 
 
 public class LineTool extends DrawingTool {
 	private Line curShape;
-	private Probe start, end;
+	private Probe start;
 
 	@Override
 	public Shape onPressed(Probe start, CanvasProperties properties) {
@@ -37,7 +36,6 @@ public class LineTool extends DrawingTool {
 
 	@Override
 	public LineHolder onReleased(Probe end) {
-		this.end = end;
 
 		onDragged(end.getX(),end.getY());
 

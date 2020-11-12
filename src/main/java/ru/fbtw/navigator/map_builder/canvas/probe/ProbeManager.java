@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.probe;
+package ru.fbtw.navigator.map_builder.canvas.probe;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
@@ -86,6 +86,12 @@ public class ProbeManager {
 
 		}
 		return isRemove;
+	}
+
+	public boolean removeProbe(Probe o) {
+		boolean isRemove = false;
+		// todo: разрулить менджмент холдеров
+		return probes.remove(o);
 	}
 
 

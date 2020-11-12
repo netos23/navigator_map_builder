@@ -1,5 +1,6 @@
 package ru.fbtw.navigator.map_builder.canvas;
 
+
 @Deprecated
 public final class ToolGroup {
 	public static final int DECORATION = 0;
