@@ -1,5 +1,7 @@
 package ru.fbtw.navigator.map_builder.ui;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -9,18 +11,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 
 public  class LayoutBuilder {
 	private VBox layout;
 	private StyleBuilder styleBuilder;
+	private ToggleGroup tools;
 
 	public LayoutBuilder(double spacing) {
 		layout = new VBox(spacing);
 		layout.setPadding(new Insets(5));
 		styleBuilder = new StyleBuilder();
-
+		tools = new ToggleGroup();
 		styleBuilder.setMenuBgStyle().apply(layout);
 	}
 
@@ -37,11 +42,11 @@ public  class LayoutBuilder {
 		return this;
 	}
 
-	public LayoutBuilder addButtonsGrid(int colCount, ArrayList<ToggleButton> buttons) {
+	public LayoutBuilder addButtonsGrid(int colCount, ArrayList<ToggleButton> buttons, boolean isDefault) {
 		GridPane localLayout = new GridPane();
 		localLayout.setHgap(5);
 		localLayout.setVgap(10);
-		ToggleGroup tools = new ToggleGroup();
+
 
 
 		for (int i = 0, row = 0, col =0; i < buttons.size(); i++, row= i/colCount, col=i%colCount) {
@@ -53,11 +58,14 @@ public  class LayoutBuilder {
 			localLayout.add(button,col,row);
 		}
 
-		buttons.get(0).fire();
+		if(isDefault) {
+			buttons.get(0).fire();
+		}
 
 		layout.getChildren().add(localLayout);
 		return this;
 	}
+
 
 	public LayoutBuilder addHorizontalButtonsPanel(Button ... buttons){
 		for(Button button : buttons){
@@ -83,4 +91,6 @@ public  class LayoutBuilder {
 		return safeLayout;*/
 		return layout;
 	}
+
+
 }

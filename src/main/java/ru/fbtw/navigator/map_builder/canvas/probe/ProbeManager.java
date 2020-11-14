@@ -20,14 +20,23 @@ public class ProbeManager {
 
 	}
 
-	public Probe getPosOfExistingPoint(double x, double y) {
+	public Probe select(Vector2 pos){
+		return select(pos.getX(),pos.getY());
+	}
+
+	public Probe select(double x, double y){
 		for (Probe probe : probes) {
 			if (probe.isContainsPoint(x, y)) {
 				return probe;
 			}
 		}
+		return null;
+	}
 
-		return push(x, y);
+	public Probe getPosOfExistingPoint(double x, double y) {
+		Probe probe = select(x,y);
+
+		return probe == null ? push(x, y) : probe;
 	}
 
 	public Probe getPosOfExistingPoint(MouseEvent event) {
@@ -72,15 +81,22 @@ public class ProbeManager {
 				.add(probe.getHitBox());
 	}
 
+	private boolean removeFromView(Probe probe){
+		return controller.getLayers()[LayersName.INPUT_LAYER]
+				.getChildren()
+				.remove(probe.getHitBox());
+	}
+
 	public boolean remove(Shape o) {
 		boolean isRemove = false;
-
+		// todo оптимизировать
 		for (Iterator<Probe> iterator = probes.iterator(); iterator.hasNext(); ) {
 			Probe probe = iterator.next();
 			ArrayList<Shape> attached = probe.getAttachedShapes();
-			isRemove = isRemove || attached.remove(o);
+			isRemove =  attached.remove(o) || isRemove;
 
 			if (attached.isEmpty()) {
+				removeFromView(probe);
 				iterator.remove();
 			}
 
@@ -88,10 +104,20 @@ public class ProbeManager {
 		return isRemove;
 	}
 
-	public boolean removeProbe(Probe o) {
-		boolean isRemove = false;
+	public boolean removeProbeCompletely(Probe o) {
+		//boolean isRemove = false;
 		// todo: разрулить менджмент холдеров
+		removeFromView(o);
 		return probes.remove(o);
+	}
+
+	public boolean removeEmptyProbe(Probe probe){
+
+		if (probe.getAttachedShapes().isEmpty()) {
+			removeFromView(probe);
+			return probes.remove(probe);
+		}
+		return false;
 	}
 
 

@@ -6,32 +6,37 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
+import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
-import ru.fbtw.navigator.map_builder.canvas.tools.*;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.canvas.tools.*;
+import ru.fbtw.navigator.map_builder.utils.StringUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 
-public class CanvasController{
-	private Pane[] layers;
-	private Pane inputLayer;
-	private ProbeManager manager;
-	//private int currentTool, toolGroup;
-
-	private CanvasProperties properties;
-
-	public static DrawingTool[] tools = new DrawingTool[]{
+public class CanvasController {
+	public static DrawingTool[] drawingTools = new DrawingTool[]{
 			new LineTool(),
 			new RectangleTool(),
 			new EllipseTool(),
 			new CircleTool()
 	};
+	public static String[] settingsToolNames = new String[]{
+			StringUtils.toolToString(RemoveTool.class),
+			StringUtils.toolToString(ResizeTool.class),
+	};
+	public SettingsTool[] settingsTools;
+	private Pane[] layers;
+	//private int currentTool, toolGroup;
+	private Pane inputLayer;
+	private ProbeManager probeManager;
+	private HolderManager holderManager;
+	private CanvasProperties properties;
+
 
 	public CanvasController(CanvasProperties properties) {
 		this.properties = properties;
 		this.properties.setSource(this);
-
-		manager = new ProbeManager(this);
 
 		layers = new Pane[5];
 		for (int i = 0; i < layers.length; i++) {
@@ -39,9 +44,13 @@ public class CanvasController{
 		}
 		inputLayer = layers[4];
 
+		probeManager = new ProbeManager(this);
+		holderManager = new HolderManager(probeManager, properties);
 
-		/*currentTool = properties.getTool();
-		toolGroup = ToolGroup.getToolGroupById(currentTool);*/
+		settingsTools = new SettingsTool[]{
+				new RemoveTool(holderManager),
+				new ResizeTool(holderManager)
+		};
 
 		setOnClicks();
 	}
@@ -49,15 +58,16 @@ public class CanvasController{
 	private void setOnClicks() {
 
 		inputLayer.setOnMousePressed(event -> {
-			Probe curPos = manager.getPosOfExistingPoint(event);
 
-			switch (ToolGroup.getToolGroupById(properties.getTool())){
+
+			switch (properties.getToolGroup()) {
 				case 0:
-					Shape tmp = tools[properties.getTool()].onPressed(curPos, properties);
+					Probe curPos = probeManager.getPosOfExistingPoint(event);
+					Shape tmp = drawingTools[properties.getTool()].onPressed(curPos, properties);
 					layers[1].getChildren().add(tmp);
 					break;
 				case 1:
-					useNode();
+					settingsTools[properties.getTool()].onPressed(event.getX(), event.getY());
 					break;
 				case 2:
 
@@ -69,15 +79,14 @@ public class CanvasController{
 		});
 
 
-
 		inputLayer.setOnMouseDragged(event -> {
-			Vector2 curPos = manager.getPosOfExistingTempPoint(event);
-			switch (ToolGroup.getToolGroupById(properties.getTool())){
+			Vector2 curPos = probeManager.getPosOfExistingTempPoint(event);
+			switch (properties.getToolGroup()) {
 				case 0:
-					tools[properties.getTool()].onDragged(curPos.getX(),curPos.getY());
+					drawingTools[properties.getTool()].onDragged(curPos.getX(), curPos.getY());
 					break;
 				case 1:
-					useNode();
+					settingsTools[properties.getTool()].onDragged(curPos.getX(), curPos.getY());
 					break;
 				case 2:
 
@@ -89,16 +98,15 @@ public class CanvasController{
 		});
 
 		inputLayer.setOnMouseReleased(event -> {
-			Probe curPos = manager.getPosOfExistingPoint(event);
-			switch (ToolGroup.getToolGroupById(properties.getTool())){
-				case 0:
-					Holder tmp = tools[properties.getTool()].onReleased(curPos);
 
-					tmp.splitLayers(layers);
-					tmp.extractProbes(manager);
+			switch (properties.getToolGroup()) {
+				case 0:
+					Probe curPos = probeManager.getPosOfExistingPoint(event);
+					Holder tmp = drawingTools[properties.getTool()].onReleased(curPos);
+					holderManager.push(tmp);
 					break;
 				case 1:
-					useNode();
+					settingsTools[properties.getTool()].onReleased(event.getX(), event.getY());
 					break;
 				case 2:
 
@@ -111,27 +119,25 @@ public class CanvasController{
 	}
 
 
-
-
-	private void useNode(){
+	private void useNode() {
 
 	}
 
-	private void useOther(){
+	private void useOther() {
 
 	}
 
-	public void setBackground(Image bg){
+	public void setBackground(Image bg) {
 		enableBackground(true);
 
 		ImageView imageView = new ImageView(bg);
 		layers[0].getChildren().add(imageView);
-		for(Pane layer : layers){
-			layer.setMinSize(imageView.getX(),imageView.getY());
+		for (Pane layer : layers) {
+			layer.setMinSize(imageView.getX(), imageView.getY());
 		}
 	}
 
-	public void enableBackground(boolean value){
+	public void enableBackground(boolean value) {
 		layers[0].setVisible(value);
 	}
 
@@ -140,10 +146,10 @@ public class CanvasController{
 	}
 
 	public DrawingTool[] getTools() {
-		return tools;
+		return drawingTools;
 	}
 
-	public ProbeManager getManager() {
-		return manager;
+	public ProbeManager getProbeManager() {
+		return probeManager;
 	}
 }

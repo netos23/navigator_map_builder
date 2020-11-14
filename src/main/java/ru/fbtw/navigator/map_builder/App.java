@@ -1,7 +1,6 @@
 package ru.fbtw.navigator.map_builder;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,15 +13,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.*;
-
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.ToolGroup;
 import ru.fbtw.navigator.map_builder.canvas.tools.DrawingTool;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
-import ru.fbtw.navigator.map_builder.utils.EmptyImageMaker;
+import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
+import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,18 +37,19 @@ import java.util.List;
 public class App extends Application {
 
 
-	private Button imageChooserBtn,emptyBtn;
+	private Button imageChooserBtn, emptyBtn;
 	private ListView<Level> levelListWidget;
 	private CheckBox isBg, isTmpNodes;
 	private TextField levelName;
 	private Button nameUpdater;
 	private FileChooser imageChooser;
 
-	private ArrayList<ToggleButton> btns;
+	private ArrayList<ToggleButton> drawingToolButtons;
+	private ArrayList<ToggleButton> settingsToolButtons;
 	private ColorPicker mainColor, fillColor;
 	private Slider widthPicker;
-	private Button clear,undo,redo;
-	private Button save,load,push;
+	private Button clear, undo, redo;
+	private Button save, load, push;
 
 	private ObservableList<Level> levels;
 	private int selectedLevel;
@@ -53,6 +57,10 @@ public class App extends Application {
 
 	private CanvasProperties properties;
 
+
+	public static void main(String[] args) {
+		launch(args);
+	}
 
 	@Override
 	public void init() throws Exception {
@@ -77,21 +85,43 @@ public class App extends Application {
 		properties = CanvasProperties.DEFAULT_PROPERTIES;
 
 
-		btns = new ArrayList<>();
+		settingsToolButtons = new ToggleButtonGridBuilder<String>()
+				.setOnClick(this::selectSettingsTool)
+				.setUseName(true)
+				.setUseImage(false)
+				.setSource(CanvasController.settingsToolNames)
+				.setStatic(false)
+				.setToString("toString")
+				.build();
+		drawingToolButtons = new ToggleButtonGridBuilder<DrawingTool>()
+				.setOnClick(this::selectDrawingTool)
+				.setUseName(true)
+				.setUseImage(false)
+				.setSource(CanvasController.drawingTools)
+				.setStatic(false)
+				.setToString("toString")
+				.build();
+
 		/*for(int i =0;i<16;i++){
 			ToggleButton button = new ToggleButton("Button "+i);
-			btns.add(button);
-		}*/
-		for(DrawingTool tool : CanvasController.tools){
+			drawingToolButtons.add(button);
+		}*//*
+		for (DrawingTool tool : CanvasController.drawingTools) {
 			ToggleButton toggleButton = new ToggleButton(tool.toString());
-			toggleButton.setOnAction(this::selectTool);
-			btns.add(toggleButton);
-		}
+			//ToggleButton toggleButton = new ToggleButton();
+			toggleButton.setOnAction(this::selectDrawingTool);
+			//todo: Рассмотреть вариант с иконками + подсказками
+			*//*if(tool.toString().equals("Line")) {
+				toggleButton.setGraphic(ImageUtils.loadImage("image/buttons/" + tool.toString() + ".png"));
+			}*//*
+
+			drawingToolButtons.add(toggleButton);
+		}*/
 
 		mainColor = new ColorPicker(Color.BLACK);
 		fillColor = new ColorPicker(Color.WHITE);
 
-		widthPicker = new Slider(5,50,10);
+		widthPicker = new Slider(5, 50, 10);
 		widthPicker.setValue(5);
 		widthPicker.setShowTickLabels(true);
 		widthPicker.setShowTickMarks(true);
@@ -107,7 +137,7 @@ public class App extends Application {
 
 	}
 
-	public void start(Stage primaryStage){
+	public void start(Stage primaryStage) {
 		BorderPane mainLayout = new BorderPane();
 		setOnClicks(primaryStage);
 
@@ -125,15 +155,17 @@ public class App extends Application {
 				.build();
 
 		Node rightMenu = new LayoutBuilder(10)
+				.setTitle("Primitives")
+				.addButtonsGrid(3, drawingToolButtons, true)
 				.setTitle("Tools")
-				.addButtonsGrid(3,btns)
+				.addButtonsGrid(3, settingsToolButtons, false)
 				.setTitle("Line color")
 				.addContent(mainColor)
 				.setTitle("Fill color")
 				.addContent(fillColor)
 				.setTitle("Line width")
 				.addContent(widthPicker)
-				.addHorizontalButtonsPanel(clear,undo,redo)
+				.addHorizontalButtonsPanel(clear, undo, redo)
 				.addContent(save)
 				.addContent(load)
 				.addContent(push)
@@ -210,21 +242,21 @@ public class App extends Application {
 		});
 
 		widthPicker.valueProperty()
-				.addListener((observable,oldVal,newVal) -> {
+				.addListener((observable, oldVal, newVal) -> {
 
-			if(!levels.isEmpty()) {
-				levels.get(selectedLevel)
-						.getProperties()
-						.setLineWidth((Double) newVal);
-			}/*else{
+					if (!levels.isEmpty()) {
+						levels.get(selectedLevel)
+								.getProperties()
+								.setLineWidth((Double) newVal);
+					}/*else{
 				//todo: алерт об отсутствии уровней
 				showAlert(Alert.AlertType.ERROR, "Level list is empty");
 			}*/
-		});
+				});
 
 		mainColor.valueProperty()
-				.addListener((observable, oldVal, newVal) ->{
-					if(!levels.isEmpty()) {
+				.addListener((observable, oldVal, newVal) -> {
+					if (!levels.isEmpty()) {
 						levels.get(selectedLevel)
 								.getProperties()
 								.setColor(newVal);
@@ -232,11 +264,11 @@ public class App extends Application {
 				//todo: алерт об отсутствии уровней
 				showAlert(Alert.AlertType.ERROR, "Level list is empty");
 			}*/
-		});
+				});
 
 		fillColor.valueProperty()
-				.addListener((observable, oldVal, newVal) ->{
-					if(!levels.isEmpty()) {
+				.addListener((observable, oldVal, newVal) -> {
+					if (!levels.isEmpty()) {
 						levels.get(selectedLevel)
 								.getProperties()
 								.setFillColor(newVal);
@@ -244,46 +276,44 @@ public class App extends Application {
 				//todo: алерт об отсутствии уровней
 				showAlert(Alert.AlertType.ERROR, "Level list is empty");
 			}*/
-		});
-
+				});
 
 
 	}
 
-	private void getInfoFromDialog(){
+	private void getInfoFromDialog() {
 		GridPane layout = new GridPane();
 		layout.setPadding(new Insets(10));
 		layout.setHgap(5);
 		layout.setVgap(10);
 
 		Label info = new Label("Enter the length and width (integers)");
-		layout.add(info,0,0,3,1);
+		layout.add(info, 0, 0, 3, 1);
 		Label widthTxt = new Label("Width:");
-		FontStyler.setHeaderStyle(widthTxt,15);
-		layout.add(widthTxt,0,1);
+		FontStyler.setHeaderStyle(widthTxt, 15);
+		layout.add(widthTxt, 0, 1);
 		TextField inputWidth = new TextField();
-		layout.add(inputWidth,1,1);
+		layout.add(inputWidth, 1, 1);
 
 		Label heightTxt = new Label("Height:");
-		FontStyler.setHeaderStyle(heightTxt,15);
-		layout.add(heightTxt,0,2);
+		FontStyler.setHeaderStyle(heightTxt, 15);
+		layout.add(heightTxt, 0, 2);
 		TextField inputHeight = new TextField();
-		layout.add(inputHeight,1,2);
+		layout.add(inputHeight, 1, 2);
 
 		Label colorText = new Label("Color:");
-		FontStyler.setHeaderStyle(heightTxt,15);
-		layout.add(colorText,0,3);
+		FontStyler.setHeaderStyle(heightTxt, 15);
+		layout.add(colorText, 0, 3);
 		ColorPicker colorPicker = new ColorPicker(Color.WHITE);
-		layout.add(colorPicker,1,3);
-
+		layout.add(colorPicker, 1, 3);
 
 
 		Button apply = new Button("OK");
-		layout.add(apply,0,4);
+		layout.add(apply, 0, 4);
 		Button cancel = new Button("CANCEL");
-		layout.add(cancel,1,4);
+		layout.add(cancel, 1, 4);
 
-		Scene scene = new Scene(layout,290,220);
+		Scene scene = new Scene(layout, 290, 220);
 		Stage stage = new Stage();
 		stage.setResizable(false);
 		stage.setTitle("Dialog");
@@ -301,14 +331,14 @@ public class App extends Application {
 				float blue = (float) color.getBlue();
 				float red = (float) color.getRed();
 				float green = (float) color.getGreen();
-				int colRes = new  java.awt.Color(red,green,blue).getRGB();
+				int colRes = new java.awt.Color(red, green, blue).getRGB();
 
-				File tmp = EmptyImageMaker.getEmptyImage(width, height,colRes);
-				if(tmp != null){
+				File tmp = ImageUtils.getEmptyImage(width, height, colRes);
+				if (tmp != null) {
 					createLevel(tmp);
 				}
 				stage.close();
-			}catch (Exception e){
+			} catch (Exception e) {
 				//todo: alert dialog
 			}
 		});
@@ -319,7 +349,7 @@ public class App extends Application {
 
 	}
 
-	private void selectLevel(int id){
+	private void selectLevel(int id) {
 		this.selectedLevel = id;
 		Level level = levels.get(id);
 
@@ -330,34 +360,36 @@ public class App extends Application {
 		CanvasController controller = level.getController();
 		rootCanvas.getChildren().clear();
 		rootCanvas.getChildren().addAll(controller.getLayers());
-		// todo : setup tools
+		// todo : setup drawingTools
 
 	}
 
-	private  void selectTool(ActionEvent event){
-		properties.setTool(btns.indexOf(event.getSource()));
+	private void selectDrawingTool(ActionEvent event) {
+		properties.setToolGroup(ToolGroup.DECORATION);
+		properties.setTool(drawingToolButtons.indexOf(event.getSource()));
+
+	}
+
+	private void selectSettingsTool(ActionEvent event) {
+		properties.setToolGroup(ToolGroup.TOOL);
+		properties.setTool(settingsToolButtons.indexOf(event.getSource()));
 	}
 
 	private void createLevel(File img) {
 		try {
 			Image tmp = new Image(new FileInputStream(img));
 
-			Level level = new Level(levels.size(),properties);
+			Level level = new Level(levels.size(), properties);
 			level.setUseBackground(true);
 			level.setBackground(tmp);
 
 			levels.add(level);
 
-			if(selectedLevel < 0){
+			if (selectedLevel < 0) {
 				selectLevel(0);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-
-
-	public static void main(String[] args) {
-		launch(args);
 	}
 }

@@ -1,11 +1,12 @@
 package ru.fbtw.navigator.map_builder.canvas;
 
 
-@Deprecated
+
 public final class ToolGroup {
 	public static final int DECORATION = 0;
-	public static final int NODE  = 1;
-	public static final int TOOL = 2;
+	public static final int TOOL = 1;
+	public static final int NODE  = 2;
+
 	public static final int OTHER = 3;
 
 	public static int getToolGroupById(int id){

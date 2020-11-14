@@ -10,6 +10,7 @@ public class CanvasProperties {
 	private double lineWidth;
 
 	private int tool;
+	private int toolGroup;
 	private CanvasController source;
 
 	public CanvasProperties(Paint color, Paint fillColor, boolean useFill, double lineWidth) {
@@ -26,6 +27,15 @@ public class CanvasProperties {
 
 	public void setColor(Paint color) {
 		this.color = color;
+	}
+
+	public int getToolGroup() {
+		return toolGroup;
+	}
+
+	public CanvasProperties setToolGroup(int toolGroup) {
+		this.toolGroup = toolGroup;
+		return this;
 	}
 
 	public Paint getFillColor() {

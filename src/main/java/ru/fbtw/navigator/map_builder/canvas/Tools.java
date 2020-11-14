@@ -14,7 +14,7 @@ public final class Tools {
 	public static final int END_NODE = 6;
 	public static final int NODE_CONNECTOR = 7;
 
-	// tools code = 2
+	// drawingTools code = 2
 	public static final int ERASER = 8;
 	public static final int FILL = 9;
 	public static final int REPLACE = 10;

@@ -8,8 +8,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Probe {
+import static ru.fbtw.navigator.map_builder.utils.MathUtils.sqr;
+
+public class Probe  {
 	public static final double VISUAL_RADIUS = 10;
 
 
@@ -56,8 +59,12 @@ public class Probe {
 	}
 
 	public boolean isContainsPoint(double x, double y){
-		//return sqr(x - hitBox.getCenterX()) + sqr(y - hitBox.getCenterY()) <= sqr(VISUAL_RADIUS);
+
 		return hitBox.contains(x,y);
+	}
+
+	public double getDistanceToPoint(double x, double y){
+		return Math.sqrt(sqr(x - hitBox.getCenterX()) + sqr(y - hitBox.getCenterY()));
 	}
 
 
@@ -85,6 +92,26 @@ public class Probe {
 
 	public double getY(){
 		return hitBox.getCenterY();
+	}
+
+
+	public static ProbeComparator comparator = new ProbeComparator();
+
+	private static class ProbeComparator implements Comparator<Probe>{
+		//todo: Переделать метод
+		@Override
+		public int compare(Probe o1, Probe o2) {
+			switch (Double.compare(o1.getX(),o2.getX())){
+				case 1:
+					return -1;
+				case 0:
+				case -1:
+					return -1 * Double.compare(o1.getY(),o2.getY());
+			}
+
+			return -1;
+
+		}
 	}
 }
 
