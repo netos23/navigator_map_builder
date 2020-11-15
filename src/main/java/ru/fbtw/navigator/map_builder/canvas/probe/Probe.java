@@ -113,5 +113,11 @@ public class Probe  {
 
 		}
 	}
+
+	@Override
+	public String toString() {
+		String string = super.toString();
+		return string.substring(string.lastIndexOf('.') + 1);
+	}
 }
 

@@ -9,6 +9,8 @@ import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
+import java.util.logging.Logger;
+
 public class RectangleHolder extends Holder {
 
 	private Rectangle decoration;
@@ -16,6 +18,7 @@ public class RectangleHolder extends Holder {
 
 	private EditTarget editTarget;
 	private Vector2 editPos, editBounds;
+	private static  final double e = 10.5;
 
 	public RectangleHolder(Rectangle rectangle, Probe start, Probe end) {
 		this.decoration = rectangle;
@@ -82,8 +85,16 @@ public class RectangleHolder extends Holder {
 
 	}
 
+	// fixme баг со стики холдерами
 	@Override
 	public void beginResize(double x, double y) {
+		/*System.out.printf("begin begin resize obj: %s pos %f %f point %f %f \n",
+				toString(),
+				decoration.getX(),
+				decoration.getY(),
+				x,y
+		);*/
+
 		editPos = new Vector2(decoration.getX(), decoration.getY());
 		editBounds = new Vector2(decoration.getWidth(), decoration.getHeight());
 
@@ -92,33 +103,39 @@ public class RectangleHolder extends Holder {
 		double minDest = target.getDistanceToPoint(x, y);
 
 		for (Probe probe : probes) {
+			//System.out.printf("try probe obj: %s pos: %f %f ", probe.toString(),probe.getX(),probe.getY() );
 			if (probe.isContainsPoint(x, y)) {
+				//System.out.printf("contains %f %f\n",x,y);
 				isCorner = true;
 				target = probe;
 				break;
 			} else {
 				double distanceToPoint = probe.getDistanceToPoint(x, y);
+				//System.out.printf("distance to %f",distanceToPoint);
 				if (minDest > distanceToPoint) {
+				//	System.out.print(" distance is min");
 					target = probe;
 					minDest = distanceToPoint;
 				}
+				//System.out.println();
 			}
 		}
 
 
-		if (target.getX() == decoration.getX()) {
-			if (target.getY() == decoration.getY()) {
+		if (Math.abs(target.getX() - decoration.getX()) <= e) {
+			if (Math.abs(target.getY() - decoration.getY())<= e) {
 				editTarget = EditTarget.L_T_CORNER;
 			} else {
 				editTarget = EditTarget.L_B_CORNER;
 			}
 		} else {
-			if (target.getY() == decoration.getY()) {
+			if (Math.abs(target.getY() - decoration.getY())<= e) {
 				editTarget = EditTarget.R_T_CORNER;
 			} else {
 				editTarget = EditTarget.R_B_CORNER;
 			}
 		}
+		//System.out.printf("set corner %s\n",editTarget);
 
 		if (!isCorner) {
 			Vector2 curPos = new Vector2(target.getX(), target.getY());
@@ -154,13 +171,18 @@ public class RectangleHolder extends Holder {
 					break;
 
 			}
+			//System.out.printf("set side %s\n",editTarget);
 		}
+
+		/*System.out.printf("end begin resize obj: %s with start: %s \n",toString(),editTarget);
+		System.out.println();
+		System.out.println();*/
 
 	}
 
 	@Override
 	public void resize(double x, double y) {
-		// fixme баг со стики холдерами
+
 
 		// Change left side
 		if (editTarget == EditTarget.L_SIDE
@@ -247,12 +269,35 @@ public class RectangleHolder extends Holder {
 		hitBoxInner.setWidth(innerWidth);
 		hitBoxInner.setHeight(innerHeight);
 
+		/*
+		System.out.printf("in resize obj: %s begin (%f %f %f %f) -> (%f %f %f %f)\n",
+				toString(),
+				editPos.getX(),
+				editPos.getY(),
+				editBounds.getX(),
+				editBounds.getY(),
+				decoration.getX(),
+				decoration.getY(),
+				decoration.getWidth(),
+				decoration.getHeight()
+				);*/
 	}
 
 	@Override
 	public void endResize(double x, double y, ProbeManager manager) {
 		resize(x,y);
 		rebuildProbes(manager);
+		/*System.out.printf("end resize obj: %s begin (%f %f %f %f) -> (%f %f %f %f)\n\n",
+				toString(),
+				editPos.getX(),
+				editPos.getY(),
+				editBounds.getX(),
+				editBounds.getY(),
+				decoration.getX(),
+				decoration.getY(),
+				decoration.getWidth(),
+				decoration.getHeight()
+		);*/
 	}
 
 	@Override
@@ -309,5 +354,11 @@ public class RectangleHolder extends Holder {
 		L_B_CORNER,
 		R_T_CORNER,
 		R_B_CORNER
+	}
+
+	@Override
+	public String toString() {
+		String string = super.toString();
+		return string.substring(string.lastIndexOf('.') + 1);
 	}
 }
