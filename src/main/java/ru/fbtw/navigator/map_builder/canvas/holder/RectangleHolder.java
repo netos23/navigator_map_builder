@@ -71,15 +71,16 @@ public class RectangleHolder extends Holder {
 	@Override
 	public void beginReplace(double x, double y) {
 		origin = new Vector2(x, y);
+		editPos = new Vector2(decoration.getX(),decoration.getY());
 	}
 
 	@Override
 	public void replace(double x, double y) {
 		Vector2 currentPosition = new Vector2(x, y);
-		Vector2 delta = currentPosition.subtract(origin);
+		Vector2 delta = origin.subtract(currentPosition);
 
-		decoration.setX(decoration.getX()+delta.getX());
-		decoration.setY(decoration.getY()+delta.getY());
+		decoration.setX(editPos.getX()+delta.getX());
+		decoration.setY(editPos.getY()+delta.getY());
 
 		reBuildHitBoxes();
 	}

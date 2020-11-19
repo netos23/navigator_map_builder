@@ -22,6 +22,7 @@ public class LineHolder extends Holder {
 
 	// Temporary variable for replace
 	private Vector2 origin;
+	private Vector2 startPos, endPos;
 
 	public LineHolder(Line line, Probe start, Probe end) {
 		this.decoration = line;
@@ -57,6 +58,9 @@ public class LineHolder extends Holder {
 	public void beginReplace(double x, double y) {
 		origin = new Vector2(x,y);
 		editPoint = Points.ALL;
+
+		startPos = new Vector2(decoration.getStartX(),decoration.getStartY());
+		endPos = new Vector2(decoration.getEndX(),decoration.getEndY());
 	}
 
 	@Override
@@ -64,10 +68,10 @@ public class LineHolder extends Holder {
 		Vector2 currentPosition = new Vector2(x, y);
 		Vector2 delta = origin.subtract(currentPosition);
 
-		decoration.setStartX(decoration.getStartX() + delta.getX());
-		decoration.setStartY(decoration.getStartY() + delta.getY());
-		decoration.setEndX(decoration.getEndX() + delta.getX());
-		decoration.setEndY(decoration.getEndY() + delta.getY());
+		decoration.setStartX(startPos.getX() + delta.getX());
+		decoration.setStartY(startPos.getY() + delta.getY());
+		decoration.setEndX(endPos.getX() + delta.getX());
+		decoration.setEndY(endPos.getY() + delta.getY());
 
 		reBuildHitBoxes();
 	}
@@ -157,10 +161,15 @@ public class LineHolder extends Holder {
 					.getPosOfExistingPoint(decoration.getEndX(),decoration.getEndY());
 
 			beginResize(decoration.getStartX(),decoration.getStartY());
-			endResize(startProbe.getX(),startProbe.getY(),manager);
+			resize(startProbe.getX(),startProbe.getY());
 
 			beginResize(decoration.getEndX(),decoration.getEndY());
-			endResize(endProbe.getX(),endProbe.getY(),manager);
+			resize(endProbe.getX(),endProbe.getY());
+
+			manager.remove(decoration);
+			manager.push(startProbe);
+			manager.push(endProbe);
+			initProbes(decoration,startProbe,endProbe);
 		}
 
 	}

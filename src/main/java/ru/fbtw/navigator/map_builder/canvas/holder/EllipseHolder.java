@@ -17,6 +17,7 @@ public class EllipseHolder extends Holder {
 	private Probe tmpStart, tmpEnd;
 
 	private Vector2 origin;
+	private Vector2 editPos;
 	private double rx, ry;
 
 	public EllipseHolder(Ellipse ellipse, Probe start, Probe end) {
@@ -74,9 +75,12 @@ public class EllipseHolder extends Holder {
 		super.remove(layers,decoration,hitBoxExternal,hitBoxInner);
 	}
 
+
+	//fixme:  разрулить origin и editPos
 	@Override
 	public void beginReplace(double x, double y) {
 		origin = new Vector2(x, y);
+		editPos = new Vector2(decoration.getCenterX(),decoration.getCenterY());
 	}
 
 	@Override
@@ -84,8 +88,8 @@ public class EllipseHolder extends Holder {
 		Vector2 currentPosition = new Vector2(x, y);
 		Vector2 delta = origin.subtract(currentPosition);
 
-		decoration.setCenterX(decoration.getCenterX() + delta.getX());
-		decoration.setCenterY(decoration.getCenterY() + delta.getY());
+		decoration.setCenterX(editPos.getX() + delta.getX());
+		decoration.setCenterY(editPos.getY() + delta.getY());
 
 		reBuildHitBoxes();
 	}
