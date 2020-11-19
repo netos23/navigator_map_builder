@@ -18,7 +18,7 @@ public class ReplaceTool extends SettingsTool {
 	public void onPressed(Probe probe) {
 		target = manager.selectAll(probe);
 		for(Holder h : target){
-			h.beginResize(probe.getX(),probe.getY());
+			h.beginReplace(probe.getX(),probe.getY());
 		}
 	}
 
@@ -30,7 +30,7 @@ public class ReplaceTool extends SettingsTool {
 		}else{
 			target = manager.selectAll(x,y);
 			for(Holder h : target){
-				h.beginResize(x,y);
+				h.beginReplace(x,y);
 			}
 		}
 	}
@@ -42,16 +42,25 @@ public class ReplaceTool extends SettingsTool {
 
 	@Override
 	public void onDragged(double x, double y) {
-
+		if(target != null){
+			for(Holder h : target){
+				h.replace(x,y);
+			}
+		}
 	}
 
+	@Deprecated
 	@Override
 	public void onReleased(Probe probe) {
-
+		onReleased(probe.getX(),probe.getY());
 	}
 
 	@Override
 	public void onReleased(double x, double y) {
-
+		if(target != null) {
+			for (Holder h : target) {
+				h.endReplace(x,y,manager.getManager());
+			}
+		}
 	}
 }

@@ -24,6 +24,7 @@ public class CanvasController {
 	public static String[] settingsToolNames = new String[]{
 			StringUtils.toolToString(RemoveTool.class),
 			StringUtils.toolToString(ResizeTool.class),
+			StringUtils.toolToString(ReplaceTool.class)
 	};
 	public SettingsTool[] settingsTools;
 	private Pane[] layers;
@@ -49,7 +50,8 @@ public class CanvasController {
 
 		settingsTools = new SettingsTool[]{
 				new RemoveTool(holderManager),
-				new ResizeTool(holderManager)
+				new ResizeTool(holderManager),
+				new ReplaceTool(holderManager)
 		};
 
 		setOnClicks();

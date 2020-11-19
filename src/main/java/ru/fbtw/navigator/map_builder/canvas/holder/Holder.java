@@ -1,6 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
@@ -19,7 +20,8 @@ public abstract class Holder {
 	public abstract void extractProbes(ProbeManager manager);
 
 	public abstract void remove(Pane[] layers);
-	protected  void remove(Pane[] layers, Shape decoration, Shape ... hitBoxes){
+
+	protected void remove(Pane[] layers, Shape decoration, Shape... hitBoxes) {
 		layers[LayersName.DECORATION]
 				.getChildren()
 				.remove(decoration);
@@ -29,7 +31,11 @@ public abstract class Holder {
 				.removeAll(hitBoxes);
 	}
 
-	public abstract void replace();
+	public abstract void beginReplace(double x, double y);
+
+	public abstract void replace(double x, double y);
+
+	public abstract void endReplace(double x, double y, ProbeManager manager);
 
 	public abstract void beginResize(double x, double y);
 
@@ -37,13 +43,24 @@ public abstract class Holder {
 
 	public abstract void endResize(double x, double y, ProbeManager manager);
 
-	public abstract void rebuildProbes(ProbeManager manager);
+	public abstract void reBuildProbes(ProbeManager manager);
+
+	public abstract void setStrokeWidth(double width);
+
+	public abstract void setStroke(Paint color);
+
+	public abstract void setFill(Paint color);
 
 	public abstract void getInfo();
+
+	//fixme: оптимизировать пересчет хитбоксов
+	public abstract void reBuildHitBoxes();
 
 	public abstract Shape getShape();
 
 	public abstract boolean contains(double x, double y);
+
+	public abstract boolean containsInner(double x, double y);
 
 	protected void initProbes(Shape shape, Probe... probes) {
 		this.probes = new ArrayList<>();

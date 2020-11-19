@@ -2,6 +2,7 @@ package ru.fbtw.navigator.map_builder.canvas.holder;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
@@ -24,33 +25,20 @@ public class EllipseHolder extends Holder {
 		this.tmpEnd = end;
 
 
-		double tmp = (ADDITIONAL_WIDTH + decoration.getStrokeWidth()) / 2.0;
-
-		hitBoxExternal = new Ellipse(
-				decoration.getCenterX() ,
-				decoration.getCenterY(),
-				decoration.getRadiusX() + tmp,
-				decoration.getRadiusY() + tmp
-		);
+		hitBoxExternal = new Ellipse();
 		hitBoxExternal.setFill(Color.TRANSPARENT);
 		//hitBoxExternal.setStroke(Color.TRANSPARENT);
 		hitBoxExternal.setStroke(Color.GREEN);
 
 
-		double innerWidth = (decoration.getRadiusX() >= tmp)
-				? decoration.getRadiusX() - tmp : 0;
-		double innerHeight = (decoration.getRadiusY() >= tmp)
-				? decoration.getRadiusY() - tmp : 0;
 
-		hitBoxInner = new Ellipse(
-				decoration.getCenterX(),
-				decoration.getCenterY(),
-				innerWidth, innerHeight
-		);
+		hitBoxInner = new Ellipse();
 
 		hitBoxInner.setFill(Color.TRANSPARENT);
 		//hitBoxInner.setStroke(Color.TRANSPARENT);
 		hitBoxInner.setStroke(Color.RED);
+
+		reBuildHitBoxes();
 
 		initProbes(ellipse, start, end);
 	}
@@ -87,9 +75,27 @@ public class EllipseHolder extends Holder {
 	}
 
 	@Override
-	public void replace() {
-
+	public void beginReplace(double x, double y) {
+		origin = new Vector2(x, y);
 	}
+
+	@Override
+	public void replace(double x, double y) {
+		Vector2 currentPosition = new Vector2(x, y);
+		Vector2 delta = origin.subtract(currentPosition);
+
+		decoration.setCenterX(decoration.getCenterX() + delta.getX());
+		decoration.setCenterY(decoration.getCenterY() + delta.getY());
+
+		reBuildHitBoxes();
+	}
+
+	@Override
+	public void endReplace(double x, double y, ProbeManager manager) {
+		replace(x, y);
+		reBuildProbes(manager);
+	}
+
 
 	@Override
 	public void beginResize(double x, double y) {
@@ -100,15 +106,57 @@ public class EllipseHolder extends Holder {
 
 	@Override
 	public void resize(double x, double y) {
-		Vector2 curPos = origin.subtract(new Vector2(x,y));
+		Vector2 currentPosition = new Vector2(x, y);
+		Vector2 delta = origin.subtract(currentPosition);
 
-		double addY = origin.getY() > decoration.getCenterY() ? curPos.getY() : -curPos.getY();
-		double addX = origin.getX() > decoration.getCenterX() ? curPos.getX() : -curPos.getX();
+		double addY = origin.getY() > decoration.getCenterY() ? delta.getY() : -delta.getY();
+		double addX = origin.getX() > decoration.getCenterX() ? delta.getX() : -delta.getX();
 
 		decoration.setRadiusX(Math.abs(rx + addX));
 		decoration.setRadiusY(Math.abs(ry + addY));
 
+		reBuildHitBoxes();
+	}
 
+	@Override
+	public void endResize(double x, double y, ProbeManager manager) {
+		resize(x, y);
+	}
+
+	@Override
+	public void reBuildProbes(ProbeManager manager) {
+		manager.remove(decoration);
+
+		Probe tmp = manager.getPosOfExistingPoint(
+				decoration.getCenterX(),decoration.getCenterY());
+
+		replace(tmp.getX(),tmp.getY());
+		initProbes(decoration,tmp);
+	}
+
+	@Override
+	public void setStrokeWidth(double width) {
+		decoration.setStrokeWidth(width);
+		reBuildHitBoxes();
+	}
+
+	@Override
+	public void setStroke(Paint color) {
+		decoration.setStroke(color);
+	}
+
+	@Override
+	public void setFill(Paint color) {
+		decoration.setFill(color);
+	}
+
+	@Override
+	public void getInfo() {
+
+	}
+
+	@Override
+	public void reBuildHitBoxes() {
 		double tmp = (ADDITIONAL_WIDTH + decoration.getStrokeWidth()) / 2.0;
 
 		double innerWidth = (decoration.getRadiusX() >= tmp)
@@ -123,21 +171,11 @@ public class EllipseHolder extends Holder {
 				decoration.getRadiusX() + tmp);
 		hitBoxExternal.setRadiusY(
 				decoration.getRadiusY() + tmp);
-	}
 
-	@Override
-	public void endResize(double x, double y, ProbeManager manager) {
-
-	}
-
-	@Override
-	public void rebuildProbes(ProbeManager manager) {
-
-	}
-
-	@Override
-	public void getInfo() {
-
+		hitBoxInner.setCenterX(decoration.getCenterX());
+		hitBoxInner.setCenterY(decoration.getCenterY());
+		hitBoxExternal.setCenterX(decoration.getCenterX());
+		hitBoxExternal.setCenterY(decoration.getCenterY());
 	}
 
 	@Override
@@ -148,5 +186,10 @@ public class EllipseHolder extends Holder {
 	@Override
 	public boolean contains(double x, double y) {
 		return hitBoxExternal.contains(x,y) && !hitBoxInner.contains(x,y);
+	}
+
+	@Override
+	public boolean containsInner(double x, double y) {
+		return hitBoxInner.contains(x,y);
 	}
 }
