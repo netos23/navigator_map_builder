@@ -10,7 +10,6 @@ import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.canvas.tools.*;
-import ru.fbtw.navigator.map_builder.utils.KeyManager;
 import ru.fbtw.navigator.map_builder.utils.StringUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
@@ -28,7 +27,8 @@ public class CanvasController {
 			StringUtils.toolToString(ReplaceTool.class),
 			StringUtils.toolToString(StrokeTool.class),
 			StringUtils.toolToString(WidthTool.class),
-			StringUtils.toolToString(FillTool.class)
+			StringUtils.toolToString(FillTool.class),
+			StringUtils.toolToString(InfoTool.class)
 	};
 	public SettingsTool[] settingsTools;
 	private Pane[] layers;
@@ -58,7 +58,8 @@ public class CanvasController {
 				new ReplaceTool(holderManager),
 				new StrokeTool(holderManager),
 				new WidthTool(holderManager),
-				new FillTool(holderManager)
+				new FillTool(holderManager),
+				new InfoTool(holderManager)
 		};
 
 		setOnClicks();
@@ -82,7 +83,7 @@ public class CanvasController {
 
 					break;
 				case 3:
-					useOther();
+
 					break;
 			}
 		});
@@ -101,7 +102,7 @@ public class CanvasController {
 
 					break;
 				case 3:
-					useOther();
+
 					break;
 			}
 		});
@@ -121,7 +122,7 @@ public class CanvasController {
 
 					break;
 				case 3:
-					useOther();
+
 					break;
 			}
 		});
@@ -129,14 +130,6 @@ public class CanvasController {
 
 	}
 
-
-	private void useNode() {
-
-	}
-
-	private void useOther() {
-
-	}
 
 	public void setBackground(Image bg) {
 		enableBackground(true);

@@ -1,5 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
+import javafx.beans.value.ChangeListener;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -8,6 +10,8 @@ import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 public class EllipseHolder extends Holder {
@@ -156,8 +160,59 @@ public class EllipseHolder extends Holder {
 	}
 
 	@Override
-	public void getInfo() {
+	public GridPane getInfo(ProbeManager manager) {
+		DoublePropertyEventHandler onCenterX = value -> {
+			if (value != null) {
+				beginReplace(decoration.getCenterX(), decoration.getCenterY());
+				endReplace(value, decoration.getCenterY(), manager);
+			}
+			return decoration.getCenterX();
+		};
+		DoublePropertyEventHandler onCenterY = value -> {
+			if (value != null) {
+				beginReplace(decoration.getCenterX(), decoration.getCenterY());
+				endReplace(decoration.getCenterX(), value, manager);
+			}
+			return decoration.getCenterY();
+		};
+		DoublePropertyEventHandler onRadiusX = value -> {
+			if (value != null) {
+				value = Math.abs(value);
+				decoration.setRadiusX(value);
+				reBuildHitBoxes();
+			}
+			return decoration.getRadiusX();
+		};
 
+		DoublePropertyEventHandler onRadiusY = value -> {
+			if (value != null) {
+				value = Math.abs(value);
+				decoration.setRadiusY(value);
+				reBuildHitBoxes();
+			}
+			return decoration.getRadiusY();
+		};
+
+		DoublePropertyEventHandler onWidth = value -> {
+			if(value != null){
+				setStrokeWidth(value);
+			}
+			return decoration.getStrokeWidth();
+		};
+
+		ChangeListener<Color> onColor = (observable, oldValue, newValue) -> setStroke(newValue);
+		ChangeListener<Color> onFillColor = (observable, oldValue, newValue) -> setFill(newValue);
+
+
+		return new InfoToolDialogBuilder()
+				.addDoubleProperty("Center X", decoration.getCenterX(), onCenterX)
+				.addDoubleProperty("Center Y", decoration.getCenterY(), onCenterY)
+				.addDoubleProperty("Radius X", decoration.getRadiusX(), onRadiusX)
+				.addDoubleProperty("Radius Y", decoration.getRadiusY(), onRadiusY)
+				.addDoubleProperty("Width", decoration.getStrokeWidth(),onWidth)
+				.addColorProperty("Color",decoration.getStroke(),onColor)
+				.addColorProperty("Fill color",decoration.getFill(),onFillColor)
+				.build();
 	}
 
 	@Override

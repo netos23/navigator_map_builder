@@ -1,5 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
+import javafx.beans.value.ChangeListener;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -8,9 +10,11 @@ import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
-public class CircleHolder  extends Holder{
+public class CircleHolder extends Holder {
 
 	private Circle decoration;
 	private Circle hitBoxExternal, hitBoxInner;
@@ -36,7 +40,7 @@ public class CircleHolder  extends Holder{
 		//hitBoxInner.setStroke(Color.TRANSPARENT);
 		hitBoxInner.setStroke(Color.RED);
 
-		origin = new Vector2(decoration.getCenterX(),decoration.getCenterY());
+		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
 
 		reBuildHitBoxes();
 
@@ -46,9 +50,9 @@ public class CircleHolder  extends Holder{
 	@Override
 	protected void initProbes(Shape shape, Probe... probes) {
 		Circle circle = (Circle) shape;
-		Probe probe = new Probe(circle.getCenterX(),circle.getCenterY());
+		Probe probe = new Probe(circle.getCenterX(), circle.getCenterY());
 
-		super.initProbes(shape,probe);
+		super.initProbes(shape, probe);
 	}
 
 	@Override
@@ -70,14 +74,14 @@ public class CircleHolder  extends Holder{
 
 	@Override
 	public void remove(Pane[] layers) {
-		super.remove(layers,decoration,hitBoxExternal,hitBoxInner);
+		super.remove(layers, decoration, hitBoxExternal, hitBoxInner);
 	}
 
 	//fixme:  разрулить origin и editPos
 	@Override
 	public void beginReplace(double x, double y) {
 		origin = new Vector2(x, y);
-		editPos = new Vector2(decoration.getCenterX(),decoration.getCenterY());
+		editPos = new Vector2(decoration.getCenterX(), decoration.getCenterY());
 	}
 
 	@Override
@@ -100,12 +104,12 @@ public class CircleHolder  extends Holder{
 
 	@Override
 	public void beginResize(double x, double y) {
-		origin = new Vector2(decoration.getCenterX(),decoration.getCenterY());
+		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
 	}
 
 	@Override
 	public void resize(double x, double y) {
-		Vector2 tmp = new Vector2(x,y);
+		Vector2 tmp = new Vector2(x, y);
 		decoration.setRadius(origin.subtract(tmp).sqrMaginitude());
 
 		reBuildHitBoxes();
@@ -122,11 +126,11 @@ public class CircleHolder  extends Holder{
 		manager.remove(decoration);
 
 		Probe tmp = manager.getPosOfExistingPoint(
-				decoration.getCenterX(),decoration.getCenterY());
+				decoration.getCenterX(), decoration.getCenterY());
 
-		beginReplace(tmp.getX(),tmp.getY());
-		replace(tmp.getX(),tmp.getY());
-		initProbes(decoration,tmp);
+		beginReplace(tmp.getX(), tmp.getY());
+		replace(tmp.getX(), tmp.getY());
+		initProbes(decoration, tmp);
 
 	}
 
@@ -147,8 +151,49 @@ public class CircleHolder  extends Holder{
 	}
 
 	@Override
-	public void getInfo() {
+	public GridPane getInfo(ProbeManager manager) {
+		DoublePropertyEventHandler onCenterX = value -> {
+			if (value != null) {
+				beginReplace(decoration.getCenterX(), decoration.getCenterY());
+				endReplace(value, decoration.getCenterY(), manager);
+			}
+			return decoration.getCenterX();
+		};
+		DoublePropertyEventHandler onCenterY = value -> {
+			if (value != null) {
+				beginReplace(decoration.getCenterX(), decoration.getCenterY());
+				endReplace(decoration.getCenterX(), value, manager);
+			}
+			return decoration.getCenterY();
+		};
+		DoublePropertyEventHandler onRadius = value -> {
+			if (value != null) {
+				value = Math.abs(value);
+				decoration.setRadius(value);
+				reBuildHitBoxes();
+			}
+			return decoration.getRadius();
+		};
 
+
+		DoublePropertyEventHandler onWidth = value -> {
+			if(value != null){
+				setStrokeWidth(value);
+			}
+			return decoration.getStrokeWidth();
+		};
+
+		ChangeListener<Color> onColor = (observable, oldValue, newValue) -> setStroke(newValue);
+		ChangeListener<Color> onFillColor = (observable, oldValue, newValue) -> setFill(newValue);
+
+		return new InfoToolDialogBuilder()
+				.addDoubleProperty("Center X", decoration.getCenterX(), onCenterX)
+				.addDoubleProperty("Center Y", decoration.getCenterY(), onCenterY)
+				.addDoubleProperty("Radius", decoration.getRadius(), onRadius)
+				.addDoubleProperty("Width", decoration.getStrokeWidth(),onWidth)
+				.addColorProperty("Color",decoration.getStroke(),onColor)
+				.addColorProperty("Fill color",decoration.getFill(),onFillColor)
+				.build();
 	}
 
 	@Override
@@ -174,7 +219,7 @@ public class CircleHolder  extends Holder{
 
 	@Override
 	public boolean contains(double x, double y) {
-		return hitBoxExternal.contains(x,y) && !hitBoxInner.contains(x,y);
+		return hitBoxExternal.contains(x, y) && !hitBoxInner.contains(x, y);
 	}
 
 	@Override

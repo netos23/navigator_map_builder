@@ -1,5 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
+import javafx.beans.value.ChangeListener;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -8,6 +10,8 @@ import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 public class RectangleHolder extends Holder {
@@ -333,8 +337,61 @@ public class RectangleHolder extends Holder {
 	}
 
 	@Override
-	public void getInfo() {
+	public GridPane getInfo(ProbeManager manager) {
+		DoublePropertyEventHandler onX = value -> {
+			if(value != null){
+				beginReplace(decoration.getX(),decoration.getY());
+				endReplace(value,decoration.getY(),manager);
+			}
+			return decoration.getX();
+		};
 
+		DoublePropertyEventHandler onY = value -> {
+			if(value != null){
+				beginReplace(decoration.getX(),decoration.getY());
+				endReplace(decoration.getX(),value,manager);
+			}
+			return decoration.getY();
+		};
+
+		DoublePropertyEventHandler onWidth = value -> {
+			if(value != null){
+				value = Math.abs(value);
+				decoration.setWidth(value);
+				reBuildProbes(manager);
+				reBuildHitBoxes();
+			}
+			return decoration.getWidth();
+		};
+
+		DoublePropertyEventHandler onHeight = value -> {
+			if(value != null){
+				value = Math.abs(value);
+				decoration.setHeight(value);
+				reBuildProbes(manager);
+				reBuildHitBoxes();
+			}
+			return decoration.getHeight();
+		};
+		DoublePropertyEventHandler onLineWidth = value -> {
+			if(value != null){
+				setStrokeWidth(value);
+			}
+			return decoration.getStrokeWidth();
+		};
+
+		ChangeListener<Color> onColor = (observable, oldValue, newValue) -> setStroke(newValue);
+
+		ChangeListener<Color> onFillColor = (observable, oldValue, newValue) -> setFill(newValue);
+		return new InfoToolDialogBuilder()
+				.addDoubleProperty("X",decoration.getX(),onX)
+				.addDoubleProperty("Y",decoration.getY(),onY)
+				.addDoubleProperty("Width", decoration.getWidth(),onWidth)
+				.addDoubleProperty("Height", decoration.getHeight(),onHeight)
+				.addDoubleProperty("Line width",decoration.getStrokeWidth(),onLineWidth)
+				.addColorProperty("Color",decoration.getStroke(),onColor)
+				.addColorProperty("Fill color",decoration.getFill(),onFillColor)
+				.build();
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
+import javafx.beans.value.ChangeListener;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -7,6 +9,8 @@ import javafx.scene.shape.Line;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.canvas.tools.utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
@@ -51,16 +55,16 @@ public class LineHolder extends Holder {
 
 	@Override
 	public void remove(Pane[] layers) {
-		super.remove(layers,decoration,hitBox);
+		super.remove(layers, decoration, hitBox);
 	}
 
 	@Override
 	public void beginReplace(double x, double y) {
-		origin = new Vector2(x,y);
+		origin = new Vector2(x, y);
 		editPoint = Points.ALL;
 
-		startPos = new Vector2(decoration.getStartX(),decoration.getStartY());
-		endPos = new Vector2(decoration.getEndX(),decoration.getEndY());
+		startPos = new Vector2(decoration.getStartX(), decoration.getStartY());
+		endPos = new Vector2(decoration.getEndX(), decoration.getEndY());
 	}
 
 	@Override
@@ -88,19 +92,19 @@ public class LineHolder extends Holder {
 	public void beginResize(double x, double y) {
 		Probe start, end;
 
-		if(probes.get(0).getX() == decoration.getStartX()
-				&& probes.get(0).getY() == decoration.getStartY()){
+		if (probes.get(0).getX() == decoration.getStartX()
+				&& probes.get(0).getY() == decoration.getStartY()) {
 			start = probes.get(0);
 			end = probes.get(1);
-		}else{
+		} else {
 			start = probes.get(1);
 			end = probes.get(0);
 		}
 
-		if(start.getDistanceToPoint(x, y) >= end.getDistanceToPoint(x, y)){
+		if (start.getDistanceToPoint(x, y) >= end.getDistanceToPoint(x, y)) {
 			editPoint = Points.END;
 			editProbe = end;
-		}else{
+		} else {
 			editPoint = Points.START;
 			editProbe = start;
 		}
@@ -108,7 +112,7 @@ public class LineHolder extends Holder {
 
 	@Override
 	public void resize(double x, double y) {
-		if(editPoint != null) {
+		if (editPoint != null) {
 			switch (editPoint) {
 				case START:
 					decoration.setStartX(x);
@@ -131,13 +135,13 @@ public class LineHolder extends Holder {
 
 	@Override
 	public void endResize(double x, double y, ProbeManager manager) {
-		resize(x,y);
+		resize(x, y);
 		reBuildProbes(manager);
 	}
 
 	@Override
 	public void reBuildProbes(ProbeManager manager) {
-		if(editPoint != Points.ALL) {
+		if (editPoint != Points.ALL) {
 			editProbe.getAttachedShapes().remove(decoration);
 			manager.removeEmptyProbe(editProbe);
 			probes.remove(editProbe);
@@ -154,22 +158,22 @@ public class LineHolder extends Holder {
 			resize(editProbe.getX(), editProbe.getY());
 			editProbe.getAttachedShapes().add(decoration);
 			probes.add(editProbe);
-		}else{
+		} else {
 			Probe startProbe = manager
-					.getPosOfExistingPoint(decoration.getStartX(),decoration.getStartY());
+					.getPosOfExistingPoint(decoration.getStartX(), decoration.getStartY());
 			Probe endProbe = manager
-					.getPosOfExistingPoint(decoration.getEndX(),decoration.getEndY());
+					.getPosOfExistingPoint(decoration.getEndX(), decoration.getEndY());
 
-			beginResize(decoration.getStartX(),decoration.getStartY());
-			resize(startProbe.getX(),startProbe.getY());
+			beginResize(decoration.getStartX(), decoration.getStartY());
+			resize(startProbe.getX(), startProbe.getY());
 
-			beginResize(decoration.getEndX(),decoration.getEndY());
-			resize(endProbe.getX(),endProbe.getY());
+			beginResize(decoration.getEndX(), decoration.getEndY());
+			resize(endProbe.getX(), endProbe.getY());
 
 			manager.remove(decoration);
 			manager.push(startProbe);
 			manager.push(endProbe);
-			initProbes(decoration,startProbe,endProbe);
+			initProbes(decoration, startProbe, endProbe);
 		}
 
 	}
@@ -189,8 +193,66 @@ public class LineHolder extends Holder {
 	public void setFill(Paint color) {
 	}
 
+	private void setPosition(double x, double y, Points target, ProbeManager manager) {
+		if(target == Points.START) {
+			beginResize(decoration.getStartX(), decoration.getStartY());
+		}else{
+			beginResize(decoration.getEndX(),decoration.getEndY());
+		}
+		endResize(x, y, manager);
+	}
+
 	@Override
-	public void getInfo() {
+	public GridPane getInfo(ProbeManager manager) {
+
+
+		DoublePropertyEventHandler onStartX = value -> {
+			if (value != null) {
+				setPosition(value, decoration.getStartY(),Points.START, manager);
+			}
+			return decoration.getStartX();
+		};
+
+		DoublePropertyEventHandler onStartY = value -> {
+			if (value != null) {
+				setPosition(decoration.getStartX(), value,Points.START, manager);
+			}
+			return decoration.getStartY();
+		};
+
+		DoublePropertyEventHandler onEndX = value -> {
+			if (value != null) {
+				setPosition(value, decoration.getEndY(),Points.END, manager);
+			}
+			return decoration.getEndX();
+		};
+
+		DoublePropertyEventHandler onEndY = value -> {
+			if (value != null) {
+				setPosition(decoration.getEndX(), value,Points.END, manager);
+			}
+			return decoration.getEndY();
+		};
+
+
+		DoublePropertyEventHandler onWidth = value -> {
+			if (value != null) {
+				setStrokeWidth(value);
+			}
+			return decoration.getStrokeWidth();
+		};
+
+
+		ChangeListener<Color> onColor = (observable, oldValue, newValue) -> setStroke(newValue);
+
+		return new InfoToolDialogBuilder()
+				.addDoubleProperty("Start X", decoration.getStartX(), onStartX)
+				.addDoubleProperty("Start Y", decoration.getStartY(), onStartY)
+				.addDoubleProperty("End X", decoration.getEndX(), onEndX)
+				.addDoubleProperty("End Y", decoration.getEndY(), onEndY)
+				.addDoubleProperty("Width",decoration.getStrokeWidth(),onWidth)
+				.addColorProperty("Color",decoration.getStroke(),onColor)
+				.build();
 
 	}
 
@@ -215,7 +277,7 @@ public class LineHolder extends Holder {
 
 	@Override
 	public boolean contains(double x, double y) {
-		return hitBox.contains(x,y);
+		return hitBox.contains(x, y);
 	}
 
 	@Override
@@ -223,7 +285,7 @@ public class LineHolder extends Holder {
 		return false;
 	}
 
-	private enum Points{
+	private enum Points {
 		START,
 		END,
 		ALL

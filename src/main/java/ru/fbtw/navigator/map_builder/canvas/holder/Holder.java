@@ -1,5 +1,6 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
@@ -51,7 +52,7 @@ public abstract class Holder {
 
 	public abstract void setFill(Paint color);
 
-	public abstract void getInfo();
+	public abstract GridPane getInfo(ProbeManager manager);
 
 	//fixme: оптимизировать пересчет хитбоксов
 	public abstract void reBuildHitBoxes();
