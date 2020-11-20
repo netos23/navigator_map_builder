@@ -8,15 +8,15 @@ import ru.fbtw.navigator.map_builder.utils.Vector2;
 import java.util.ArrayList;
 
 public class ResizeTool extends SettingsTool {
-	private ArrayList<Holder> target;
+
 	public ResizeTool(HolderManager manager) {
 		super(manager);
 	}
 
 	@Override
 	public void onPressed(Probe probe) {
-		target = manager.selectAll(probe);
-		for(Holder h : target){
+		holders = manager.selectAll(probe);
+		for(Holder h : holders){
 			h.beginResize(probe.getX(),probe.getY());
 		}
 
@@ -28,8 +28,8 @@ public class ResizeTool extends SettingsTool {
 		if(tmp != null){
 			onPressed(tmp);
 		}else{
-			target = manager.selectAll(x,y);
-			for(Holder h : target){
+			holders = manager.selectAll(x,y);
+			for(Holder h : holders){
 				h.beginResize(x,y);
 			}
 		}
@@ -45,8 +45,8 @@ public class ResizeTool extends SettingsTool {
 
 	@Override
 	public void onDragged(double x, double y) {
-		if(target != null){
-			for(Holder h : target){
+		if(holders != null){
+			for(Holder h : holders){
 				h.resize(x,y);
 			}
 		}
@@ -59,8 +59,8 @@ public class ResizeTool extends SettingsTool {
 
 	@Override
 	public void onReleased(double x, double y) {
-		if(target != null) {
-			for (Holder h : target) {
+		if(holders != null) {
+			for (Holder h : holders) {
 				h.endResize(x,y,manager.getManager());
 			}
 		}

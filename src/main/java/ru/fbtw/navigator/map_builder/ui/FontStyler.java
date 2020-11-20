@@ -11,5 +11,6 @@ public class FontStyler {
 
 	public static void setHeaderStyle(Label header, int fontSize){
 		header.setFont(Font.font("Arial", FontWeight.BOLD,fontSize));
+
 	}
 }

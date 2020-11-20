@@ -26,6 +26,7 @@ import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
+import ru.fbtw.navigator.map_builder.utils.KeyManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +48,7 @@ public class App extends Application {
 	private ArrayList<ToggleButton> drawingToolButtons;
 	private ArrayList<ToggleButton> settingsToolButtons;
 	private ColorPicker mainColor, fillColor;
+	private CheckBox isUseFill;
 	private Slider widthPicker;
 	private Button clear, undo, redo;
 	private Button save, load, push;
@@ -120,6 +122,8 @@ public class App extends Application {
 
 		mainColor = new ColorPicker(Color.BLACK);
 		fillColor = new ColorPicker(Color.WHITE);
+		isUseFill = new CheckBox();
+
 
 		widthPicker = new Slider(5, 50, 10);
 		widthPicker.setValue(5);
@@ -161,7 +165,7 @@ public class App extends Application {
 				.addButtonsGrid(3, settingsToolButtons, false)
 				.setTitle("Line color")
 				.addContent(mainColor)
-				.setTitle("Fill color")
+				.setOptionalTitle("Fill color",isUseFill)
 				.addContent(fillColor)
 				.setTitle("Line width")
 				.addContent(widthPicker)
@@ -184,7 +188,8 @@ public class App extends Application {
 		mainLayout.setLeft(leftMenu);
 		mainLayout.setRight(rightMenu);
 		Scene scene = new Scene(mainLayout);
-
+		scene.setOnKeyPressed(event -> KeyManager.push(event.getCode()));
+		scene.setOnKeyReleased(event -> KeyManager.remove(event.getCode()));
 
 		//primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
@@ -277,6 +282,16 @@ public class App extends Application {
 				showAlert(Alert.AlertType.ERROR, "Level list is empty");
 			}*/
 				});
+
+
+		isUseFill.setOnAction((value) ->{
+			if (!levels.isEmpty()) {
+				levels.get(selectedLevel)
+						.getProperties()
+						.setUseFill(((CheckBox)value.getSource()).isSelected());
+			}
+		});
+		isUseFill.setSelected(false);
 
 
 	}

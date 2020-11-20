@@ -1,8 +1,8 @@
 package ru.fbtw.navigator.map_builder.utils;
 
 public class Vector2 {
-	public static final double DEFAULT_NORMALIZE_X = 5;
-	public static final double DEFAULT_NORMALIZE_Y = 5;
+	public static final double DEFAULT_NORMALIZE_X = 25;
+	public static final double DEFAULT_NORMALIZE_Y = 25;
 	private double x;
 	private double y;
 

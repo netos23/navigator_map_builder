@@ -134,6 +134,7 @@ public class EllipseHolder extends Holder {
 		Probe tmp = manager.getPosOfExistingPoint(
 				decoration.getCenterX(),decoration.getCenterY());
 
+		beginReplace(tmp.getX(),tmp.getY()	);
 		replace(tmp.getX(),tmp.getY());
 		initProbes(decoration,tmp);
 	}

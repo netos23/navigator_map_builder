@@ -1,7 +1,5 @@
 package ru.fbtw.navigator.map_builder.utils;
 
-import ru.fbtw.navigator.map_builder.canvas.tools.RemoveTool;
-
 public class StringUtils {
 	public static String toolToString(Class toolClass) {
 		String className = toolClass.getName();

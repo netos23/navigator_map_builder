@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ImageUtils {
 	public static final String DEFAULT_TYPE = "png";
-	public static final String DEFAULT_FOLDER = "C:\\Users\\nikmoroz2002\\IdeaProjects\\navigator_map_builder\\src\\main\\tmp\\";
+	public static final String DEFAULT_FOLDER = "C:\\Users\\nikmo\\IdeaProjects\\navigator\\map_builder\\tmp\\";
 
 	public static File getEmptyImage(int width, int height, int color) {
 		try {

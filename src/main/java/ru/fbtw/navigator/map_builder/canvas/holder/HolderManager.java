@@ -7,6 +7,7 @@ import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class HolderManager {
 	private LinkedList<Holder> holders;
@@ -36,48 +37,43 @@ public class HolderManager {
 	}
 
 	public Holder selectFirst(Probe probe) {
-		for (Holder h : holders) {
-			if (h.isAttachedToProbe(probe)) {
-				return h;
-			}
-		}
 
-		return null;
+		return holders.stream()
+				.filter(h -> h.isAttachedToProbe(probe))
+				.findFirst()
+				.orElse(null);
+
 	}
 
 
 	public Holder selectFirst(double x, double y) {
-		for (Holder h : holders) {
-			if (h.contains(x, y)) {
-				return h;
-			}
-		}
 
-		return null;
+		return holders.stream()
+				.filter(h -> h.contains(x, y))
+				.reduce((f, l) -> l)
+				.orElse(null);
+
 	}
 
 	public ArrayList<Holder> selectAll(Probe probe) {
-		ArrayList<Holder> result = new ArrayList<>();
 
-		for (Holder h : holders) {
-			if (h.isAttachedToProbe(probe)) {
-				result.add(h);
-			}
-		}
-
-		return result;
+		return holders.stream()
+				.filter(h -> h.isAttachedToProbe(probe))
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	public ArrayList<Holder> selectAll(double x, double y) {
-		ArrayList<Holder> result = new ArrayList<>();
 
-		for (Holder h : holders) {
-			if (h.contains(x,y)) {
-				result.add(h);
-			}
-		}
+		return holders.stream()
+				.filter(h -> h.contains(x, y))
+				.collect(Collectors.toCollection(ArrayList::new));
+	}
 
-		return result;
+	public ArrayList<Holder> selectAllByInsideContains(double x, double y) {
+
+		return holders.stream()
+				.filter(h -> h.containsInner(x, y))
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 
@@ -101,7 +97,7 @@ public class HolderManager {
 	}
 
 
-	public void rebuildProbes(Holder h){
+	public void rebuildProbes(Holder h) {
 
 	}
 

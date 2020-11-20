@@ -1,7 +1,5 @@
 package ru.fbtw.navigator.map_builder.ui;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -11,8 +9,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 
@@ -30,13 +26,26 @@ public  class LayoutBuilder {
 	}
 
 	public  LayoutBuilder setTitle(String title){
-		Label titleWidget = new Label(title);
-
-		FontStyler.setHeaderStyle(titleWidget,25);
+		Label titleWidget = buildTitle(title);
 
 		layout.getChildren().add(titleWidget);
 		return this;
 	}
+
+	private Label buildTitle(String title) {
+		Label titleWidget = new Label(title);
+
+		FontStyler.setHeaderStyle(titleWidget,25);
+		return titleWidget;
+	}
+
+	public LayoutBuilder setOptionalTitle(String title, CheckBox isUse){
+		Label optionalTitle = buildTitle(title);
+		HBox localLayout = new HBox(10,optionalTitle,isUse);
+		layout.getChildren().add(localLayout);
+		return this;
+	}
+
 	public  LayoutBuilder addContent(Node content){
 		layout.getChildren().add(content);
 		return this;
@@ -77,6 +86,7 @@ public  class LayoutBuilder {
 		layout.getChildren().add(new HBox(5,buttons));
 		return this;
 	}
+
 
 	@Deprecated
 	public LayoutBuilder addList(ListView listView){

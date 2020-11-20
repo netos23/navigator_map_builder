@@ -99,7 +99,9 @@ public class CircleHolder  extends Holder{
 
 
 	@Override
-	public void beginResize(double x, double y) {}
+	public void beginResize(double x, double y) {
+		origin = new Vector2(decoration.getCenterX(),decoration.getCenterY());
+	}
 
 	@Override
 	public void resize(double x, double y) {
@@ -122,9 +124,10 @@ public class CircleHolder  extends Holder{
 		Probe tmp = manager.getPosOfExistingPoint(
 				decoration.getCenterX(),decoration.getCenterY());
 
+		beginReplace(tmp.getX(),tmp.getY());
 		replace(tmp.getX(),tmp.getY());
 		initProbes(decoration,tmp);
-		origin = new Vector2(decoration.getCenterX(),decoration.getCenterY());
+
 	}
 
 	@Override

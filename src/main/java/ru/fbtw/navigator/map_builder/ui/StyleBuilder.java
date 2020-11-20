@@ -17,6 +17,7 @@ public class StyleBuilder {
 
 	public StyleBuilder setMenuBgStyle(){
 		buffer.append("-fx-background-color: #999");
+		//buffer.append("-fx-background-color: #6a1b9a");
 		return this;
 	}
 

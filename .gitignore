@@ -1,3 +1,7 @@
 *.iml
 tmp/
 tmp/*
+.idea/
+out/
+target/
+history/
