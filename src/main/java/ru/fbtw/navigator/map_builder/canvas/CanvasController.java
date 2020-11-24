@@ -1,25 +1,26 @@
 package ru.fbtw.navigator.map_builder.canvas;
 
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Shape;
-import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
-import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.canvas.tools.*;
+import ru.fbtw.navigator.map_builder.navigation.Node;
 import ru.fbtw.navigator.map_builder.utils.StringUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
+import java.util.ArrayList;
+
 
 public class CanvasController {
-	public static DrawingTool[] drawingTools = new DrawingTool[]{
-			new LineTool(),
-			new RectangleTool(),
-			new EllipseTool(),
-			new CircleTool()
+	public static String[] drawingToolsNames = new String[]{
+			StringUtils.toolToString(LineTool.class),
+			StringUtils.toolToString(ReplaceTool.class),
+			StringUtils.toolToString(Ellipse.class),
+			StringUtils.toolToString(Circle.class)
 	};
 	public static String[] settingsToolNames = new String[]{
 			StringUtils.toolToString(RemoveTool.class),
@@ -28,20 +29,22 @@ public class CanvasController {
 			StringUtils.toolToString(StrokeTool.class),
 			StringUtils.toolToString(WidthTool.class),
 			StringUtils.toolToString(FillTool.class),
-			StringUtils.toolToString(InfoTool.class)
+			StringUtils.toolToString(InfoTool.class),
 	};
-	public SettingsTool[] settingsTools;
+
+	public Tool[] tools;
+	ArrayList<Node> nodeSystem;
 	private Pane[] layers;
-	//private int currentTool, toolGroup;
 	private Pane inputLayer;
 	private ProbeManager probeManager;
 	private HolderManager holderManager;
 	private CanvasProperties properties;
 
-
-	public CanvasController(CanvasProperties properties) {
+	public CanvasController(CanvasProperties properties, ArrayList<Node> nodeSystem) {
 		this.properties = properties;
+		this.nodeSystem = nodeSystem;
 		this.properties.setSource(this);
+
 
 		layers = new Pane[5];
 		for (int i = 0; i < layers.length; i++) {
@@ -52,7 +55,11 @@ public class CanvasController {
 		probeManager = new ProbeManager(this);
 		holderManager = new HolderManager(probeManager, properties);
 
-		settingsTools = new SettingsTool[]{
+		tools = new Tool[]{
+				new LineTool(holderManager),
+				new RectangleTool(holderManager),
+				new EllipseTool(holderManager),
+				new CircleTool(holderManager),
 				new RemoveTool(holderManager),
 				new ResizeTool(holderManager),
 				new ReplaceTool(holderManager),
@@ -62,70 +69,26 @@ public class CanvasController {
 				new InfoTool(holderManager)
 		};
 
+
+
 		setOnClicks();
 	}
 
 	private void setOnClicks() {
 
-		inputLayer.setOnMousePressed(event -> {
-
-
-			switch (properties.getToolGroup()) {
-				case 0:
-					Probe curPos = probeManager.getPosOfExistingPoint(event);
-					Shape tmp = drawingTools[properties.getTool()].onPressed(curPos, properties);
-					layers[1].getChildren().add(tmp);
-					break;
-				case 1:
-					settingsTools[properties.getTool()].onPressed(event.getX(), event.getY());
-					break;
-				case 2:
-
-					break;
-				case 3:
-
-					break;
-			}
-		});
-
+		inputLayer.setOnMousePressed(event ->
+				tools[properties.getTool()].onPressed(event.getX(), event.getY())
+		);
 
 		inputLayer.setOnMouseDragged(event -> {
 			Vector2 curPos = probeManager.getPosOfExistingTempPoint(event);
-			switch (properties.getToolGroup()) {
-				case 0:
-					drawingTools[properties.getTool()].onDragged(curPos.getX(), curPos.getY());
-					break;
-				case 1:
-					settingsTools[properties.getTool()].onDragged(curPos.getX(), curPos.getY());
-					break;
-				case 2:
+			tools[properties.getTool()].onDragged(curPos.getX(), curPos.getY());
 
-					break;
-				case 3:
-
-					break;
-			}
 		});
 
-		inputLayer.setOnMouseReleased(event -> {
-
-			switch (properties.getToolGroup()) {
-				case 0:
-					Probe curPos = probeManager.getPosOfExistingPoint(event);
-					Holder tmp = drawingTools[properties.getTool()].onReleased(curPos);
-					holderManager.push(tmp);
-					break;
-				case 1:
-					settingsTools[properties.getTool()].onReleased(event.getX(), event.getY());
-					break;
-				case 2:
-
-					break;
-				case 3:
-
-					break;
-			}
-		});
+		inputLayer.setOnMouseReleased(event ->
+				tools[properties.getTool()].onReleased(event.getX(), event.getY())
+		);
 
 
 	}
@@ -149,9 +112,6 @@ public class CanvasController {
 		return layers;
 	}
 
-	public DrawingTool[] getTools() {
-		return drawingTools;
-	}
 
 	public ProbeManager getProbeManager() {
 		return probeManager;

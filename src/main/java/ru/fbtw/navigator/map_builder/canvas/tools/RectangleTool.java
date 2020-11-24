@@ -5,6 +5,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
+import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.holder.RectangleHolder;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
@@ -12,6 +13,10 @@ import ru.fbtw.navigator.map_builder.utils.Vector2;
 public class RectangleTool extends DrawingTool implements Positionable{
 	private Rectangle curShape;
 	private Probe start;
+
+	public RectangleTool(HolderManager manager) {
+		super(manager);
+	}
 
 
 	@Override

@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+//todo: remove generic usage
 public class ToggleButtonGridBuilder <T>{
 	private String toString;
 	private boolean isStatic;

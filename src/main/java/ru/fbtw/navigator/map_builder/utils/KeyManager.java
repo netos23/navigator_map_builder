@@ -2,7 +2,6 @@ package ru.fbtw.navigator.map_builder.utils;
 
 import javafx.scene.input.KeyCode;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class KeyManager {

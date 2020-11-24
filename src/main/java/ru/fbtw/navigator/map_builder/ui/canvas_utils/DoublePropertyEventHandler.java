@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.canvas.tools.utils;
+package ru.fbtw.navigator.map_builder.ui.canvas_utils;
 
 
 

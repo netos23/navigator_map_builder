@@ -4,6 +4,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.holder.LineHolder;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.utils.KeyManager;
@@ -14,6 +15,10 @@ public class LineTool extends DrawingTool {
 	private Line curShape;
 	private Probe start;
 	private Vector2 originPoint;
+
+	public LineTool(HolderManager manager) {
+		super(manager);
+	}
 
 	@Override
 	public Shape onPressed(Probe start, CanvasProperties properties) {

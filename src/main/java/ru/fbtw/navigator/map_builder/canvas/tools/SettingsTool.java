@@ -1,25 +1,16 @@
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
-import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
-import java.util.ArrayList;
-
-public abstract class SettingsTool {
-	protected HolderManager manager;
-	protected ArrayList<Holder> holders;
+public abstract class SettingsTool extends Tool{
 
 	public SettingsTool(HolderManager manager) {
-		this.manager = manager;
+		super(manager);
 	}
 
 	public abstract void onPressed(Probe probe);
-
-	public abstract void onPressed(double x, double y);
-
-	// todo: вынести селект из методов
 
 	@Deprecated
 	public  void onPressed(Vector2 pos){
@@ -31,9 +22,6 @@ public abstract class SettingsTool {
 		}
 	}
 
-	public abstract void onDragged(double x, double y);
-
 	public abstract void onReleased(Probe probe);
 
-	public abstract void onReleased(double x, double y);
 }

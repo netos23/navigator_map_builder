@@ -7,6 +7,7 @@ import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.canvas.holder.EllipseHolder;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
+import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
@@ -14,7 +15,9 @@ public class EllipseTool extends DrawingTool implements Positionable {
 	private Ellipse curShape;
 	private Probe start, end;
 
-
+	public EllipseTool(HolderManager manager) {
+		super(manager);
+	}
 
 
 	@Override

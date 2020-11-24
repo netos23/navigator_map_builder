@@ -10,8 +10,8 @@ import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
-import ru.fbtw.navigator.map_builder.canvas.tools.utils.DoublePropertyEventHandler;
-import ru.fbtw.navigator.map_builder.canvas.tools.utils.InfoToolDialogBuilder;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 public class CircleHolder extends Holder {
@@ -214,7 +214,7 @@ public class CircleHolder extends Holder {
 
 	@Override
 	public Shape getShape() {
-		return null;
+		return decoration;
 	}
 
 	@Override
@@ -224,6 +224,6 @@ public class CircleHolder extends Holder {
 
 	@Override
 	public boolean containsInner(double x, double y) {
-		return false;
+		return hitBoxInner.contains(x, y);
 	}
 }

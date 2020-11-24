@@ -1,8 +1,6 @@
-package ru.fbtw.navigator.map_builder.canvas.tools.utils;
+package ru.fbtw.navigator.map_builder.ui.canvas_utils;
 
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -43,8 +40,8 @@ public class InfoToolDialogBuilder {
 	}
 
 	private void addRow(Label label, Node input) {
-		mainLayout.add(label,0,rowCount);
-		mainLayout.add(input,1,rowCount);
+		mainLayout.add(label, 0, rowCount);
+		mainLayout.add(input, 1, rowCount);
 		rowCount++;
 	}
 
@@ -58,19 +55,17 @@ public class InfoToolDialogBuilder {
 		input.valueProperty()
 				.addListener(onclick);
 
-		addRow(label,input);
+		addRow(label, input);
 		return this;
 	}
 
 
-
-
 	/**
 	 * That method attach double validator to the property onClick
-	 * */
-	private EventHandler<ActionEvent> getBaseDoubleOnClick(DoublePropertyEventHandler handler){
+	 */
+	private EventHandler<ActionEvent> getBaseDoubleOnClick(DoublePropertyEventHandler handler) {
 		return event -> {
-			TextField textField =  (TextField) event.getSource();
+			TextField textField = (TextField) event.getSource();
 			double newValue;
 			try {
 				double value = Double.parseDouble(textField.getText());

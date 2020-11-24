@@ -8,16 +8,21 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.navigation.Node;
+
+import java.util.ArrayList;
 
 public class Level{
-	public static final String DEFAULT_NAME = "Level ";
+	private static final String DEFAULT_NAME = "Level ";
 	private Image background;
 	private boolean isBackground;
 	private boolean isTmpNodes;
 	private StringProperty name;
-
+	
 	private CanvasController controller;
 	private CanvasProperties properties;
+
+	private ArrayList<Node> nodeSystem;
 
 	private static Callback<Level, Observable[]> callback = param -> new Observable[]{param.name};
 
@@ -28,7 +33,8 @@ public class Level{
 		this.name = new SimpleStringProperty(DEFAULT_NAME +id);
 		this.background = null;
 
-		controller = new CanvasController(properties);
+		nodeSystem = new ArrayList<>();
+		controller = new CanvasController(properties,nodeSystem);
 
 	}
 
@@ -81,6 +87,10 @@ public class Level{
 
 	public static Callback<Level, Observable[]> getCallback() {
 		return callback;
+	}
+
+	public ArrayList<Node> getNodeSystem() {
+		return nodeSystem;
 	}
 
 	@Override

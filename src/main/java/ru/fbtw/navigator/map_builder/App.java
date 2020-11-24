@@ -19,8 +19,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
-import ru.fbtw.navigator.map_builder.canvas.ToolGroup;
-import ru.fbtw.navigator.map_builder.canvas.tools.DrawingTool;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
@@ -88,37 +86,21 @@ public class App extends Application {
 
 
 		settingsToolButtons = new ToggleButtonGridBuilder<String>()
-				.setOnClick(this::selectSettingsTool)
+				.setOnClick(this::selectTool)
 				.setUseName(true)
 				.setUseImage(false)
 				.setSource(CanvasController.settingsToolNames)
 				.setStatic(false)
 				.setToString("toString")
 				.build();
-		drawingToolButtons = new ToggleButtonGridBuilder<DrawingTool>()
-				.setOnClick(this::selectDrawingTool)
+		drawingToolButtons = new ToggleButtonGridBuilder<String>()
+				.setOnClick(this::selectTool)
 				.setUseName(true)
 				.setUseImage(false)
-				.setSource(CanvasController.drawingTools)
+				.setSource(CanvasController.drawingToolsNames)
 				.setStatic(false)
 				.setToString("toString")
 				.build();
-
-		/*for(int i =0;i<16;i++){
-			ToggleButton button = new ToggleButton("Button "+i);
-			drawingToolButtons.add(button);
-		}*//*
-		for (DrawingTool tool : CanvasController.drawingTools) {
-			ToggleButton toggleButton = new ToggleButton(tool.toString());
-			//ToggleButton toggleButton = new ToggleButton();
-			toggleButton.setOnAction(this::selectDrawingTool);
-			//todo: Рассмотреть вариант с иконками + подсказками
-			*//*if(tool.toString().equals("Line")) {
-				toggleButton.setGraphic(ImageUtils.loadImage("image/buttons/" + tool.toString() + ".png"));
-			}*//*
-
-			drawingToolButtons.add(toggleButton);
-		}*/
 
 		mainColor = new ColorPicker(Color.BLACK);
 		fillColor = new ColorPicker(Color.WHITE);
@@ -165,7 +147,7 @@ public class App extends Application {
 				.addButtonsGrid(3, settingsToolButtons, false)
 				.setTitle("Line color")
 				.addContent(mainColor)
-				.setOptionalTitle("Fill color",isUseFill)
+				.setOptionalTitle("Fill color", isUseFill)
 				.addContent(fillColor)
 				.setTitle("Line width")
 				.addContent(widthPicker)
@@ -284,11 +266,11 @@ public class App extends Application {
 				});
 
 
-		isUseFill.setOnAction((value) ->{
+		isUseFill.setOnAction((value) -> {
 			if (!levels.isEmpty()) {
 				levels.get(selectedLevel)
 						.getProperties()
-						.setUseFill(((CheckBox)value.getSource()).isSelected());
+						.setUseFill(((CheckBox) value.getSource()).isSelected());
 			}
 		});
 		isUseFill.setSelected(false);
@@ -375,19 +357,22 @@ public class App extends Application {
 		CanvasController controller = level.getController();
 		rootCanvas.getChildren().clear();
 		rootCanvas.getChildren().addAll(controller.getLayers());
-		// todo : setup drawingTools
+		// todo : setup drawingToolsNames
 
 	}
 
-	private void selectDrawingTool(ActionEvent event) {
-		properties.setToolGroup(ToolGroup.DECORATION);
-		properties.setTool(drawingToolButtons.indexOf(event.getSource()));
+	private void selectTool(ActionEvent event) {
+		final ToggleButton source = (ToggleButton) event.getSource();
 
-	}
+		int index = source != null
+				? drawingToolButtons.indexOf(source)
+				: -1;
 
-	private void selectSettingsTool(ActionEvent event) {
-		properties.setToolGroup(ToolGroup.TOOL);
-		properties.setTool(settingsToolButtons.indexOf(event.getSource()));
+		index = index == -1
+				? settingsToolButtons.indexOf(source) + drawingToolButtons.size()
+				: index;
+
+		properties.setTool(index);
 	}
 
 	private void createLevel(File img) {

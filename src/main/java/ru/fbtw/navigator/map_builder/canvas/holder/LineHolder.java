@@ -9,8 +9,8 @@ import javafx.scene.shape.Line;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
-import ru.fbtw.navigator.map_builder.canvas.tools.utils.DoublePropertyEventHandler;
-import ru.fbtw.navigator.map_builder.canvas.tools.utils.InfoToolDialogBuilder;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
