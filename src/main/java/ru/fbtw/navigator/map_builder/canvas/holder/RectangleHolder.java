@@ -12,6 +12,7 @@ import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogBuilder;
+import ru.fbtw.navigator.map_builder.utils.MathUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 public class RectangleHolder extends Holder {
@@ -75,7 +76,7 @@ public class RectangleHolder extends Holder {
 	@Override
 	public void beginReplace(double x, double y) {
 		origin = new Vector2(x, y);
-		editPos = new Vector2(decoration.getX(),decoration.getY());
+		editPos = new Vector2(decoration.getX(), decoration.getY());
 	}
 
 	@Override
@@ -83,8 +84,8 @@ public class RectangleHolder extends Holder {
 		Vector2 currentPosition = new Vector2(x, y);
 		Vector2 delta = origin.subtract(currentPosition);
 
-		decoration.setX(editPos.getX()+delta.getX());
-		decoration.setY(editPos.getY()+delta.getY());
+		decoration.setX(editPos.getX() + delta.getX());
+		decoration.setY(editPos.getY() + delta.getY());
 
 		reBuildHitBoxes();
 	}
@@ -133,14 +134,17 @@ public class RectangleHolder extends Holder {
 		}
 
 
-		if (Math.abs(target.getX() - decoration.getX()) <= e) {
-			if (Math.abs(target.getY() - decoration.getY()) <= e) {
+		final boolean equalsX = MathUtils.doubleEquals(target.getX(), decoration.getX(), e);
+		final boolean equalsY = MathUtils.doubleEquals(target.getY(), decoration.getY(), e);
+
+		if (equalsX) {
+			if (equalsY) {
 				editTarget = EditTarget.L_T_CORNER;
 			} else {
 				editTarget = EditTarget.L_B_CORNER;
 			}
 		} else {
-			if (Math.abs(target.getY() - decoration.getY()) <= e) {
+			if (equalsY) {
 				editTarget = EditTarget.R_T_CORNER;
 			} else {
 				editTarget = EditTarget.R_B_CORNER;
@@ -339,23 +343,23 @@ public class RectangleHolder extends Holder {
 	@Override
 	public GridPane getInfo(ProbeManager manager) {
 		DoublePropertyEventHandler onX = value -> {
-			if(value != null){
-				beginReplace(decoration.getX(),decoration.getY());
-				endReplace(value,decoration.getY(),manager);
+			if (value != null) {
+				beginReplace(decoration.getX(), decoration.getY());
+				endReplace(value, decoration.getY(), manager);
 			}
 			return decoration.getX();
 		};
 
 		DoublePropertyEventHandler onY = value -> {
-			if(value != null){
-				beginReplace(decoration.getX(),decoration.getY());
-				endReplace(decoration.getX(),value,manager);
+			if (value != null) {
+				beginReplace(decoration.getX(), decoration.getY());
+				endReplace(decoration.getX(), value, manager);
 			}
 			return decoration.getY();
 		};
 
 		DoublePropertyEventHandler onWidth = value -> {
-			if(value != null){
+			if (value != null) {
 				value = Math.abs(value);
 				decoration.setWidth(value);
 				reBuildProbes(manager);
@@ -365,7 +369,7 @@ public class RectangleHolder extends Holder {
 		};
 
 		DoublePropertyEventHandler onHeight = value -> {
-			if(value != null){
+			if (value != null) {
 				value = Math.abs(value);
 				decoration.setHeight(value);
 				reBuildProbes(manager);
@@ -374,7 +378,7 @@ public class RectangleHolder extends Holder {
 			return decoration.getHeight();
 		};
 		DoublePropertyEventHandler onLineWidth = value -> {
-			if(value != null){
+			if (value != null) {
 				setStrokeWidth(value);
 			}
 			return decoration.getStrokeWidth();
@@ -384,13 +388,13 @@ public class RectangleHolder extends Holder {
 
 		ChangeListener<Color> onFillColor = (observable, oldValue, newValue) -> setFill(newValue);
 		return new InfoToolDialogBuilder()
-				.addDoubleProperty("X",decoration.getX(),onX)
-				.addDoubleProperty("Y",decoration.getY(),onY)
-				.addDoubleProperty("Width", decoration.getWidth(),onWidth)
-				.addDoubleProperty("Height", decoration.getHeight(),onHeight)
-				.addDoubleProperty("Line width",decoration.getStrokeWidth(),onLineWidth)
-				.addColorProperty("Color",decoration.getStroke(),onColor)
-				.addColorProperty("Fill color",decoration.getFill(),onFillColor)
+				.addDoubleProperty("X", decoration.getX(), onX)
+				.addDoubleProperty("Y", decoration.getY(), onY)
+				.addDoubleProperty("Width", decoration.getWidth(), onWidth)
+				.addDoubleProperty("Height", decoration.getHeight(), onHeight)
+				.addDoubleProperty("Line width", decoration.getStrokeWidth(), onLineWidth)
+				.addColorProperty("Color", decoration.getStroke(), onColor)
+				.addColorProperty("Fill color", decoration.getFill(), onFillColor)
 				.build();
 	}
 
@@ -436,7 +440,6 @@ public class RectangleHolder extends Holder {
 	}
 
 	private enum EditTarget {
-		//todo: сократить количество элементов до 4
 		L_SIDE,
 		T_SIDE,
 		R_SIDE,

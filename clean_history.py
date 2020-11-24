@@ -12,4 +12,4 @@ def rem_dir():
 curPath = os.curdir
 os.chdir('history')
 rem_dir()
-
+print('history cleared')

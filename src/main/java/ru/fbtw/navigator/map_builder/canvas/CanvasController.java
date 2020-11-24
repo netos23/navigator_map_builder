@@ -3,9 +3,8 @@ package ru.fbtw.navigator.map_builder.canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
+import ru.fbtw.navigator.map_builder.canvas.node.NodeHolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.canvas.tools.*;
 import ru.fbtw.navigator.map_builder.navigation.Node;
@@ -18,9 +17,9 @@ import java.util.ArrayList;
 public class CanvasController {
 	public static String[] drawingToolsNames = new String[]{
 			StringUtils.toolToString(LineTool.class),
-			StringUtils.toolToString(ReplaceTool.class),
-			StringUtils.toolToString(Ellipse.class),
-			StringUtils.toolToString(Circle.class)
+			StringUtils.toolToString(RectangleTool.class),
+			StringUtils.toolToString(EllipseTool.class),
+			StringUtils.toolToString(CircleTool.class)
 	};
 	public static String[] settingsToolNames = new String[]{
 			StringUtils.toolToString(RemoveTool.class),
@@ -33,11 +32,12 @@ public class CanvasController {
 	};
 
 	public Tool[] tools;
-	ArrayList<Node> nodeSystem;
+	private ArrayList<Node> nodeSystem;
 	private Pane[] layers;
 	private Pane inputLayer;
 	private ProbeManager probeManager;
 	private HolderManager holderManager;
+	private NodeHolderManager nodeHolderManager;
 	private CanvasProperties properties;
 
 	public CanvasController(CanvasProperties properties, ArrayList<Node> nodeSystem) {
@@ -53,7 +53,8 @@ public class CanvasController {
 		inputLayer = layers[4];
 
 		probeManager = new ProbeManager(this);
-		holderManager = new HolderManager(probeManager, properties);
+		nodeHolderManager = new NodeHolderManager(nodeSystem);
+		holderManager = new HolderManager(probeManager, properties, nodeHolderManager);
 
 		tools = new Tool[]{
 				new LineTool(holderManager),

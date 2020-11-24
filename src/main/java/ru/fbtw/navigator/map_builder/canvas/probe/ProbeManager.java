@@ -104,9 +104,9 @@ public class ProbeManager {
 		return isRemove;
 	}
 
+
 	public boolean removeProbeCompletely(Probe o) {
 		//boolean isRemove = false;
-		// todo: разрулить менджмент холдеров
 		removeFromView(o);
 		return probes.remove(o);
 	}

@@ -147,6 +147,6 @@ public class NodeHolder extends Holder {
 
 	@Override
 	public boolean containsInner(double x, double y) {
-		return decoration.contains(x, y);
+		return contains(x, y);
 	}
 }

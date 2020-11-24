@@ -85,21 +85,17 @@ public class App extends Application {
 		properties = CanvasProperties.DEFAULT_PROPERTIES;
 
 
-		settingsToolButtons = new ToggleButtonGridBuilder<String>()
+		settingsToolButtons = new ToggleButtonGridBuilder()
 				.setOnClick(this::selectTool)
 				.setUseName(true)
 				.setUseImage(false)
 				.setSource(CanvasController.settingsToolNames)
-				.setStatic(false)
-				.setToString("toString")
 				.build();
-		drawingToolButtons = new ToggleButtonGridBuilder<String>()
+		drawingToolButtons = new ToggleButtonGridBuilder()
 				.setOnClick(this::selectTool)
 				.setUseName(true)
 				.setUseImage(false)
 				.setSource(CanvasController.drawingToolsNames)
-				.setStatic(false)
-				.setToString("toString")
 				.build();
 
 		mainColor = new ColorPicker(Color.BLACK);
@@ -357,7 +353,7 @@ public class App extends Application {
 		CanvasController controller = level.getController();
 		rootCanvas.getChildren().clear();
 		rootCanvas.getChildren().addAll(controller.getLayers());
-		// todo : setup drawingToolsNames
+
 
 	}
 

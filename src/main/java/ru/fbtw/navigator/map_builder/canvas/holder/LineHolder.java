@@ -11,11 +11,13 @@ import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogBuilder;
+import ru.fbtw.navigator.map_builder.utils.MathUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
 
 public class LineHolder extends Holder {
+	private static final double e = 10.5;
 
 	private Line decoration;
 	private Line hitBox;
@@ -92,8 +94,11 @@ public class LineHolder extends Holder {
 	public void beginResize(double x, double y) {
 		Probe start, end;
 
-		if (probes.get(0).getX() == decoration.getStartX()
-				&& probes.get(0).getY() == decoration.getStartY()) {
+		final boolean equalsX = MathUtils.doubleEquals(probes.get(0).getX(), decoration.getStartX(), e);
+		final boolean equalsY = MathUtils.doubleEquals(probes.get(0).getY(), decoration.getStartY(), e);
+
+		if (equalsX && equalsY) {
+
 			start = probes.get(0);
 			end = probes.get(1);
 		} else {
@@ -194,10 +199,10 @@ public class LineHolder extends Holder {
 	}
 
 	private void setPosition(double x, double y, Points target, ProbeManager manager) {
-		if(target == Points.START) {
+		if (target == Points.START) {
 			beginResize(decoration.getStartX(), decoration.getStartY());
-		}else{
-			beginResize(decoration.getEndX(),decoration.getEndY());
+		} else {
+			beginResize(decoration.getEndX(), decoration.getEndY());
 		}
 		endResize(x, y, manager);
 	}
@@ -208,28 +213,28 @@ public class LineHolder extends Holder {
 
 		DoublePropertyEventHandler onStartX = value -> {
 			if (value != null) {
-				setPosition(value, decoration.getStartY(),Points.START, manager);
+				setPosition(value, decoration.getStartY(), Points.START, manager);
 			}
 			return decoration.getStartX();
 		};
 
 		DoublePropertyEventHandler onStartY = value -> {
 			if (value != null) {
-				setPosition(decoration.getStartX(), value,Points.START, manager);
+				setPosition(decoration.getStartX(), value, Points.START, manager);
 			}
 			return decoration.getStartY();
 		};
 
 		DoublePropertyEventHandler onEndX = value -> {
 			if (value != null) {
-				setPosition(value, decoration.getEndY(),Points.END, manager);
+				setPosition(value, decoration.getEndY(), Points.END, manager);
 			}
 			return decoration.getEndX();
 		};
 
 		DoublePropertyEventHandler onEndY = value -> {
 			if (value != null) {
-				setPosition(decoration.getEndX(), value,Points.END, manager);
+				setPosition(decoration.getEndX(), value, Points.END, manager);
 			}
 			return decoration.getEndY();
 		};
@@ -250,8 +255,8 @@ public class LineHolder extends Holder {
 				.addDoubleProperty("Start Y", decoration.getStartY(), onStartY)
 				.addDoubleProperty("End X", decoration.getEndX(), onEndX)
 				.addDoubleProperty("End Y", decoration.getEndY(), onEndY)
-				.addDoubleProperty("Width",decoration.getStrokeWidth(),onWidth)
-				.addColorProperty("Color",decoration.getStroke(),onColor)
+				.addDoubleProperty("Width", decoration.getStrokeWidth(), onWidth)
+				.addColorProperty("Color", decoration.getStroke(), onColor)
 				.build();
 
 	}

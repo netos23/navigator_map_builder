@@ -12,3 +12,4 @@ def rem_dir():
 curPath = os.curdir
 os.chdir('tmp')
 rem_dir()
+print('tmp cleared')

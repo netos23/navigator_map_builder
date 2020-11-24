@@ -3,91 +3,59 @@ package ru.fbtw.navigator.map_builder.ui;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ToggleButton;
-import ru.fbtw.navigator.map_builder.canvas.tools.DrawingTool;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-//todo: remove generic usage
-public class ToggleButtonGridBuilder <T>{
-	private String toString;
-	private boolean isStatic;
-	private T[] source;
+
+public class ToggleButtonGridBuilder {
+	private String[] source;
 	private EventHandler<ActionEvent> onClick;
 	private boolean isUseImage;
 	private boolean isUseName;
 
-
-	public ToggleButtonGridBuilder<T> setToString(String toString) {
-		this.toString = toString;
-		return this;
-	}
-
-	public ToggleButtonGridBuilder<T> setStatic(boolean aStatic) {
-		isStatic = aStatic;
-		return this;
-	}
-
-	public ToggleButtonGridBuilder<T> setSource(T[] source) {
+	public ToggleButtonGridBuilder setSource(String[] source) {
 		this.source = source;
 		return this;
 	}
 
-	public ToggleButtonGridBuilder<T> setOnClick(EventHandler<ActionEvent> onClick) {
+	public ToggleButtonGridBuilder setOnClick(EventHandler<ActionEvent> onClick) {
 		this.onClick = onClick;
 		return this;
 	}
 
-	public ToggleButtonGridBuilder<T> setUseImage(boolean useImage) {
+	public ToggleButtonGridBuilder setUseImage(boolean useImage) {
 		isUseImage = useImage;
 		return this;
 	}
 
-	public ToggleButtonGridBuilder<T> setUseName(boolean useName) {
+	public ToggleButtonGridBuilder setUseName(boolean useName) {
 		isUseName = useName;
 		return this;
 	}
 
-	public  ArrayList<ToggleButton> build(){
-		try {
-			ArrayList<ToggleButton> result = new ArrayList<>();
+	public ArrayList<ToggleButton> build() throws IOException {
 
-			for (T obj : source) {
-				ToggleButton toggleButton;
+		ArrayList<ToggleButton> result = new ArrayList<>();
 
-				Method toStringMethod = obj
-						.getClass()
-						.getMethod(toString);
+		for (String name : source) {
+			ToggleButton toggleButton = isUseName
+					? new ToggleButton(name)
+					: new ToggleButton();
 
-				String name = (String) toStringMethod.invoke(
-						(isStatic) ? null : obj
+			toggleButton.setOnAction(onClick);
+
+
+			if (isUseImage && name != null && !name.isEmpty()) {
+				toggleButton.setGraphic(
+						ImageUtils.loadImage("image/buttons/" + name + ".png")
 				);
-
-				if(isUseName) {
-					toggleButton = new ToggleButton(name);
-				}else{
-					toggleButton = new ToggleButton();
-				}
-
-				toggleButton.setOnAction(onClick);
-
-
-				if(isUseImage && name != null && !name.isEmpty()) {
-					toggleButton.setGraphic(
-							ImageUtils.loadImage("image/buttons/" + name + ".png")
-					);
-				}
-
-				result.add(toggleButton);
 			}
-			return result;
-		}catch (ReflectiveOperationException | IOException ex){
-			ex.printStackTrace();
 
+			result.add(toggleButton);
 		}
-		return null;
+		return result;
+
 	}
 }
