@@ -119,7 +119,7 @@ public class HolderManager {
 	}
 
 	public boolean hasAccess(double x, double y) {
-		return nodeManager.select(x, y) == null;
+		return nodeManager.selectHolder(x, y) == null;
 	}
 
 

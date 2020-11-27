@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
+import ru.fbtw.navigator.map_builder.canvas.node.NodeConnectTool;
+import ru.fbtw.navigator.map_builder.canvas.node.NodeConnectionHolder;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeHolderManager;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeTool;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
@@ -34,6 +36,7 @@ public class CanvasController {
 
 	public static String[] nodeToolNames = new String[]{
 			StringUtils.toolToString(NodeTool.class),
+			StringUtils.toolToString(NodeConnectTool.class)
 	};
 
 	public Tool[] tools;
@@ -74,6 +77,7 @@ public class CanvasController {
 				new FillTool(holderManager),
 				new InfoTool(holderManager),
 				new NodeTool(holderManager),
+				new NodeConnectTool(holderManager)
 		};
 
 

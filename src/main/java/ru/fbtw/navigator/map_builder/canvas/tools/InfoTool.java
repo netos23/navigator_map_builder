@@ -41,7 +41,9 @@ public class InfoTool extends Tool {
 	private void showDialog(Holder holder) {
 		String titleName = holder.toString();
 
-		final ScrollPane layout = holder.getInfo(manager.getManager());
-		DialogViewer.showDialog(titleName,layout);
+		ScrollPane layout = holder.getInfo(manager.getManager());
+		if (layout != null) {
+			DialogViewer.showDialog(titleName, layout);
+		}
 	}
 }

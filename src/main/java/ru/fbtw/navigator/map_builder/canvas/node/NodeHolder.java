@@ -18,6 +18,7 @@ import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogLayoutBuilder
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.StringPropertyEventHandler;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NodeHolder extends Holder {
@@ -39,6 +40,7 @@ public class NodeHolder extends Holder {
 	private Node target;
 	private Vector2 origin;
 	private Vector2 startPos;
+	private ArrayList<NodeConnectionHolder> attachedConnections;
 
 	public NodeHolder(Node node) {
 		target = node;
@@ -54,6 +56,8 @@ public class NodeHolder extends Holder {
 
 		setPosition(target.getX(), target.getY());
 		setTmpNode();
+
+		attachedConnections = new ArrayList<>();
 	}
 
 
@@ -113,6 +117,10 @@ public class NodeHolder extends Holder {
 		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
 		startPos = new Vector2(x, y);
 		name.setVisible(false);
+
+		for (NodeConnectionHolder h : attachedConnections) {
+			h.beginResize(this);
+		}
 	}
 
 	@Override
@@ -125,6 +133,10 @@ public class NodeHolder extends Holder {
 
 		decoration.setCenterX(origin.getX() + dx);
 		decoration.setCenterY(origin.getY() + dy);
+
+		for (NodeConnectionHolder h : attachedConnections) {
+			h.resize(new Vector2(decoration.getCenterX(),decoration.getCenterY()));
+		}
 	}
 
 	@Override
@@ -224,6 +236,14 @@ public class NodeHolder extends Holder {
 		return target;
 	}
 
+	public double getX(){
+		return decoration.getCenterX();
+	}
+
+	public double getY(){
+		return decoration.getCenterY();
+	}
+
 	@Override
 	public boolean contains(double x, double y) {
 		return decoration.contains(x, y);
@@ -232,6 +252,10 @@ public class NodeHolder extends Holder {
 	@Override
 	public boolean containsInner(double x, double y) {
 		return contains(x, y);
+	}
+
+	public ArrayList<NodeConnectionHolder> getAttachedConnections() {
+		return attachedConnections;
 	}
 
 	@Override

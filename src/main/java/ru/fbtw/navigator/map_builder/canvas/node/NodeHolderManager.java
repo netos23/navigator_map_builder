@@ -22,13 +22,25 @@ public class NodeHolderManager {
 				.orElse(null);
 	}
 
-	public void push(NodeHolder nodeHolder) {
-		nodeHolders.add(nodeHolder);
-		nodeSystem.add(nodeHolder.getTarget());
+	public void push(Holder holder) {
+		nodeHolders.add(holder);
+		if (holder instanceof NodeHolder) {
+			NodeHolder nodeHolder = (NodeHolder) holder;
+			nodeSystem.add(nodeHolder.getTarget());
+		}
 	}
 
-	public void remove(NodeHolder nodeHolder){
+	public void remove(NodeHolder nodeHolder) {
 		nodeSystem.remove(nodeHolder.getTarget());
 		nodeHolders.remove(nodeHolder);
+	}
+
+	public NodeHolder selectHolder(double x, double y) {
+		return nodeHolders.stream()
+				.filter(v -> v instanceof NodeHolder)
+				.filter(v -> v.contains(x, y))
+				.map(e -> (NodeHolder) e)
+				.findFirst()
+				.orElse(null);
 	}
 }

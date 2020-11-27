@@ -28,6 +28,8 @@ public class Node {
 				? getNextName()
 				: name;
 
+		connections = new ArrayList<>();
+
 	}
 	public Node(double x, double y){
 		this((int) x, (int) y, null,"",NodeType.DESTINATION);

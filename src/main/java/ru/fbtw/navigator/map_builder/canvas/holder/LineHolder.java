@@ -23,7 +23,7 @@ public class LineHolder extends Holder {
 	private Line hitBox;
 
 	// Temporary variables for resize
-	private Points editPoint;
+	private LinePoints editPoint;
 	private Probe editProbe;
 
 	// Temporary variable for replace
@@ -63,7 +63,7 @@ public class LineHolder extends Holder {
 	@Override
 	public void beginReplace(double x, double y) {
 		origin = new Vector2(x, y);
-		editPoint = Points.ALL;
+		editPoint = LinePoints.ALL;
 
 		startPos = new Vector2(decoration.getStartX(), decoration.getStartY());
 		endPos = new Vector2(decoration.getEndX(), decoration.getEndY());
@@ -107,10 +107,10 @@ public class LineHolder extends Holder {
 		}
 
 		if (start.getDistanceToPoint(x, y) >= end.getDistanceToPoint(x, y)) {
-			editPoint = Points.END;
+			editPoint = LinePoints.END;
 			editProbe = end;
 		} else {
-			editPoint = Points.START;
+			editPoint = LinePoints.START;
 			editProbe = start;
 		}
 	}
@@ -146,7 +146,7 @@ public class LineHolder extends Holder {
 
 	@Override
 	public void reBuildProbes(ProbeManager manager) {
-		if (editPoint != Points.ALL) {
+		if (editPoint != LinePoints.ALL) {
 			editProbe.getAttachedShapes().remove(decoration);
 			manager.removeEmptyProbe(editProbe);
 			probes.remove(editProbe);
@@ -198,8 +198,8 @@ public class LineHolder extends Holder {
 	public void setFill(Paint color) {
 	}
 
-	private void setPosition(double x, double y, Points target, ProbeManager manager) {
-		if (target == Points.START) {
+	private void setPosition(double x, double y, LinePoints target, ProbeManager manager) {
+		if (target == LinePoints.START) {
 			beginResize(decoration.getStartX(), decoration.getStartY());
 		} else {
 			beginResize(decoration.getEndX(), decoration.getEndY());
@@ -213,28 +213,28 @@ public class LineHolder extends Holder {
 
 		DoublePropertyEventHandler onStartX = value -> {
 			if (value != null) {
-				setPosition(value, decoration.getStartY(), Points.START, manager);
+				setPosition(value, decoration.getStartY(), LinePoints.START, manager);
 			}
 			return decoration.getStartX();
 		};
 
 		DoublePropertyEventHandler onStartY = value -> {
 			if (value != null) {
-				setPosition(decoration.getStartX(), value, Points.START, manager);
+				setPosition(decoration.getStartX(), value, LinePoints.START, manager);
 			}
 			return decoration.getStartY();
 		};
 
 		DoublePropertyEventHandler onEndX = value -> {
 			if (value != null) {
-				setPosition(value, decoration.getEndY(), Points.END, manager);
+				setPosition(value, decoration.getEndY(), LinePoints.END, manager);
 			}
 			return decoration.getEndX();
 		};
 
 		DoublePropertyEventHandler onEndY = value -> {
 			if (value != null) {
-				setPosition(decoration.getEndX(), value, Points.END, manager);
+				setPosition(decoration.getEndX(), value, LinePoints.END, manager);
 			}
 			return decoration.getEndY();
 		};
@@ -290,11 +290,6 @@ public class LineHolder extends Holder {
 		return false;
 	}
 
-	private enum Points {
-		START,
-		END,
-		ALL
-	}
 
 }
 

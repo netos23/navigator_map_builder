@@ -2,6 +2,7 @@ package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
@@ -32,7 +33,7 @@ public abstract class DrawingTool extends Tool {
 
 		manager.getCanvasProperties()
 				.getSource()
-				.getLayers()[1]
+				.getLayers()[LayersName.DECORATION]
 				.getChildren()
 				.add(tempShape);
 
