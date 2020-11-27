@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class NodeHolderManager {
 	private ArrayList<Node> nodeSystem;
-	private ArrayList<NodeHolder> nodeHolders;
+	private ArrayList<Holder> nodeHolders;
 
 	public NodeHolderManager(ArrayList<Node> nodeSystem) {
 		this.nodeSystem = nodeSystem;
@@ -20,5 +20,15 @@ public class NodeHolderManager {
 				.filter(v -> v.contains(x, y))
 				.findFirst()
 				.orElse(null);
+	}
+
+	public void push(NodeHolder nodeHolder) {
+		nodeHolders.add(nodeHolder);
+		nodeSystem.add(nodeHolder.getTarget());
+	}
+
+	public void remove(NodeHolder nodeHolder){
+		nodeSystem.remove(nodeHolder.getTarget());
+		nodeHolders.remove(nodeHolder);
 	}
 }

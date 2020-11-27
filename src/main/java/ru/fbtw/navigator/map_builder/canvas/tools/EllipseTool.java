@@ -1,12 +1,10 @@
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.canvas.holder.EllipseHolder;
-import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.utils.Vector2;

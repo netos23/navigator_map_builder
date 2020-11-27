@@ -1,6 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.node;
 
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -9,30 +10,50 @@ import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
-import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogBuilder;
 import ru.fbtw.navigator.map_builder.navigation.Node;
+import ru.fbtw.navigator.map_builder.navigation.NodeType;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.EnumPropertyEventHandler;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogLayoutBuilder;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.StringPropertyEventHandler;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
+
+import java.util.HashMap;
 
 public class NodeHolder extends Holder {
 
-	private final static Color fillColor = Color.LIME;
-	private final static Color strokeColor = Color.BLACK;
-	private final static double width = 5;
+	private final static Color STROKE_COLOR = Color.BLACK;
+	private final static double WIDTH = 15;
+	private static HashMap<NodeType, Color> fillColor;
+
+	static {
+		fillColor = new HashMap<>();
+		fillColor.put(NodeType.DESTINATION, Color.GREEN);
+		fillColor.put(NodeType.TEMP, Color.CORAL);
+		fillColor.put(NodeType.ZONE_CONNECTION, Color.BLUE);
+		fillColor.put(null, Color.RED);
+	}
 
 	private Circle decoration;
+	private Label name;
 	private Node target;
-
 	private Vector2 origin;
+	private Vector2 startPos;
 
 	public NodeHolder(Node node) {
 		target = node;
+
 		decoration = new Circle();
-		decoration.setRadius(width);
-		decoration.setStroke(strokeColor);
-		decoration.setStroke(fillColor);
+		decoration.setRadius(WIDTH);
+		decoration.setStroke(STROKE_COLOR);
+		setFillColor();
+
+		name = new Label(target.getName());
+
+
 
 		setPosition(target.getX(), target.getY());
-
+		setTmpNode();
 	}
 
 
@@ -44,12 +65,34 @@ public class NodeHolder extends Holder {
 		decoration.setCenterX(x);
 		decoration.setCenterY(y);
 
+		double nameX = target.getX() - getNameWidth();
+		double nameY = target.getY() + WIDTH;
+		name.setLayoutX(nameX);
+		name.setLayoutY(nameY);
+
+	}
+
+
+
+	private void setFillColor() {
+		final Color value = fillColor.get(target.getType());
+		decoration.setFill(value);
+	}
+
+	private void setTmpNode() {
+		boolean isTmp = target.getType() == NodeType.TEMP;
+		name.setVisible(!isTmp);
+	}
+
+
+	private double getNameWidth() {
+		return name.getText().length() * 3.5;
 	}
 
 	@Override
 	public void splitLayers(Pane[] layers) {
 		layers[LayersName.INPUT_LAYER].getChildren()
-				.add(decoration);
+				.addAll(decoration,name);
 	}
 
 	@Override
@@ -60,27 +103,35 @@ public class NodeHolder extends Holder {
 	@Override
 	public void remove(Pane[] layers) {
 		layers[LayersName.INPUT_LAYER].getChildren()
-				.add(decoration);
+				.removeAll(decoration, name);
+
+		Node.removeName(target.getName());
 	}
 
 	@Override
 	public void beginReplace(double x, double y) {
-		origin = new Vector2(x, y);
+		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
+		startPos = new Vector2(x, y);
+		name.setVisible(false);
 	}
 
 	@Override
 	public void replace(double x, double y) {
 		Vector2 curPos = new Vector2(x, y);
-		Vector2 delta = curPos.subtract(origin);
+		Vector2 delta = startPos.subtract(curPos);
 		double dx = delta.getX();
 		double dy = delta.getY();
 
-		setPosition(origin.getX() + dx, origin.getY() + dy);
+
+		decoration.setCenterX(origin.getX() + dx);
+		decoration.setCenterY(origin.getY() + dy);
 	}
 
 	@Override
 	public void endReplace(double x, double y, ProbeManager manager) {
 		replace(x, y);
+		setPosition(decoration.getCenterX(), decoration.getCenterY());
+		name.setVisible(true);
 	}
 
 	@Override
@@ -119,10 +170,43 @@ public class NodeHolder extends Holder {
 	}
 
 	@Override
-	public GridPane getInfo(ProbeManager manager) {
+	public ScrollPane getInfo(ProbeManager manager) {
+		DoublePropertyEventHandler setX = e -> {
+			if (e != null) {
+				setPosition(e, target.getY());
+			}
+			return target.getX();
+		};
+		DoublePropertyEventHandler setY = e -> {
+			if (e != null) {
+				setPosition(target.getX(), e);
+			}
+			return target.getY();
+		};
 
-		return new InfoToolDialogBuilder()
-				//.addDoubleProperty("x")
+		StringPropertyEventHandler setName = e -> {
+			target.setName(e);
+			name.setText(e);
+			setPosition(decoration.getCenterX(), decoration.getCenterY());
+			return target.getName();
+
+		};
+		StringPropertyEventHandler setDescription = e -> {
+			if (e == null) e = "";
+			target.setDescription(e);
+			return target.getDescription();
+		};
+		EnumPropertyEventHandler<NodeType> setType = e -> {
+			target.setType(e);
+			setFillColor();
+			setTmpNode();
+		};
+		return new InfoToolDialogLayoutBuilder()
+				.addDoubleProperty("x", target.getX(), setX)
+				.addDoubleProperty("y", target.getY(), setY)
+				.addEnumProperty("Node type", target.getType(), setType)
+				.addStringProperty("Name", target.getName(), setName)
+				.addMultiLineProperty("Description", target.getDescription(), setDescription)
 				.build();
 	}
 
@@ -148,5 +232,10 @@ public class NodeHolder extends Holder {
 	@Override
 	public boolean containsInner(double x, double y) {
 		return contains(x, y);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Node: \"%s\"", target.getName());
 	}
 }

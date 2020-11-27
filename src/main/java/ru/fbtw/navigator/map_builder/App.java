@@ -9,9 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -56,6 +54,8 @@ public class App extends Application {
 	private StackPane rootCanvas;
 
 	private CanvasProperties properties;
+	private ArrayList<ToggleButton> nodeToolButtons;
+	private int minHeight = 30;
 
 
 	public static void main(String[] args) {
@@ -97,9 +97,17 @@ public class App extends Application {
 				.setUseImage(false)
 				.setSource(CanvasController.drawingToolsNames)
 				.build();
+		nodeToolButtons = new ToggleButtonGridBuilder()
+				.setOnClick(this::selectTool)
+				.setUseName(true)
+				.setUseImage(false)
+				.setSource(CanvasController.nodeToolNames)
+				.build();
 
 		mainColor = new ColorPicker(Color.BLACK);
+		mainColor.setMinHeight(minHeight);
 		fillColor = new ColorPicker(Color.WHITE);
+		fillColor.setMinHeight(minHeight);
 		isUseFill = new CheckBox();
 
 
@@ -141,11 +149,14 @@ public class App extends Application {
 				.addButtonsGrid(3, drawingToolButtons, true)
 				.setTitle("Tools")
 				.addButtonsGrid(3, settingsToolButtons, false)
+				.setTitle("Nodes")
+				.addButtonsGrid(3, nodeToolButtons, false)
 				.setTitle("Line color")
 				.addContent(mainColor)
+				.wrapWithScrolView()
 				.setOptionalTitle("Fill color", isUseFill)
 				.addContent(fillColor)
-				.setTitle("Line width")
+				.setTitle("Line WIDTH")
 				.addContent(widthPicker)
 				.addHorizontalButtonsPanel(clear, undo, redo)
 				.addContent(save)
@@ -165,9 +176,9 @@ public class App extends Application {
 		mainLayout.setCenter(scrollPane);
 		mainLayout.setLeft(leftMenu);
 		mainLayout.setRight(rightMenu);
+
 		Scene scene = new Scene(mainLayout);
-		scene.setOnKeyPressed(event -> KeyManager.push(event.getCode()));
-		scene.setOnKeyReleased(event -> KeyManager.remove(event.getCode()));
+		KeyManager.attachKeyManagerToScene(scene);
 
 		//primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
@@ -280,7 +291,7 @@ public class App extends Application {
 		layout.setHgap(5);
 		layout.setVgap(10);
 
-		Label info = new Label("Enter the length and width (integers)");
+		Label info = new Label("Enter the length and WIDTH (integers)");
 		layout.add(info, 0, 0, 3, 1);
 		Label widthTxt = new Label("Width:");
 		FontStyler.setHeaderStyle(widthTxt, 15);
@@ -360,13 +371,18 @@ public class App extends Application {
 	private void selectTool(ActionEvent event) {
 		final ToggleButton source = (ToggleButton) event.getSource();
 
-		int index = source != null
-				? drawingToolButtons.indexOf(source)
-				: -1;
+		int index = drawingToolButtons.indexOf(source);
 
-		index = index == -1
-				? settingsToolButtons.indexOf(source) + drawingToolButtons.size()
-				: index;
+		if(index == -1){
+			index = settingsToolButtons.indexOf(source);
+
+			index = index == -1
+					? nodeToolButtons.indexOf(source)
+						+ drawingToolButtons.size()
+						+ settingsToolButtons.size()
+					: index + drawingToolButtons.size();
+		}
+
 
 		properties.setTool(index);
 	}

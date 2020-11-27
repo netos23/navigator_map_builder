@@ -1,5 +1,6 @@
 package ru.fbtw.navigator.map_builder.utils;
 
+import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 
 import java.util.HashSet;
@@ -23,5 +24,10 @@ public class KeyManager {
 
 	public static boolean isKeyPressed(KeyCode keyCode){
 		return keyStore.contains(keyCode);
+	}
+
+	public static void attachKeyManagerToScene(Scene target){
+		target.setOnKeyPressed(event -> KeyManager.push(event.getCode()));
+		target.setOnKeyReleased(event -> KeyManager.remove(event.getCode()));
 	}
 }

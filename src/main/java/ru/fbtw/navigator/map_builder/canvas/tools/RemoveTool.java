@@ -2,7 +2,6 @@ package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
-import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 
 public class RemoveTool extends Tool {
 

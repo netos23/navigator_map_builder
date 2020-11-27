@@ -1,6 +1,5 @@
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
-import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
@@ -9,32 +8,34 @@ import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 
 import java.util.ArrayList;
 
-public abstract class DrawingTool extends Tool{
+public abstract class DrawingTool extends Tool {
 
-	protected  ArrayList<Probe> probes;
+	protected ArrayList<Probe> probes;
 
 	public DrawingTool(HolderManager manager) {
 		super(manager);
 	}
 
-	Shape onPressed(CanvasProperties properties, Shape shape){
-		setProperties(shape,properties);
+	Shape onPressed(CanvasProperties properties, Shape shape) {
+		setProperties(shape, properties);
 		return shape;
 	}
 
 
 	@Override
 	public void onPressed(double x, double y) {
-		Probe startPosition = manager.getManager()
-				.getPosOfExistingPoint(x,y);
 
-		Shape tempShape = onPressed(startPosition,manager.getCanvasProperties());
+		Probe startPosition = manager.getManager()
+				.getPosOfExistingPoint(x, y);
+
+		Shape tempShape = onPressed(startPosition, manager.getCanvasProperties());
 
 		manager.getCanvasProperties()
 				.getSource()
 				.getLayers()[1]
 				.getChildren()
 				.add(tempShape);
+
 	}
 
 
@@ -43,7 +44,7 @@ public abstract class DrawingTool extends Tool{
 	@Override
 	public void onReleased(double x, double y) {
 		Probe endPosition = manager.getManager()
-				.getPosOfExistingPoint(x,y);
+				.getPosOfExistingPoint(x, y);
 
 		Holder editHolder = onReleased(endPosition);
 
@@ -53,17 +54,14 @@ public abstract class DrawingTool extends Tool{
 	public abstract Holder onReleased(Probe end);
 
 
-
 	/**
-	 * Sets the current color and width values, as well as some default values
+	 * Sets the current color and WIDTH values, as well as some default values
 	 */
-	private void setProperties(Shape shape, CanvasProperties properties){
+	private void setProperties(Shape shape, CanvasProperties properties) {
 		shape.setStroke(properties.getColor());
 		shape.setStrokeWidth(properties.getLineWidth());
 		shape.setSmooth(true);
 	}
-
-
 
 
 }

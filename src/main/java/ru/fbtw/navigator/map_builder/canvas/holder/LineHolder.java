@@ -1,7 +1,7 @@
 package ru.fbtw.navigator.map_builder.canvas.holder;
 
 import javafx.beans.value.ChangeListener;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -10,7 +10,7 @@ import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
-import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogBuilder;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogLayoutBuilder;
 import ru.fbtw.navigator.map_builder.utils.MathUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
@@ -93,7 +93,7 @@ public class LineHolder extends Holder {
 	@Override
 	public void beginResize(double x, double y) {
 		Probe start, end;
-
+		
 		final boolean equalsX = MathUtils.doubleEquals(probes.get(0).getX(), decoration.getStartX(), e);
 		final boolean equalsY = MathUtils.doubleEquals(probes.get(0).getY(), decoration.getStartY(), e);
 
@@ -208,7 +208,7 @@ public class LineHolder extends Holder {
 	}
 
 	@Override
-	public GridPane getInfo(ProbeManager manager) {
+	public ScrollPane getInfo(ProbeManager manager) {
 
 
 		DoublePropertyEventHandler onStartX = value -> {
@@ -250,7 +250,7 @@ public class LineHolder extends Holder {
 
 		ChangeListener<Color> onColor = (observable, oldValue, newValue) -> setStroke(newValue);
 
-		return new InfoToolDialogBuilder()
+		return new InfoToolDialogLayoutBuilder()
 				.addDoubleProperty("Start X", decoration.getStartX(), onStartX)
 				.addDoubleProperty("Start Y", decoration.getStartY(), onStartY)
 				.addDoubleProperty("End X", decoration.getEndX(), onEndX)

@@ -1,6 +1,6 @@
 package ru.fbtw.navigator.map_builder.canvas.node;
 
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
@@ -74,7 +74,7 @@ public class NodeConnectionHolder extends Holder {
 	}
 
 	@Override
-	public GridPane getInfo(ProbeManager manager) {
+	public ScrollPane getInfo(ProbeManager manager) {
 		return null;
 	}
 

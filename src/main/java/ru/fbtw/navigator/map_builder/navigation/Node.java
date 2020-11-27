@@ -1,8 +1,14 @@
 package ru.fbtw.navigator.map_builder.navigation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Node {
+	private static int nameCount = 0;
+	private static String namePref = "Node %d";
+	private static HashSet<String> names = new HashSet<>();
+
+
 	private int x;
 	private int y;
 
@@ -15,24 +21,50 @@ public class Node {
 	public Node(int x, int y, String name, String description, NodeType type) {
 		this.x = x;
 		this.y = y;
-		this.name = name;
 		this.description = description;
 		this.type = type;
+
+		this.name = name == null || name.isEmpty()
+				? getNextName()
+				: name;
+
+	}
+	public Node(double x, double y){
+		this((int) x, (int) y, null,"",NodeType.DESTINATION);
 	}
 
-	public static void makeConnection(Node o1, Node o2){
+	public static void makeConnection(Node o1, Node o2) {
 		o1.getConnections().add(o2);
 		o2.getConnections().add(o1);
 	}
 
-	public static void breakConnection(Node o1, Node o2){
+	public static void breakConnection(Node o1, Node o2) {
 		o1.getConnections().remove(o2);
 		o2.getConnections().remove(o1);
 	}
 
+	private static String getNextName() {
+		String name;
+		do {
+			name = String.format(namePref, nameCount++);
+		} while (names.contains(name));
+		names.add(name);
+		return name;
+	}
 
+	public static boolean validateName(String name){
+		return !(name == null || name.isEmpty() || names.contains(name));
+	}
 
-	public boolean hasConnection(Node other){
+	public static Node getEmptyNode() {
+		return new Node(0, 0, getNextName(), null, null);
+	}
+
+	public static void removeName(String name) {
+		names.remove(name);
+	}
+
+	public boolean hasConnection(Node other) {
 		return connections.contains(other);
 	}
 
@@ -64,8 +96,15 @@ public class Node {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public boolean setName(String name) {
+		if(validateName(name)){
+			names.remove(this.name);
+			this.name = name;
+			names.add(name);
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	public String getDescription() {

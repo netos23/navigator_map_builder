@@ -1,11 +1,14 @@
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
+import ru.fbtw.navigator.map_builder.ui.DialogViewer;
+import ru.fbtw.navigator.map_builder.utils.KeyManager;
 import ru.fbtw.navigator.map_builder.utils.StringUtils;
 
 public class InfoTool extends Tool {
@@ -36,16 +39,9 @@ public class InfoTool extends Tool {
 	}
 
 	private void showDialog(Holder holder) {
-		String titleName = StringUtils.holderToString(holder.getClass());
+		String titleName = holder.toString();
 
-		Scene mainScene = new Scene(holder.getInfo(manager.getManager()));
-		Stage dialogStage = new Stage();
-		dialogStage.setScene(mainScene);
-		dialogStage.setTitle(titleName);
-		dialogStage.setResizable(false);
-		dialogStage.initModality(Modality.APPLICATION_MODAL);
-		dialogStage.initStyle(StageStyle.UTILITY);
-
-		dialogStage.show();
+		final ScrollPane layout = holder.getInfo(manager.getManager());
+		DialogViewer.showDialog(titleName,layout);
 	}
 }

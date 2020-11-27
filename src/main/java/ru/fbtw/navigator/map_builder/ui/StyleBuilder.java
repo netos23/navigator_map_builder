@@ -11,7 +11,7 @@ public class StyleBuilder {
 
 	public StyleBuilder setBoarder(int top, int right, int bottom, int left){
 		buffer.append("-fx-border-color: #757575;")
-				.append(String.format("-fx-border-width: %d %d %d %d;", top, right, bottom, left));
+				.append(String.format("-fx-border-WIDTH: %d %d %d %d;", top, right, bottom, left));
 		return this;
 	}
 

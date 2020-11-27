@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -16,6 +17,7 @@ public  class LayoutBuilder {
 	private VBox layout;
 	private StyleBuilder styleBuilder;
 	private ToggleGroup tools;
+	private boolean isScroll;
 
 	public LayoutBuilder(double spacing) {
 		layout = new VBox(spacing);
@@ -47,6 +49,7 @@ public  class LayoutBuilder {
 	}
 
 	public  LayoutBuilder addContent(Node content){
+		VBox.setVgrow(content, Priority.ALWAYS);
 		layout.getChildren().add(content);
 		return this;
 	}
@@ -94,12 +97,22 @@ public  class LayoutBuilder {
 		return this;
 	}
 
+	public LayoutBuilder wrapWithScrolView(){
+		isScroll = true;
+		return this;
+	}
+
 	public Node build(){
-		/*ScrollPane safeLayout = new ScrollPane(layout);
-		safeLayout.setPannable(true);
-		safeLayout.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		return safeLayout;*/
-		return layout;
+		if(isScroll) {
+			ScrollPane safeLayout = new ScrollPane(layout);
+			safeLayout.setPannable(true);
+			safeLayout.setFitToHeight(true);
+			safeLayout.setFitToWidth(true);
+			safeLayout.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+			return safeLayout;
+		}else {
+			return layout;
+		}
 	}
 
 

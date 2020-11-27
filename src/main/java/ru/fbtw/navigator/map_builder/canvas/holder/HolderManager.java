@@ -2,6 +2,7 @@ package ru.fbtw.navigator.map_builder.canvas.holder;
 
 import javafx.scene.layout.Pane;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.canvas.node.NodeHolder;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeHolderManager;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
@@ -42,6 +43,17 @@ public class HolderManager {
 		} else {
 			return false;
 		}
+	}
+
+	public boolean push(NodeHolder holder) {
+			if (!holders.contains(holder)) {
+				holder.splitLayers(layers);
+				holder.extractProbes(manager);
+				nodeManager.push(holder);
+				return true;
+			} else {
+				return false;
+			}
 	}
 
 
@@ -86,8 +98,12 @@ public class HolderManager {
 
 
 	public void remove(Holder holder) {
-		manager.remove(holder.getShape());
-		holders.remove(holder);
+		if(holder instanceof NodeHolder){
+			nodeManager.remove((NodeHolder) holder);
+		}else {
+			manager.remove(holder.getShape());
+			holders.remove(holder);
+		}
 		holder.remove(layers);
 	}
 
@@ -100,6 +116,10 @@ public class HolderManager {
 		} else {
 			return false;
 		}
+	}
+
+	public boolean hasAccess(double x, double y) {
+		return nodeManager.select(x, y) == null;
 	}
 
 
