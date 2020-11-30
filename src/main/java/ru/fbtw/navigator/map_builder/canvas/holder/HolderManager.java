@@ -98,13 +98,14 @@ public class HolderManager {
 
 
 	public void remove(Holder holder) {
-		if(holder instanceof NodeHolder){
-			nodeManager.remove((NodeHolder) holder);
+		if(nodeManager.contains(holder)){
+			nodeManager.remove(holder,layers);
 		}else {
 			manager.remove(holder.getShape());
 			holders.remove(holder);
+			holder.remove(layers);
 		}
-		holder.remove(layers);
+
 	}
 
 	public boolean remove(double x, double y) {

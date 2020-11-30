@@ -3,7 +3,7 @@ package ru.fbtw.navigator.map_builder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.core.Project;
-import ru.fbtw.navigator.map_builder.ui.control.LvlEditScreen;
+import ru.fbtw.navigator.map_builder.ui.screens.LvlEditScreen;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 

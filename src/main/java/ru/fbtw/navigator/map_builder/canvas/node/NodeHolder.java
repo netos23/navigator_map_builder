@@ -106,6 +106,8 @@ public class NodeHolder extends Holder {
 
 	@Override
 	public void remove(Pane[] layers) {
+
+
 		layers[LayersName.INPUT_LAYER].getChildren()
 				.removeAll(decoration, name);
 

@@ -1,6 +1,5 @@
-package ru.fbtw.navigator.map_builder.ui.control;
+package ru.fbtw.navigator.map_builder.ui.screens;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -23,6 +22,8 @@ import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
+import ru.fbtw.navigator.map_builder.ui.control.Navigator;
+import ru.fbtw.navigator.map_builder.ui.control.Screen;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 import ru.fbtw.navigator.map_builder.utils.KeyManager;
 
@@ -122,13 +123,11 @@ public class LvlEditScreen implements Screen {
 		load = new Button("Load");
 		push = new Button("Push");
 
-
+		initScene();
 	}
 
-	@Override
-	public void start(Stage primaryStage) {
+	public void initScene() {
 		BorderPane mainLayout = new BorderPane();
-		setOnClicks(primaryStage);
 
 		Node leftMenu = new LayoutBuilder(10)
 				.setTitle("Rooms")
@@ -166,7 +165,7 @@ public class LvlEditScreen implements Screen {
 		rootCanvas = new StackPane();
 		rootCanvas.setStyle("-fx-background-color: #666666;");
 		ScrollPane scrollPane = new ScrollPane(rootCanvas);
-		scrollPane.setMinSize(800.0, primaryStage.getMinHeight());
+		scrollPane.setMinSize(800.0, 600);
 		scrollPane.setPadding(new Insets(5));
 
 
@@ -178,6 +177,11 @@ public class LvlEditScreen implements Screen {
 
 		scene = new Scene(mainLayout);
 		KeyManager.attachKeyManagerToScene(scene);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		setOnClicks(primaryStage);
 	}
 
 	@Override
@@ -383,7 +387,7 @@ public class LvlEditScreen implements Screen {
 
 		int index = drawingToolButtons.indexOf(source);
 
-		if(index == -1){
+		if (index == -1) {
 			index = settingsToolButtons.indexOf(source);
 
 			index = index == -1
