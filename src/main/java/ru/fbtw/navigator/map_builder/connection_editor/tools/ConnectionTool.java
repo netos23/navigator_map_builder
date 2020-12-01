@@ -55,7 +55,9 @@ public class ConnectionTool implements ScreenTool {
 				&& endEntity != null
 				&& (endSocketId = endEntity.socketContains(x, y)) > -1
 				&& beginEntity != endEntity
-				&& !beginEntity.getNode().hasConnection(endEntity.getNode(), beginSocketId)
+				&& (!beginEntity.getNode().hasConnection(endEntity.getNode(), beginSocketId)
+				|| !endEntity.getNode().hasConnection(beginEntity.getNode(),endSocketId)
+		)
 		) {
 			//System.out.printf("On lvl: %s socId: %d\n",endEntity.getNode().getName(),endSocketId);
 			LevelNode.connect(beginEntity.getNode(), beginSocketId,

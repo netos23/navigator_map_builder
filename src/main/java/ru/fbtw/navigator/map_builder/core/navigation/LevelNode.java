@@ -81,7 +81,8 @@ public class LevelNode {
 	}
 
 	public boolean hasConnection(LevelNode node, int beginSocketId) {
-		final String socketKey = hashKeys.get(beginSocketId);
-		return sockets.get(socketKey).contains(node);
+		String socketKey = hashKeys.get(beginSocketId);
+		return sockets.get(socketKey)
+				.contains(node);
 	}
 }

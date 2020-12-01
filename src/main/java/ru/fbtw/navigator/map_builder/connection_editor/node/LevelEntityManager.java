@@ -87,4 +87,8 @@ public class LevelEntityManager {
 	public void push(LevelConnection connection) {
 		levelConnections.add(connection);
 	}
+
+	public void remove(LevelConnection connection) {
+		levelConnections.remove(connection);
+	}
 }
