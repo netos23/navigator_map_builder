@@ -66,7 +66,9 @@ public class LevelNode {
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
-
+	public Level getLevel() {
+		return level;
+	}
 
 	public String getName() {
 		return name;

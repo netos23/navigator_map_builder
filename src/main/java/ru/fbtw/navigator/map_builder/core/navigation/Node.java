@@ -36,8 +36,10 @@ public class Node {
 	}
 
 	public static void makeConnection(Node o1, Node o2) {
-		o1.getConnections().add(o2);
-		o2.getConnections().add(o1);
+		if(!o1.equals(o2)) {
+			o1.getConnections().add(o2);
+			o2.getConnections().add(o1);
+		}
 	}
 
 	public static void breakConnection(Node o1, Node o2) {

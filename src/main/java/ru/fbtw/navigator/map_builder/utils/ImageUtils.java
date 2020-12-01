@@ -1,10 +1,17 @@
 package ru.fbtw.navigator.map_builder.utils;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +29,7 @@ public class ImageUtils {
 					image.setRGB(x, y, color);
 
 
-			File output = new File(DEFAULT_FOLDER
-					+ UUID.randomUUID().toString().substring(0, 8)
-					+ "." + DEFAULT_TYPE);
+			File output = new File(nextFilename());
 
 
 			ImageIO.write(image, DEFAULT_TYPE, output);
@@ -37,11 +42,34 @@ public class ImageUtils {
 
 	}
 
+	public static String nextFilename() {
+		return DEFAULT_FOLDER
+				+ UUID.randomUUID().toString().substring(0, 8)
+				+ "." + DEFAULT_TYPE;
+	}
+
 	public static ImageView loadImage(String filename) throws IOException {
 
 		InputStream imageIO = ResourceLoader.loadIS(filename);
 		Image image = new Image(imageIO);
 		return new ImageView(image);
 
+	}
+
+	public static byte[] getImageFromNode(Node node, int width, int height) {
+		WritableImage image = new WritableImage(width,height);
+		node.snapshot(null,image);
+
+
+		RenderedImage renderedImage = SwingFXUtils.fromFXImage(image,null);
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		try {
+			ImageIO.write(renderedImage,DEFAULT_TYPE,output);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return output.toByteArray();
 	}
 }
