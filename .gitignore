@@ -1,6 +1,6 @@
 *.iml
-line/
-line/*
+tmp/
+tmp/*
 .idea/
 out/
 target/
