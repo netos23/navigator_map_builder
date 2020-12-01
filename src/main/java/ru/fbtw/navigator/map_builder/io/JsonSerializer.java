@@ -8,10 +8,7 @@ import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JsonSerializer {
 	private static JsonSerializer ourInstance = new JsonSerializer();
@@ -45,25 +42,22 @@ public class JsonSerializer {
 	}
 
 	public JsonArray nodeConnectionsToJson(ArrayList<Node> nodes) {
-		HashMap<String, String> writenObjects = new HashMap<>();
-		JsonArray connectionsArray = new JsonArray(nodes.size());
+		HashSet<String> writenObjects = new HashSet<>();
+		JsonArray connectionsArray = new JsonArray();
 
 		for (Node node : nodes) {
 			for (Node attached : node.getConnections()) {
 				String nodeA = node.getName();
 				String nodeB = attached.getName();
 
-				boolean containsConnectionA = writenObjects.containsKey(nodeA)
-						&& writenObjects.get(nodeA).equals(nodeB);
-				boolean containsConnectionB = writenObjects.containsKey(nodeB)
-						&& writenObjects.get(nodeB).equals(nodeA);
+				String hash = getHash(nodeA,nodeB);
 
-				if (!(containsConnectionA || containsConnectionB)) {
-					writenObjects.put(nodeA, nodeB);
+				if (!(writenObjects.contains(hash))) {
+					writenObjects.add(hash);
 
 					JsonObject connectionJson = new JsonObject();
-					connectionJson.addProperty("node_0", nodeA);
-					connectionJson.addProperty("node_1", nodeB);
+					connectionJson.addProperty("a", nodeA);
+					connectionJson.addProperty("b", nodeB);
 
 					connectionsArray.add(connectionJson);
 				}
@@ -141,6 +135,23 @@ public class JsonSerializer {
 		element.add("connections", levelConnectionsToJson(project.getNodeSystem()));
 
 		return element;
+	}
+
+	// todo: ускорить hash
+	public String getHash(String a, String b){
+		if(a.length() == b.length()){
+			if(a.compareTo(b)>0){
+				return a + b;
+			}else{
+				return b + a;
+			}
+		}else{
+			if(a.length() > b.length()){
+				return a + b;
+			}else{
+				return b + a;
+			}
+		}
 	}
 
 
