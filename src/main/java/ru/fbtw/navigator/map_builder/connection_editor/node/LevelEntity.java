@@ -1,5 +1,6 @@
 package ru.fbtw.navigator.map_builder.connection_editor.node;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -7,15 +8,17 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import ru.fbtw.navigator.map_builder.connection_editor.LayersName;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
+import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
 
 public class LevelEntity {
 	private static final double SOCKET_RADIUS = 30.0;
-	private static final double SINGLTONE_RAIUS = 50.0;
+	private static final double SINGLETON_RADIUS = 50.0;
 	private static final double OFFSET = 10.0;
 	private Circle bg;
+	private Label lvlName;
 	private ArrayList<Circle> sockets;
 	private ArrayList<String> socketsNames;
 	private LevelNode node;
@@ -31,10 +34,10 @@ public class LevelEntity {
 		this.node = node;
 		sockets = new ArrayList<>();
 		socketsNames = new ArrayList<>(node.getSockets().keySet());
+		lvlName = new Label(node.getName());
 
 		initSockets(socketsNames);
 	}
-
 
 	public LevelEntity(double x, double y, LevelNode node) {
 		this(node);
@@ -69,14 +72,14 @@ public class LevelEntity {
 
 			Circle socket = new Circle(x, y, SOCKET_RADIUS, socketColor);
 			sockets.add(socket);
-			setToolTip(socket,strings.get(i));
+			setToolTip(socket, strings.get(i));
 		}
 
 	}
 
 	private void initNoneSocket() {
 		final Paint noneSocketColor = Color.GREY;
-		r = SINGLTONE_RAIUS;
+		r = SINGLETON_RADIUS;
 		isSingleton = true;
 		bg = new Circle(r);
 		bg.setFill(noneSocketColor);
@@ -85,17 +88,17 @@ public class LevelEntity {
 	private void initSingleton(String name) {
 		final Paint socketColor = Color.GREEN;
 
-		r = SINGLTONE_RAIUS;
+		r = SINGLETON_RADIUS;
 		isSingleton = true;
 		bg = new Circle(r);
 		bg.setFill(socketColor);
 
 		sockets.add(bg);
-		setToolTip(bg,name);
+		setToolTip(bg, name);
 	}
 
 	public void setPosition(double x, double y) {
-		beginReplace(bg.getCenterX(),bg.getCenterY());
+		beginReplace(bg.getCenterX(), bg.getCenterY());
 		endReplace(x, y);
 	}
 
@@ -108,6 +111,8 @@ public class LevelEntity {
 			Circle socket = sockets.get(i);
 			socketsPositions[i] = new Vector2(socket.getCenterX(), socket.getCenterY());
 		}
+
+		lvlName.setVisible(false);
 	}
 
 	public void replace(double x, double y) {
@@ -127,17 +132,34 @@ public class LevelEntity {
 		circle.setCenterY(beginPosition.getY() + delta.getY());
 	}
 
+
 	private void setToolTip(Circle socket, String name) {
 		Tooltip tooltip = new Tooltip(name);
-		socket.setOnMouseEntered(e ->
-				tooltip.show(socket, 0, 0));
 
-		socket.setOnMouseExited(e ->
-				tooltip.hide());
+		socket.setOnMouseEntered(e ->
+				tooltip.show(Navigator.getPrimaryStage(), e.getScreenX(), e.getScreenY()));
+
+		// fixme мигание подсказки
+		socket.setOnMouseExited(e -> {
+			tooltip.hide();
+		});
 	}
 
 	public void endReplace(double x, double y) {
 		replace(x, y);
+
+		double nameX = bg.getCenterX() - getNameWidth();
+		double nameY = isSingleton
+				? bg.getCenterY() + r + SOCKET_RADIUS * 0.5
+				: bg.getCenterY() + r + SOCKET_RADIUS * 1.5;
+
+		lvlName.setLayoutX(nameX);
+		lvlName.setLayoutY(nameY);
+		lvlName.setVisible(true);
+	}
+
+	private double getNameWidth() {
+		return lvlName.getText().length() * 3.5;
 	}
 
 	public boolean contains(double x, double y) {
@@ -163,7 +185,7 @@ public class LevelEntity {
 
 	public void splitLayers(Pane[] layers) {
 		layers[LayersName.MAIN].getChildren()
-				.add(bg);
+				.addAll(bg, lvlName);
 
 		layers[LayersName.INPUT].getChildren()
 				.addAll(sockets);
@@ -177,6 +199,7 @@ public class LevelEntity {
 	public double getX() {
 		return bg.getCenterX();
 	}
+
 	public double getY() {
 		return bg.getCenterY();
 	}

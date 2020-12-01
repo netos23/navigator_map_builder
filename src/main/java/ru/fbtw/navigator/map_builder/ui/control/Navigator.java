@@ -42,4 +42,7 @@ public class Navigator {
 		push(screen);
 	}
 
+	public static Stage getPrimaryStage() {
+		return primaryStage;
+	}
 }
