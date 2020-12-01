@@ -8,7 +8,8 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
-import ru.fbtw.navigator.map_builder.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
 
 import java.util.ArrayList;
 
@@ -97,5 +98,6 @@ public class Level{
 	public String toString() {
 		return name.get();
 	}
+
 
 }

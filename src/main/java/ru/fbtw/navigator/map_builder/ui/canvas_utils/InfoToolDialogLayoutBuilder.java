@@ -14,7 +14,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import ru.fbtw.navigator.map_builder.navigation.NodeType;
+import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 import ru.fbtw.navigator.map_builder.utils.KeyManager;
 
 import java.lang.reflect.InvocationTargetException;

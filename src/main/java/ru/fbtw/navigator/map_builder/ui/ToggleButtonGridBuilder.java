@@ -35,7 +35,7 @@ public class ToggleButtonGridBuilder {
 		return this;
 	}
 
-	public ArrayList<ToggleButton> build() throws IOException {
+	public ArrayList<ToggleButton> build() {
 
 		ArrayList<ToggleButton> result = new ArrayList<>();
 
@@ -46,13 +46,15 @@ public class ToggleButtonGridBuilder {
 
 			toggleButton.setOnAction(onClick);
 
-
-			if (isUseImage && name != null && !name.isEmpty()) {
-				toggleButton.setGraphic(
-						ImageUtils.loadImage("image/buttons/" + name + ".png")
-				);
+			try {
+				if (isUseImage && name != null && !name.isEmpty()) {
+					toggleButton.setGraphic(
+							ImageUtils.loadImage("image/buttons/" + name + ".png")
+					);
+				}
+			}catch (IOException ex){
+				//todo сделать ошибку в лог
 			}
-
 			result.add(toggleButton);
 		}
 		return result;

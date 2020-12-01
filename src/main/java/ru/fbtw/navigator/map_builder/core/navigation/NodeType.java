@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.navigation;
+package ru.fbtw.navigator.map_builder.core.navigation;
 
 public enum  NodeType {
 	DESTINATION,

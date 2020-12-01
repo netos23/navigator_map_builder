@@ -2,12 +2,9 @@ package ru.fbtw.navigator.map_builder.canvas.node;
 
 import javafx.scene.layout.Pane;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
-import ru.fbtw.navigator.map_builder.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 public class NodeHolderManager {
 	private ArrayList<Node> nodeSystem;

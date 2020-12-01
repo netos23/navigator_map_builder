@@ -31,14 +31,14 @@ public class CircleHolder extends Holder {
 
 		hitBoxExternal = new Circle();
 		hitBoxExternal.setFill(Color.TRANSPARENT);
-		//hitBoxExternal.setStroke(Color.TRANSPARENT);
-		hitBoxExternal.setStroke(Color.GREEN);
+		hitBoxExternal.setStroke(Color.TRANSPARENT);
+		//hitBoxExternal.setStroke(Color.GREEN);
 
 		hitBoxInner = new Circle();
 
 		hitBoxInner.setFill(Color.TRANSPARENT);
-		//hitBoxInner.setStroke(Color.TRANSPARENT);
-		hitBoxInner.setStroke(Color.RED);
+		hitBoxInner.setStroke(Color.TRANSPARENT);
+		//hitBoxInner.setStroke(Color.RED);
 
 		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
 

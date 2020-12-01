@@ -1,6 +1,6 @@
 package ru.fbtw.navigator.map_builder.utils;
 
-public class StringUtils {
+public final class StringUtils {
 
 
 	public static String toolToString(Class toolClass) {

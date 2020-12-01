@@ -5,12 +5,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeConnectTool;
-import ru.fbtw.navigator.map_builder.canvas.node.NodeConnectionHolder;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeHolderManager;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeTool;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.canvas.tools.*;
-import ru.fbtw.navigator.map_builder.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.utils.StringUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
@@ -40,17 +39,13 @@ public class CanvasController {
 	};
 
 	public Tool[] tools;
-	private ArrayList<Node> nodeSystem;
 	private Pane[] layers;
 	private Pane inputLayer;
 	private ProbeManager probeManager;
-	private HolderManager holderManager;
-	private NodeHolderManager nodeHolderManager;
 	private CanvasProperties properties;
 
 	public CanvasController(CanvasProperties properties, ArrayList<Node> nodeSystem) {
 		this.properties = properties;
-		this.nodeSystem = nodeSystem;
 		this.properties.setSource(this);
 
 
@@ -58,11 +53,11 @@ public class CanvasController {
 		for (int i = 0; i < layers.length; i++) {
 			layers[i] = new Pane();
 		}
-		inputLayer = layers[4];
+		inputLayer = layers[LayersName.INPUT_LAYER];
 
 		probeManager = new ProbeManager(this);
-		nodeHolderManager = new NodeHolderManager(nodeSystem);
-		holderManager = new HolderManager(probeManager, properties, nodeHolderManager);
+		NodeHolderManager nodeHolderManager = new NodeHolderManager(nodeSystem);
+		HolderManager holderManager = new HolderManager(probeManager, properties, nodeHolderManager);
 
 		tools = new Tool[]{
 				new LineTool(holderManager),
@@ -124,6 +119,7 @@ public class CanvasController {
 	}
 
 
+	@Deprecated
 	public ProbeManager getProbeManager() {
 		return probeManager;
 	}

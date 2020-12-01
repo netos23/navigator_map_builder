@@ -61,7 +61,7 @@ public class LvlEditScreen implements Screen {
 
 	private Project project;
 
-	public LvlEditScreen(Project project) throws IOException {
+	public LvlEditScreen(Project project)  {
 		this.project = project;
 		this.levels = project.getLevels();
 
@@ -207,7 +207,7 @@ public class LvlEditScreen implements Screen {
 		return fileChooser;
 	}
 
-	private void setOnClicks(final Stage stage) {
+	private void setOnClicks(final Stage stage){
 
 		imageChooserBtn.setOnAction(event -> {
 			List<File> selectedImg = imageChooser.showOpenMultipleDialog(stage);

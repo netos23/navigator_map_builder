@@ -32,16 +32,16 @@ public class EllipseHolder extends Holder {
 
 		hitBoxExternal = new Ellipse();
 		hitBoxExternal.setFill(Color.TRANSPARENT);
-		//hitBoxExternal.setStroke(Color.TRANSPARENT);
-		hitBoxExternal.setStroke(Color.GREEN);
+		hitBoxExternal.setStroke(Color.TRANSPARENT);
+		//hitBoxExternal.setStroke(Color.GREEN);
 
 
 
 		hitBoxInner = new Ellipse();
 
 		hitBoxInner.setFill(Color.TRANSPARENT);
-		//hitBoxInner.setStroke(Color.TRANSPARENT);
-		hitBoxInner.setStroke(Color.RED);
+		hitBoxInner.setStroke(Color.TRANSPARENT);
+		//hitBoxInner.setStroke(Color.RED);
 
 		reBuildHitBoxes();
 

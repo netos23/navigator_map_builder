@@ -32,13 +32,13 @@ public class RectangleHolder extends Holder {
 
 		hitBoxExternal = new Rectangle();
 		hitBoxExternal.setFill(Color.TRANSPARENT);
-		//hitBoxExternal.setStroke(Color.TRANSPARENT);
-		hitBoxExternal.setStroke(Color.GREEN);
+		hitBoxExternal.setStroke(Color.TRANSPARENT);
+//		hitBoxExternal.setStroke(Color.GREEN);
 
 		hitBoxInner = new Rectangle();
 		hitBoxInner.setFill(Color.TRANSPARENT);
-		//hitBoxInner.setStroke(Color.TRANSPARENT);
-		hitBoxInner.setStroke(Color.RED);
+		hitBoxInner.setStroke(Color.TRANSPARENT);
+//		hitBoxInner.setStroke(Color.RED);
 
 		reBuildHitBoxes();
 

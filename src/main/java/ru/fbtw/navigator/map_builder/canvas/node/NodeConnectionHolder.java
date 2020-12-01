@@ -10,7 +10,7 @@ import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.LinePoints;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
-import ru.fbtw.navigator.map_builder.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 public class NodeConnectionHolder extends Holder {

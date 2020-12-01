@@ -5,7 +5,7 @@ import javafx.scene.shape.Line;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.tools.Tool;
-import ru.fbtw.navigator.map_builder.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
 
 public class NodeConnectTool extends Tool {
 
