@@ -13,6 +13,7 @@ import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
 import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogLayoutBuilder;
 import ru.fbtw.navigator.map_builder.utils.MathUtils;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
+import ru.fbtw.navigator.map_builder.utils.common.LinePoints;
 
 import java.util.ArrayList;
 

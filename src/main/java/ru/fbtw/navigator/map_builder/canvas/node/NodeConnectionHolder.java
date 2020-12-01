@@ -8,7 +8,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import ru.fbtw.navigator.map_builder.canvas.LayersName;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
-import ru.fbtw.navigator.map_builder.canvas.holder.LinePoints;
+import ru.fbtw.navigator.map_builder.utils.common.LinePoints;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.utils.Vector2;

@@ -25,8 +25,8 @@ public class NodeConnectTool extends Tool {
 		targetA = manager.getNodeManager()
 				.selectHolder(x, y);
 
-		if(targetA != null){
-			line = new Line(targetA.getX(),targetA.getY(),targetA.getX(),targetA.getY());
+		if (targetA != null) {
+			line = new Line(targetA.getX(), targetA.getY(), targetA.getX(), targetA.getY());
 			line.setStrokeWidth(NodeConnectionHolder.WIDTH);
 
 			layers[LayersName.NODE_CONNECTIONS].getChildren()
@@ -36,14 +36,14 @@ public class NodeConnectTool extends Tool {
 
 	@Override
 	public void onDragged(double x, double y) {
-		if(targetA != null && line != null){
+		if (targetA != null && line != null) {
 			NodeHolder tmp = manager.getNodeManager()
 					.selectHolder(x, y);
 
-			if(tmp == null){
+			if (tmp == null) {
 				line.setEndX(x);
 				line.setEndY(y);
-			}else{
+			} else {
 				line.setEndX(tmp.getX());
 				line.setEndY(tmp.getY());
 			}
@@ -52,17 +52,19 @@ public class NodeConnectTool extends Tool {
 
 	@Override
 	public void onReleased(double x, double y) {
-		if(targetA != null && line != null){
+		if (targetA != null && line != null) {
 			NodeHolder targetB = manager.getNodeManager()
 					.selectHolder(x, y);
 
-			if(targetB != null){
-				NodeConnectionHolder connectionHolder =
-						new NodeConnectionHolder(line,targetA,targetB);
+			if (targetB != null && !targetA.getTarget()
+					.hasConnection(targetB.getTarget())) {
 
-				Node.makeConnection(targetA.getTarget(),targetB.getTarget());
+				NodeConnectionHolder connectionHolder =
+						new NodeConnectionHolder(line, targetA, targetB);
+
+				Node.makeConnection(targetA.getTarget(), targetB.getTarget());
 				manager.getNodeManager().push(connectionHolder);
-			}else {
+			} else {
 				layers[LayersName.NODE_CONNECTIONS]
 						.getChildren()
 						.remove(line);

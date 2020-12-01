@@ -79,4 +79,9 @@ public class LevelNode {
 	public HashMap<String, ArrayList<LevelNode>> getSockets() {
 		return sockets;
 	}
+
+	public boolean hasConnection(LevelNode node, int beginSocketId) {
+		final String socketKey = hashKeys.get(beginSocketId);
+		return sockets.get(socketKey).contains(node);
+	}
 }

@@ -54,15 +54,15 @@ public class ConnectionEditorController {
 	}
 	private void setOnClicks() {
 		inputLayer.setOnMousePressed(event ->
-				//tools[properties.getTool()].onPressed(event.getX(),event.getY())
-				System.out.println("bb")
+				tools[properties.getTool()].onPressed(event.getX(),event.getY())
+				//System.out.println("bb")
 		);
 
 		inputLayer.setOnMouseDragged(event ->
 				tools[properties.getTool()].onDragged(event.getX(),event.getY()));
 
 		inputLayer.setOnMouseReleased(event ->
-				tools[properties.getTool()].onPressed(event.getX(),event.getY()));
+				tools[properties.getTool()].onReleased(event.getX(),event.getY()));
 	}
 	public Pane[] getLayers() {
 		return layers;

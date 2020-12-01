@@ -6,12 +6,13 @@ import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class LevelEntityManager {
 	private static final int offset = 200;
 
 	private ArrayList<LevelEntity> levelEntities;
-	private ArrayList<LevelConnection> levelConnections;
+	private HashSet<LevelConnection> levelConnections;
 	private ConnectionEditorProperties properties;
 	private Pane[] layers;
 
@@ -25,7 +26,7 @@ public class LevelEntityManager {
 		this.properties = properties;
 
 		levelEntities = new ArrayList<>();
-		levelConnections = new ArrayList<>();
+		levelConnections = new HashSet<>();
 		layers = properties.getSource().getLayers();
 
 		initLevelEntities();
@@ -64,6 +65,9 @@ public class LevelEntityManager {
 		}
 	}
 
+	public Pane[] getLayers() {
+		return layers;
+	}
 
 	public LevelEntity select(double x, double y) {
 		return levelEntities.stream()
@@ -72,5 +76,15 @@ public class LevelEntityManager {
 				.orElse(null);
 	}
 
+	public LevelConnection selectConnection(double x, double y){
+		return levelConnections.stream()
+				.filter(connection -> connection.contains(x, y))
+				.findFirst()
+				.orElse(null);
+	}
 
+
+	public void push(LevelConnection connection) {
+		levelConnections.add(connection);
+	}
 }

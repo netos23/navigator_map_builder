@@ -12,15 +12,17 @@ import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class LevelEntity {
 	private static final double SOCKET_RADIUS = 30.0;
 	private static final double SINGLETON_RADIUS = 50.0;
-	private static final double OFFSET = 10.0;
+	private static final double OFFSET = 15.0;
 	private Circle bg;
 	private Label lvlName;
 	private ArrayList<Circle> sockets;
 	private ArrayList<String> socketsNames;
+	private HashSet<LevelConnection> connections;
 	private LevelNode node;
 
 	private boolean isSingleton;
@@ -35,6 +37,8 @@ public class LevelEntity {
 		sockets = new ArrayList<>();
 		socketsNames = new ArrayList<>(node.getSockets().keySet());
 		lvlName = new Label(node.getName());
+
+		connections = new HashSet<>();
 
 		initSockets(socketsNames);
 	}
@@ -113,6 +117,10 @@ public class LevelEntity {
 		}
 
 		lvlName.setVisible(false);
+
+		for(LevelConnection connection : connections){
+			connection.beginResize(this);
+		}
 	}
 
 	public void replace(double x, double y) {
@@ -125,6 +133,11 @@ public class LevelEntity {
 			Circle socket = sockets.get(i);
 			moveCircle(socket, delta, socketsPositions[i]);
 		}
+
+		for(LevelConnection connection : connections){
+			Circle socket = getSocket(connection.getEditSocket());
+			connection.resize(socket.getCenterX(),socket.getCenterY());
+		}
 	}
 
 	private void moveCircle(Circle circle, Vector2 delta, Vector2 beginPosition) {
@@ -133,6 +146,7 @@ public class LevelEntity {
 	}
 
 
+	@Deprecated
 	private void setToolTip(Circle socket, String name) {
 		Tooltip tooltip = new Tooltip(name);
 
@@ -182,15 +196,25 @@ public class LevelEntity {
 		return -1;
 	}
 
+	public Circle getSocket(int socket){
+		if(socket<0 || socket >= sockets.size()) return null;
+		return sockets.get(socket);
+	}
+
 
 	public void splitLayers(Pane[] layers) {
 		layers[LayersName.MAIN].getChildren()
 				.addAll(bg, lvlName);
 
-		layers[LayersName.INPUT].getChildren()
-				.addAll(sockets);
+		if(!isSingleton) {
+			layers[LayersName.MAIN].getChildren()
+					.addAll(sockets);
+		}
 	}
 
+	public LevelNode getNode() {
+		return node;
+	}
 
 	public double getR() {
 		return r;
@@ -202,5 +226,13 @@ public class LevelEntity {
 
 	public double getY() {
 		return bg.getCenterY();
+	}
+
+	public void addConnection(LevelConnection connection) {
+		connections.add(connection);
+	}
+
+	public void rempveConnection(LevelConnection connection) {
+		connections.remove(connection);
 	}
 }
