@@ -76,8 +76,6 @@ public class NodeHolder extends Holder {
 
 	}
 
-
-
 	private void setFillColor() {
 		final Color value = fillColor.get(target.getType());
 		decoration.setFill(value);

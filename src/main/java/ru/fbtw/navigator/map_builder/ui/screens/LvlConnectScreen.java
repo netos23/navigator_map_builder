@@ -8,17 +8,24 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorController;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorProperties;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.io.JsonSerializer;
+import ru.fbtw.navigator.map_builder.io.Printer;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class LvlConnectScreen implements Screen {
+	private static final FileChooser.ExtensionFilter filter =
+			new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
 
 	private BorderPane mainLayout;
 	private StackPane rootCanvas;
@@ -33,9 +40,13 @@ public class LvlConnectScreen implements Screen {
 	private ConnectionEditorProperties properties;
 	private ConnectionEditorController controller;
 
+	private JsonSerializer  serializer;
+	private Printer printer;
+
 	public LvlConnectScreen(Project project) {
 		this.project = project;
 		project.update();
+		serializer = JsonSerializer.getInstance();
 
 		properties = new ConnectionEditorProperties(0);
 		controller = new ConnectionEditorController(properties, project);
@@ -109,8 +120,26 @@ public class LvlConnectScreen implements Screen {
 	}
 
 	private void setOnClicks(Stage primaryStage) {
+		FileChooser chooser = new FileChooser();
 
+
+		save.setOnAction(event -> {
+			chooser.getExtensionFilters().add(filter);
+			File saveFile = chooser.showSaveDialog(primaryStage);
+			if(saveFile != null){
+				try {
+					printer = new Printer(saveFile);
+					printer.write(serializer.extractProject(project));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					// TODO: 02.12.2020 ошибка записи
+				}
+
+			}
+		});
 	}
+
+
 
 	@Override
 	public Scene getScene() {

@@ -5,6 +5,8 @@ import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
@@ -100,7 +102,18 @@ public class Level {
 	public byte[] getImage() {
 		int width = (int) background.getWidth();
 		int height = (int) background.getHeight();
-		javafx.scene.Node node = controller.getLayers()[LayersName.DECORATION];
+		javafx.scene.Node node;
+
+		if(isBackground){
+			Pane[] layers = controller.getLayers();
+			node = new StackPane(
+				layers[LayersName.BACKGROUND],
+				layers[LayersName.DECORATION]
+			);
+
+		}else {
+			 node = controller.getLayers()[LayersName.DECORATION];
+		}
 		return ImageUtils.getImageFromNode(node, width, height);
 	}
 }

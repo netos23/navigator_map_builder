@@ -1,4 +1,9 @@
 package ru.fbtw.navigator.map_builder.io;
 
-public class ProjectsLoader {
+
+
+public class ImageIOTest {
+
+
+
 }

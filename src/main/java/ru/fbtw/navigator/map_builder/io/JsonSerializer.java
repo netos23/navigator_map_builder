@@ -1,5 +1,6 @@
 package ru.fbtw.navigator.map_builder.io;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,8 +13,10 @@ import java.util.*;
 
 public class JsonSerializer {
 	private static JsonSerializer ourInstance = new JsonSerializer();
+	private Gson gson;
 
 	private JsonSerializer() {
+		gson = new Gson();
 	}
 
 	public static JsonSerializer getInstance() {
@@ -135,6 +138,13 @@ public class JsonSerializer {
 		element.add("connections", levelConnectionsToJson(project.getNodeSystem()));
 
 		return element;
+	}
+
+
+	public String extractProject(Project project){
+		JsonElement root = projectToJson(project);
+
+		return gson.toJson(root);
 	}
 
 	// todo: ускорить hash
