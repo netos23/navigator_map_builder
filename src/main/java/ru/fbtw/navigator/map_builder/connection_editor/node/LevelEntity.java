@@ -35,7 +35,7 @@ public class LevelEntity {
 	public LevelEntity(LevelNode node) {
 		this.node = node;
 		sockets = new ArrayList<>();
-		socketsNames = new ArrayList<>(node.getSockets().keySet());
+		socketsNames = new ArrayList<>(node.getSocketsMap().keySet());
 		lvlName = new Label(node.getName());
 
 		connections = new HashSet<>();

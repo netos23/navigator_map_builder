@@ -12,9 +12,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorController;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorProperties;
+import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.io.JsonSerializer;
 import ru.fbtw.navigator.map_builder.io.Printer;
+import ru.fbtw.navigator.map_builder.math.GraphSolver;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
@@ -124,22 +127,43 @@ public class LvlConnectScreen implements Screen {
 
 
 		save.setOnAction(event -> {
-			chooser.getExtensionFilters().add(filter);
-			File saveFile = chooser.showSaveDialog(primaryStage);
-			if(saveFile != null){
-				try {
-					printer = new Printer(saveFile);
-					printer.write(serializer.extractProject(project));
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-					// TODO: 02.12.2020 ошибка записи
-				}
-
-			}
+			extractProject(primaryStage,chooser);
 		});
 	}
 
+	private void extractProject(Stage primaryStage, FileChooser chooser){
+		chooser.getExtensionFilters().add(filter);
+		File saveFile = chooser.showSaveDialog(primaryStage);
+		if(saveFile != null){
+			try {
+				if(!checkProjectSecurity(project)){
+					// TODO: 03.12.2020 сообщение о том что есть недостижимые узлы
+					System.err.println("unsafely level or node system");
+				}
+				printer = new Printer(saveFile);
+				printer.write(serializer.extractProject(project));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				// TODO: 02.12.2020 ошибка записи
+			}
 
+		}
+	}
+
+	private boolean checkProjectSecurity(Project project){
+
+		boolean result = GraphSolver
+				.testLevelAvailabilityByDs(project.getNodeSystem());
+
+		if(result){
+			for(LevelNode level : project.getNodeSystem()){
+				result &= GraphSolver
+						.testNodeAvailabilityByDs(level.getLevel().getNodeSystem());
+			}
+		}
+
+		return result;
+	}
 
 	@Override
 	public Scene getScene() {

@@ -49,7 +49,7 @@ public class JsonSerializer {
 		JsonArray connectionsArray = new JsonArray();
 
 		for (Node node : nodes) {
-			for (Node attached : node.getConnections()) {
+			for (Node attached : node.getNeighbors()) {
 				String nodeA = node.getName();
 				String nodeB = attached.getName();
 
@@ -110,7 +110,7 @@ public class JsonSerializer {
 			level.addProperty("name", node.getName());
 
 			JsonArray sockets = new JsonArray();
-			for (Map.Entry<String, ArrayList<LevelNode>> entry : node.getSockets().entrySet()) {
+			for (Map.Entry<String, ArrayList<LevelNode>> entry : node.getSocketsMap().entrySet()) {
 				JsonObject socket = new JsonObject();
 				socket.addProperty("name", entry.getKey());
 

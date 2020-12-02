@@ -1,12 +1,14 @@
 package ru.fbtw.navigator.map_builder.core.navigation;
 
 import ru.fbtw.navigator.map_builder.core.Level;
+import ru.fbtw.navigator.map_builder.math.MultiGraphNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-public class LevelNode {
+public class LevelNode implements MultiGraphNode<LevelNode> {
+
 	private HashMap<String, ArrayList<LevelNode>> sockets;
 	private HashMap<Integer, String> hashKeys;
 	private String name;
@@ -78,13 +80,21 @@ public class LevelNode {
 		this.name = name;
 	}
 
-	public HashMap<String, ArrayList<LevelNode>> getSockets() {
+	public HashMap<String, ArrayList<LevelNode>> getSocketsMap() {
 		return sockets;
 	}
+
+
 
 	public boolean hasConnection(LevelNode node, int beginSocketId) {
 		String socketKey = hashKeys.get(beginSocketId);
 		return sockets.get(socketKey)
 				.contains(node);
+	}
+
+	// TODO: 03.12.2020 Сделать жадным
+	@Override
+	public ArrayList<ArrayList<LevelNode>> getSockets() {
+		return new ArrayList<>(sockets.values());
 	}
 }

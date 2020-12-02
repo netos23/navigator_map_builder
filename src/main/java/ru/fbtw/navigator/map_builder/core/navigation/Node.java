@@ -1,9 +1,12 @@
 package ru.fbtw.navigator.map_builder.core.navigation;
 
+import ru.fbtw.navigator.map_builder.math.GraphNode;
+
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
-public class Node {
+public class Node implements GraphNode<Node> {
 	private static int nameCount = 0;
 	private static String namePref = "Node %d";
 	private static HashSet<String> names = new HashSet<>();
@@ -37,14 +40,14 @@ public class Node {
 
 	public static void makeConnection(Node o1, Node o2) {
 		if(!o1.equals(o2)) {
-			o1.getConnections().add(o2);
-			o2.getConnections().add(o1);
+			o1.getNeighbors().add(o2);
+			o2.getNeighbors().add(o1);
 		}
 	}
 
 	public static void breakConnection(Node o1, Node o2) {
-		o1.getConnections().remove(o2);
-		o2.getConnections().remove(o1);
+		o1.getNeighbors().remove(o2);
+		o2.getNeighbors().remove(o1);
 	}
 
 	private static String getNextName() {
@@ -72,6 +75,7 @@ public class Node {
 		return connections.contains(other);
 	}
 
+	@Deprecated
 	public ArrayList<Node> getConnections() {
 		return connections;
 	}
@@ -125,5 +129,10 @@ public class Node {
 
 	public void setType(NodeType type) {
 		this.type = type;
+	}
+
+	@Override
+	public List<Node> getNeighbors() {
+		return connections;
 	}
 }
