@@ -59,6 +59,28 @@ public class InfoToolDialogLayoutBuilder {
 		return this;
 	}
 
+	public InfoToolDialogLayoutBuilder addBooleanProperty(
+			String name,
+			boolean val,
+			BooleanPropertyEventHandler onClick
+	) {
+		Label label = new Label(name);
+		CheckBox input = new CheckBox();
+		input.setSelected(val);
+		input.setOnAction(getBaseBoolOnClick(onClick));
+		addRow(label, input);
+		return this;
+	}
+
+	private EventHandler<ActionEvent> getBaseBoolOnClick(BooleanPropertyEventHandler onClick) {
+		return event -> {
+			CheckBox checkBox = (CheckBox) event.getSource();
+
+			final boolean selected = checkBox.isSelected();
+			checkBox.setSelected(onClick.onValueChanged(selected));
+		};
+	}
+
 	public InfoToolDialogLayoutBuilder addMultiLineProperty(
 			String description,
 			String initVal,

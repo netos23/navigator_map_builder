@@ -12,10 +12,7 @@ import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
-import ru.fbtw.navigator.map_builder.ui.canvas_utils.DoublePropertyEventHandler;
-import ru.fbtw.navigator.map_builder.ui.canvas_utils.EnumPropertyEventHandler;
-import ru.fbtw.navigator.map_builder.ui.canvas_utils.InfoToolDialogLayoutBuilder;
-import ru.fbtw.navigator.map_builder.ui.canvas_utils.StringPropertyEventHandler;
+import ru.fbtw.navigator.map_builder.ui.canvas_utils.*;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
@@ -213,10 +210,17 @@ public class NodeHolder extends Holder {
 			setFillColor();
 			setTmpNode();
 		};
+
+		BooleanPropertyEventHandler setIsPrime = event -> {
+			target.setPrime(event);
+			return event;
+		};
+
 		return new InfoToolDialogLayoutBuilder()
 				.addDoubleProperty("x", target.getX(), setX)
 				.addDoubleProperty("y", target.getY(), setY)
 				.addEnumProperty("Node type", target.getType(), setType)
+				.addBooleanProperty("Is prime",target.isPrime(), setIsPrime)
 				.addStringProperty("Name", target.getName(), setName)
 				.addMultiLineProperty("Description", target.getDescription(), setDescription)
 				.build();

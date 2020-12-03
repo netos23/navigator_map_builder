@@ -12,7 +12,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorController;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorProperties;
-import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.io.JsonSerializer;
@@ -28,7 +27,8 @@ import java.util.ArrayList;
 
 public class LvlConnectScreen implements Screen {
 	private static final FileChooser.ExtensionFilter filter =
-			new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+			new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+//	private static final File initialDir = new File();
 
 	private BorderPane mainLayout;
 	private StackPane rootCanvas;
@@ -133,6 +133,7 @@ public class LvlConnectScreen implements Screen {
 
 	private void extractProject(Stage primaryStage, FileChooser chooser){
 		chooser.getExtensionFilters().add(filter);
+//		chooser.setInitialDirectory(initialDir);
 		File saveFile = chooser.showSaveDialog(primaryStage);
 		if(saveFile != null){
 			try {

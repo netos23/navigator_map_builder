@@ -11,6 +11,7 @@ public class Node implements GraphNode<Node> {
 	private static String namePref = "Node %d";
 	private static HashSet<String> names = new HashSet<>();
 
+	private boolean isPrime;
 
 	private int x;
 	private int y;
@@ -113,6 +114,14 @@ public class Node implements GraphNode<Node> {
 		}else {
 			return false;
 		}
+	}
+
+	public boolean isPrime() {
+		return isPrime;
+	}
+
+	public void setPrime(boolean prime) {
+		isPrime = prime;
 	}
 
 	public String getDescription() {

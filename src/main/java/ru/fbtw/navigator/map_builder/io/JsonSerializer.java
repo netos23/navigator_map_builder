@@ -8,6 +8,7 @@ import org.apache.commons.codec.binary.Base64;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 
 import java.util.*;
 
@@ -31,6 +32,9 @@ public class JsonSerializer {
 		root.addProperty("x", node.getX());
 		root.addProperty("y", node.getY());
 		root.addProperty("type", node.getType().ordinal());
+		if(node.getType() == NodeType.ZONE_CONNECTION){
+			root.addProperty("isPrime", node.isPrime());
+		}
 		return root;
 	}
 
