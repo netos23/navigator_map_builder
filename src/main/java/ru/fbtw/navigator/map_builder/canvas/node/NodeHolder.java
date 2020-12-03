@@ -106,7 +106,7 @@ public class NodeHolder extends Holder {
 		layers[LayersName.INPUT_LAYER].getChildren()
 				.removeAll(decoration, name);
 
-		Node.removeName(target.getName());
+		target.dispose();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package ru.fbtw.navigator.map_builder.connection_editor.node;
 import javafx.scene.layout.Pane;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorProperties;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelConnection;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 
 import java.util.ArrayList;
@@ -12,11 +13,12 @@ public class LevelEntityManager {
 	private static final int offset = 200;
 
 	private ArrayList<LevelEntity> levelEntities;
-	private HashSet<LevelConnection> levelConnections;
+	private HashSet<LevelConnectionEntity> levelConnections;
 	private ConnectionEditorProperties properties;
 	private Pane[] layers;
 
 	private Project project;
+	private HashSet<LevelConnection> connectionsManager;
 
 	public LevelEntityManager(
 			Project project,
@@ -28,6 +30,7 @@ public class LevelEntityManager {
 		levelEntities = new ArrayList<>();
 		levelConnections = new HashSet<>();
 		layers = properties.getSource().getLayers();
+		connectionsManager = project.getConnections();
 
 		initLevelEntities();
 	}
@@ -39,9 +42,12 @@ public class LevelEntityManager {
 		}
 
 		setDefaultPositions();
-
+		reBuildConnections();
 	}
 
+	private void reBuildConnections(){
+
+	}
 
 	private void setDefaultPositions() {
 		final int size = levelEntities.size();
@@ -65,6 +71,9 @@ public class LevelEntityManager {
 		}
 	}
 
+
+
+
 	public Pane[] getLayers() {
 		return layers;
 	}
@@ -76,7 +85,7 @@ public class LevelEntityManager {
 				.orElse(null);
 	}
 
-	public LevelConnection selectConnection(double x, double y){
+	public LevelConnectionEntity selectConnection(double x, double y){
 		return levelConnections.stream()
 				.filter(connection -> connection.contains(x, y))
 				.findFirst()
@@ -84,11 +93,15 @@ public class LevelEntityManager {
 	}
 
 
-	public void push(LevelConnection connection) {
+	public void push(LevelConnectionEntity connection) {
 		levelConnections.add(connection);
 	}
 
-	public void remove(LevelConnection connection) {
+	public void remove(LevelConnectionEntity connection) {
 		levelConnections.remove(connection);
+	}
+
+	public HashSet<LevelConnection> getConnectionsManager() {
+		return connectionsManager;
 	}
 }

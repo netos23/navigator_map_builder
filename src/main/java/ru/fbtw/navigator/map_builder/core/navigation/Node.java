@@ -1,12 +1,15 @@
 package ru.fbtw.navigator.map_builder.core.navigation;
 
 import ru.fbtw.navigator.map_builder.math.GraphNode;
+import ru.fbtw.navigator.map_builder.utils.StringUtils;
+import ru.fbtw.navigator.map_builder.utils.common.Disposable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
-public class Node implements GraphNode<Node> {
+public class Node implements GraphNode<Node>, Disposable {
 	private static int nameCount = 0;
 	private static String namePref = "Node %d";
 	private static HashSet<String> names = new HashSet<>();
@@ -21,6 +24,9 @@ public class Node implements GraphNode<Node> {
 
 	private NodeType type;
 	private ArrayList<Node> connections;
+	private String hashName;
+
+	private HashSet<LevelConnection> levelConnections;
 
 	public Node(int x, int y, String name, String description, NodeType type) {
 		this.x = x;
@@ -28,19 +34,23 @@ public class Node implements GraphNode<Node> {
 		this.description = description;
 		this.type = type;
 
+		hashName = StringUtils.nextHashName();
+
 		this.name = name == null || name.isEmpty()
 				? getNextName()
 				: name;
 
 		connections = new ArrayList<>();
+		levelConnections = new HashSet<>();
 
 	}
-	public Node(double x, double y){
-		this((int) x, (int) y, null,"",NodeType.DESTINATION);
+
+	public Node(double x, double y) {
+		this((int) x, (int) y, null, "", NodeType.DESTINATION);
 	}
 
 	public static void makeConnection(Node o1, Node o2) {
-		if(!o1.equals(o2)) {
+		if (!o1.equals(o2)) {
 			o1.getNeighbors().add(o2);
 			o2.getNeighbors().add(o1);
 		}
@@ -60,7 +70,7 @@ public class Node implements GraphNode<Node> {
 		return name;
 	}
 
-	public static boolean validateName(String name){
+	public static boolean validateName(String name) {
 		return !(name == null || name.isEmpty() || names.contains(name));
 	}
 
@@ -106,12 +116,12 @@ public class Node implements GraphNode<Node> {
 	}
 
 	public boolean setName(String name) {
-		if(validateName(name)){
+		if (validateName(name)) {
 			names.remove(this.name);
 			this.name = name;
 			names.add(name);
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -143,5 +153,28 @@ public class Node implements GraphNode<Node> {
 	@Override
 	public List<Node> getNeighbors() {
 		return connections;
+	}
+
+	@Override
+	public String getHashName() {
+		return hashName;
+	}
+
+	public HashSet<LevelConnection> getLevelConnections() {
+		return levelConnections;
+	}
+
+	@Override
+	public void dispose() {
+		Iterator<LevelConnection> iterator = levelConnections.iterator();
+		while (iterator.hasNext()){
+			LevelConnection connection = iterator.next();
+			iterator.remove();
+
+			connection.dispose();
+		}
+
+		removeName(getName());
+
 	}
 }

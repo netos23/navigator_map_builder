@@ -3,6 +3,7 @@ package ru.fbtw.navigator.map_builder.core;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelConnection;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 
 import java.io.Serializable;
@@ -13,14 +14,15 @@ import java.util.List;
 public class Project implements Serializable {
 	private HashSet<Platforms> platforms;
 	private ObservableList<Level> levels;
-	private ArrayList<LevelNode> levelNodeSystem;
 
+	private ArrayList<LevelNode> levelNodeSystem;
+	private HashSet<LevelConnection> connections;
 
 	public Project() {
 		levels = FXCollections.observableArrayList(Level.getCallback());
 		levels.addListener(this::updateLevelNodeSystem);
 		levelNodeSystem = new ArrayList<>();
-
+		connections = new HashSet<>();
 	}
 	public void updateLevelNodeSystem(ListChangeListener.Change<? extends Level> change){
 		if(change.next()){
@@ -49,11 +51,15 @@ public class Project implements Serializable {
 
 	public void update(){
 		for(LevelNode node : levelNodeSystem){
-			node.updateSockets();
+			node.updateBasicSockets();
 		}
 	}
 
 	public ArrayList<LevelNode> getNodeSystem() {
 		return levelNodeSystem;
+	}
+
+	public HashSet<LevelConnection> getConnections() {
+		return connections;
 	}
 }

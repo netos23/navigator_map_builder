@@ -19,6 +19,7 @@ import ru.fbtw.navigator.map_builder.io.Printer;
 import ru.fbtw.navigator.map_builder.math.GraphSolver;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
+import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class LvlConnectScreen implements Screen {
 	private ArrayList<ToggleButton> tools;
 
 	private Button clear, undo, redo;
-	private Button save, load, push;
+	private Button save, back, push;
 
 	private Project project;
 	private ConnectionEditorProperties properties;
@@ -70,7 +71,7 @@ public class LvlConnectScreen implements Screen {
 		redo = new Button("->");
 
 		save = new Button("Save");
-		load = new Button("Load");
+		back = new Button("Back");
 		push = new Button("Push");
 
 		initScene();
@@ -99,7 +100,7 @@ public class LvlConnectScreen implements Screen {
 				.addButtonsGrid(1, tools, true)
 				.addHorizontalButtonsPanel(clear, undo, redo)
 				.addContent(save)
-				.addContent(load)
+				.addContent(back)
 				.addContent(push)
 				.wrapWithScrolView()
 				.build();
@@ -129,6 +130,8 @@ public class LvlConnectScreen implements Screen {
 		save.setOnAction(event -> {
 			extractProject(primaryStage,chooser);
 		});
+
+		back.setOnAction(event -> Navigator.pop());
 	}
 
 	private void extractProject(Stage primaryStage, FileChooser chooser){
@@ -141,8 +144,10 @@ public class LvlConnectScreen implements Screen {
 					// TODO: 03.12.2020 сообщение о том что есть недостижимые узлы
 					System.err.println("unsafely level or node system");
 				}
+
 				printer = new Printer(saveFile);
 				printer.write(serializer.extractProject(project));
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				// TODO: 02.12.2020 ошибка записи
@@ -153,8 +158,8 @@ public class LvlConnectScreen implements Screen {
 
 	private boolean checkProjectSecurity(Project project){
 
-		boolean result = GraphSolver
-				.testLevelAvailabilityByDs(project.getNodeSystem());
+		boolean result = true;
+		/*GraphSolver.testLevelAvailabilityByDs(project.getNodeSystem());*/
 
 		if(result){
 			for(LevelNode level : project.getNodeSystem()){
@@ -178,6 +183,6 @@ public class LvlConnectScreen implements Screen {
 
 	@Override
 	public void dispose() {
-
+		printer.dispose();
 	}
 }

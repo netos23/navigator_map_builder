@@ -67,8 +67,8 @@ public class ImageUtils {
 		try {
 			ImageIO.write(renderedImage,DEFAULT_TYPE,output);
 
-			/*File file = new File(nextFilename());
-			ImageIO.write(renderedImage,DEFAULT_TYPE,file);*/
+			File file = new File(nextFilename());
+			ImageIO.write(renderedImage,DEFAULT_TYPE,file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -16,23 +16,10 @@ public class GraphSolver {
 			e.printStackTrace();
 			return false;
 		}
-		/*HashSet<T> checked = new HashSet<>(nodeSystem);
 
-		LinkedList<T> queue = new LinkedList<>();
-		queue.addLast(getFirstFormSet(checked));
-
-		while (!queue.isEmpty()) {
-			T element = queue.pollFirst();
-
-			if (element != null) {
-				checked.remove(element);
-				queue.addAll(element.getNeighbors());
-			}
-		}
-		return checked.size() == 0;*/
 	}
 
-	public static <T extends MultiGraphNode> boolean testLevelAvailabilityByDs(List<T> levelNodeSystem) {
+	/*public static <T extends MultiGraphNode> boolean testLevelAvailabilityByDs(List<T> levelNodeSystem) {
 		try {
 			final Method getUniqueNeighbors = MultiGraphNode.class.getMethod("getUniqueNeighbors");
 
@@ -40,7 +27,7 @@ public class GraphSolver {
 		} catch (NoSuchMethodException e) {
 			return false;
 		}
-	}
+	}*/
 
 
 	private static <T> boolean availabilityDeepSearch(List<T> graph, Method neighborsGetter) {

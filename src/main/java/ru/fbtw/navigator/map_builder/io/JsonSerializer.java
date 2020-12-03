@@ -10,7 +10,10 @@ import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class JsonSerializer {
 	private static JsonSerializer ourInstance = new JsonSerializer();
@@ -32,7 +35,7 @@ public class JsonSerializer {
 		root.addProperty("x", node.getX());
 		root.addProperty("y", node.getY());
 		root.addProperty("type", node.getType().ordinal());
-		if(node.getType() == NodeType.ZONE_CONNECTION){
+		if (node.getType() == NodeType.ZONE_CONNECTION) {
 			root.addProperty("isPrime", node.isPrime());
 		}
 		return root;
@@ -57,7 +60,7 @@ public class JsonSerializer {
 				String nodeA = node.getName();
 				String nodeB = attached.getName();
 
-				String hash = getHash(nodeA,nodeB);
+				String hash = getStringHash(nodeA, nodeB);
 
 				if (!(writenObjects.contains(hash))) {
 					writenObjects.add(hash);
@@ -106,30 +109,34 @@ public class JsonSerializer {
 		return levelsArray;
 	}
 
-	public JsonArray levelConnectionsToJson(List<LevelNode> nodes) {
-		JsonArray connectionsArray = new JsonArray(nodes.size());
 
-		for (LevelNode node : nodes) {
-			JsonObject level = new JsonObject();
-			level.addProperty("name", node.getName());
 
-			JsonArray sockets = new JsonArray();
-			for (Map.Entry<String, ArrayList<LevelNode>> entry : node.getSocketsMap().entrySet()) {
-				JsonObject socket = new JsonObject();
-				socket.addProperty("name", entry.getKey());
+	@Deprecated
+	public JsonArray levelSystemToJson(List<LevelNode> nodes) {
+		JsonArray connectionsArray = new JsonArray();
+		HashSet<Integer> hashes = new HashSet<>();
 
-				JsonArray socketConnections = new JsonArray();
-				for (LevelNode attachedToSocket : entry.getValue()) {
-					socketConnections.add(attachedToSocket.getName());
+		/*for (LevelNode nodeA : nodes) {
+			for (Map.Entry<String, ArrayList<LevelNode>> containerSocketA
+					: nodeA.getSocketsMap().entrySet()) {
+
+				for (LevelNode nodeB : containerSocketA.getValue()) {
+					ArrayList<String> otherSockets = nodeB.getAttachedSocketName(nodeA);
+
+					for (String socketB : otherSockets) {
+
+						if (socketB != null && hashes.add(getIntHash(containerSocketA.getKey(), socketB))) {
+							JsonObject connection = new JsonObject();
+							connection.addProperty("levelA",nodeA.getName());
+							connection.addProperty("socketA",containerSocketA.getKey());
+							connection.addProperty("levelB",nodeB.getName());
+							connection.addProperty("socketB",socketB);
+							connectionsArray.add(connection);
+						}
+					}
 				}
-
-				socket.add("connections", socketConnections);
-				sockets.add(socket);
 			}
-
-			level.add("connections", sockets);
-			connectionsArray.add(level);
-		}
+		}*/
 
 		return connectionsArray;
 	}
@@ -139,33 +146,38 @@ public class JsonSerializer {
 		JsonObject element = new JsonObject();
 
 		element.add("levels", levelNodesToJson(project.getNodeSystem()));
-		element.add("connections", levelConnectionsToJson(project.getNodeSystem()));
+//		element.add("connections", levelConnectionsToJson(project.getNodeSystem()));
+		element.add("connections", levelSystemToJson(project.getNodeSystem()));
 
 		return element;
 	}
 
 
-	public String extractProject(Project project){
+	public String extractProject(Project project) {
 		JsonElement root = projectToJson(project);
 
 		return gson.toJson(root);
 	}
 
 	// todo: ускорить hash
-	public String getHash(String a, String b){
-		if(a.length() == b.length()){
-			if(a.compareTo(b)>0){
+	public String getStringHash(String a, String b) {
+		if (a.length() == b.length()) {
+			if (a.compareTo(b) > 0) {
 				return a + b;
-			}else{
+			} else {
 				return b + a;
 			}
-		}else{
-			if(a.length() > b.length()){
+		} else {
+			if (a.length() > b.length()) {
 				return a + b;
-			}else{
+			} else {
 				return b + a;
 			}
 		}
+	}
+
+	public int getIntHash(String a, String b) {
+		return getStringHash(a, b).hashCode();
 	}
 
 

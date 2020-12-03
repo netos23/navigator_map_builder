@@ -1,7 +1,7 @@
 package ru.fbtw.navigator.map_builder.connection_editor.tools;
 
 import ru.fbtw.navigator.map_builder.connection_editor.LayersName;
-import ru.fbtw.navigator.map_builder.connection_editor.node.LevelConnection;
+import ru.fbtw.navigator.map_builder.connection_editor.node.LevelConnectionEntity;
 import ru.fbtw.navigator.map_builder.connection_editor.node.LevelEntity;
 import ru.fbtw.navigator.map_builder.connection_editor.node.LevelEntityManager;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
@@ -16,20 +16,17 @@ public class RemoveTool implements ScreenTool {
 
 	@Override
 	public void onPressed(double x, double y) {
-		LevelConnection connection = manager.selectConnection(x, y);
+		LevelConnectionEntity connection = manager.selectConnection(x, y);
 
 		if(connection != null) {
 			LevelEntity first = connection.getBeginEntity();
 			LevelEntity second = connection.getEndEntity();
 
-			LevelNode.breakConnection(
-					first.getNode(),
-					connection.getBeginSocketId(),
-					second.getNode(),
-					connection.getEndSocketId());
 
-			first.rempveConnection(connection);
-			second.rempveConnection(connection);
+			connection.getConnection().dispose();
+
+			first.removeConnection(connection);
+			second.removeConnection(connection);
 
 			manager.remove(connection);
 			manager.getLayers()[LayersName.CONNECTIONS].getChildren()

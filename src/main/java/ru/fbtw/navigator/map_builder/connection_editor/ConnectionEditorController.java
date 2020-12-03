@@ -52,6 +52,10 @@ public class ConnectionEditorController {
 
 		setOnClicks();
 	}
+
+
+
+
 	private void setOnClicks() {
 		inputLayer.setOnMousePressed(event ->
 				tools[properties.getTool()].onPressed(event.getX(),event.getY())
