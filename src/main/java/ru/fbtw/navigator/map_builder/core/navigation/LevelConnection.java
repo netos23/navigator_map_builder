@@ -55,6 +55,15 @@ public class LevelConnection implements Disposable {
 		return socketB;
 	}
 
+
+	public LevelNode getNodeA() {
+		return nodeA;
+	}
+
+	public LevelNode getNodeB() {
+		return nodeB;
+	}
+
 	@Override
 	public int hashCode() {
 		String socketAName = StringUtils

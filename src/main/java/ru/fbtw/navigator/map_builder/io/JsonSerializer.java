@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelConnection;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
@@ -13,7 +14,6 @@ import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 public class JsonSerializer {
 	private static JsonSerializer ourInstance = new JsonSerializer();
@@ -110,35 +110,25 @@ public class JsonSerializer {
 	}
 
 
-
-	@Deprecated
-	public JsonArray levelSystemToJson(List<LevelNode> nodes) {
+	public JsonArray levelSystemToJson(HashSet<LevelConnection> connections) {
 		JsonArray connectionsArray = new JsonArray();
-		HashSet<Integer> hashes = new HashSet<>();
 
-		/*for (LevelNode nodeA : nodes) {
-			for (Map.Entry<String, ArrayList<LevelNode>> containerSocketA
-					: nodeA.getSocketsMap().entrySet()) {
-
-				for (LevelNode nodeB : containerSocketA.getValue()) {
-					ArrayList<String> otherSockets = nodeB.getAttachedSocketName(nodeA);
-
-					for (String socketB : otherSockets) {
-
-						if (socketB != null && hashes.add(getIntHash(containerSocketA.getKey(), socketB))) {
-							JsonObject connection = new JsonObject();
-							connection.addProperty("levelA",nodeA.getName());
-							connection.addProperty("socketA",containerSocketA.getKey());
-							connection.addProperty("levelB",nodeB.getName());
-							connection.addProperty("socketB",socketB);
-							connectionsArray.add(connection);
-						}
-					}
-				}
-			}
-		}*/
+		for (LevelConnection connection : connections) {
+			JsonObject object = connectionToJson(connection);
+			connectionsArray.add(object);
+		}
 
 		return connectionsArray;
+	}
+
+	public JsonObject connectionToJson(LevelConnection connection) {
+		JsonObject object = new JsonObject();
+
+		object.addProperty("nodeA", connection.getNodeA().getName());
+		object.addProperty("nodeB", connection.getNodeB().getName());
+		object.addProperty("socketA", connection.getSocketA().getName());
+		object.addProperty("socketB", connection.getSocketB().getName());
+		return object;
 	}
 
 
@@ -146,8 +136,7 @@ public class JsonSerializer {
 		JsonObject element = new JsonObject();
 
 		element.add("levels", levelNodesToJson(project.getNodeSystem()));
-//		element.add("connections", levelConnectionsToJson(project.getNodeSystem()));
-		element.add("connections", levelSystemToJson(project.getNodeSystem()));
+		element.add("connections", levelSystemToJson(project.getConnections()));
 
 		return element;
 	}
@@ -159,8 +148,7 @@ public class JsonSerializer {
 		return gson.toJson(root);
 	}
 
-	// todo: ускорить hash
-	public String getStringHash(String a, String b) {
+	private String getStringHash(String a, String b) {
 		if (a.length() == b.length()) {
 			if (a.compareTo(b) > 0) {
 				return a + b;
@@ -176,9 +164,9 @@ public class JsonSerializer {
 		}
 	}
 
-	public int getIntHash(String a, String b) {
+	@Deprecated
+	private int getIntHash(String a, String b) {
 		return getStringHash(a, b).hashCode();
 	}
-
 
 }
