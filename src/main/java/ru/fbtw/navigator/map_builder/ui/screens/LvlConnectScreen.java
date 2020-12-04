@@ -158,8 +158,8 @@ public class LvlConnectScreen implements Screen {
 
 	private boolean checkProjectSecurity(Project project){
 
-		boolean result = true;
-		/*GraphSolver.testLevelAvailabilityByDs(project.getNodeSystem());*/
+		boolean result = GraphSolver
+				.testLevelAvailability(project.getConnections(),project.getNodeSystem());
 
 		if(result){
 			for(LevelNode level : project.getNodeSystem()){
