@@ -20,250 +20,252 @@ import java.util.HashMap;
 
 public class NodeHolder extends Holder {
 
-	private final static Color STROKE_COLOR = Color.BLACK;
-	private final static double WIDTH = 15;
-	private static HashMap<NodeType, Color> fillColor;
+    private final static Color STROKE_COLOR = Color.BLACK;
+    private final static double WIDTH = 15;
+    private static HashMap<NodeType, Color> fillColor;
 
-	static {
-		fillColor = new HashMap<>();
-		fillColor.put(NodeType.DESTINATION, Color.GREEN);
-		fillColor.put(NodeType.TEMP, Color.CORAL);
-		fillColor.put(NodeType.ZONE_CONNECTION, Color.BLUE);
-		fillColor.put(null, Color.RED);
-	}
+    static {
+        fillColor = new HashMap<>();
+        fillColor.put(NodeType.DESTINATION, Color.GREEN);
+        fillColor.put(NodeType.TEMP, Color.CORAL);
+        fillColor.put(NodeType.ZONE_CONNECTION, Color.BLUE);
+        fillColor.put(null, Color.RED);
+    }
 
-	private Circle decoration;
-	private Label name;
-	private Node target;
-	private Vector2 origin;
-	private Vector2 startPos;
-	private ArrayList<NodeConnectionHolder> attachedConnections;
+    private Circle decoration;
+    private Label name;
+    private Node target;
+    private Vector2 origin;
+    private Vector2 startPos;
+    private ArrayList<NodeConnectionHolder> attachedConnections;
 
-	public NodeHolder(Node node) {
-		target = node;
+    public NodeHolder(Node node) {
+        target = node;
 
-		decoration = new Circle();
-		decoration.setRadius(WIDTH);
-		decoration.setStroke(STROKE_COLOR);
-		setFillColor();
+        decoration = new Circle();
+        decoration.setRadius(WIDTH);
+        decoration.setStroke(STROKE_COLOR);
+        setFillColor();
 
-		name = new Label(target.getName());
-
-
-
-		setPosition(target.getX(), target.getY());
-		setTmpNode();
-
-		attachedConnections = new ArrayList<>();
-	}
+        name = new Label(target.getName());
 
 
-	private void setPosition(double x, double y) {
-		origin = new Vector2(x, y);
-		target.setX((int) x);
-		target.setY((int) y);
+        setPosition(target.getX(), target.getY());
+        setTmpNode();
 
-		decoration.setCenterX(x);
-		decoration.setCenterY(y);
-
-		double nameX = target.getX() - getNameWidth();
-		double nameY = target.getY() + WIDTH;
-		name.setLayoutX(nameX);
-		name.setLayoutY(nameY);
-
-	}
-
-	private void setFillColor() {
-		final Color value = fillColor.get(target.getType());
-		decoration.setFill(value);
-	}
-
-	private void setTmpNode() {
-		boolean isTmp = target.getType() == NodeType.TEMP;
-		name.setVisible(!isTmp);
-	}
+        attachedConnections = new ArrayList<>();
+    }
 
 
-	private double getNameWidth() {
-		return name.getText().length() * 3.5;
-	}
+    private void setPosition(double x, double y) {
+        origin = new Vector2(x, y);
+        target.setX((int) x);
+        target.setY((int) y);
 
-	@Override
-	public void splitLayers(Pane[] layers) {
-		layers[LayersName.INPUT_LAYER].getChildren()
-				.addAll(decoration,name);
-	}
+        decoration.setCenterX(x);
+        decoration.setCenterY(y);
 
-	@Override
-	public void extractProbes(ProbeManager manager) {
-		// do nothing
-	}
+        double nameX = target.getX() - getNameWidth();
+        double nameY = target.getY() + WIDTH;
+        name.setLayoutX(nameX);
+        name.setLayoutY(nameY);
 
-	@Override
-	public void remove(Pane[] layers) {
+    }
 
+    private void setFillColor() {
+        final Color value = fillColor.get(target.getType());
+        decoration.setFill(value);
+    }
 
-		layers[LayersName.INPUT_LAYER].getChildren()
-				.removeAll(decoration, name);
-
-		target.dispose();
-	}
-
-	@Override
-	public void beginReplace(double x, double y) {
-		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
-		startPos = new Vector2(x, y);
-		name.setVisible(false);
-
-		for (NodeConnectionHolder h : attachedConnections) {
-			h.beginResize(this);
-		}
-	}
-
-	@Override
-	public void replace(double x, double y) {
-		Vector2 curPos = new Vector2(x, y);
-		Vector2 delta = startPos.subtract(curPos);
-		double dx = delta.getX();
-		double dy = delta.getY();
+    private void setTmpNode() {
+        boolean isTmp = target.getType() == NodeType.TEMP;
+        name.setVisible(!isTmp);
+    }
 
 
-		decoration.setCenterX(origin.getX() + dx);
-		decoration.setCenterY(origin.getY() + dy);
+    private double getNameWidth() {
+        return name.getText().length() * 3.5;
+    }
 
-		for (NodeConnectionHolder h : attachedConnections) {
-			h.resize(new Vector2(decoration.getCenterX(),decoration.getCenterY()));
-		}
-	}
+    @Override
+    public void splitLayers(Pane[] layers) {
+        layers[LayersName.INPUT_LAYER].getChildren()
+                .addAll(decoration, name);
+    }
 
-	@Override
-	public void endReplace(double x, double y, ProbeManager manager) {
-		replace(x, y);
-		setPosition(decoration.getCenterX(), decoration.getCenterY());
-		name.setVisible(true);
-	}
+    @Override
+    public void extractProbes(ProbeManager manager) {
+        // do nothing
+    }
 
-	@Override
-	public void beginResize(double x, double y) {
-		// do nothing
-	}
+    @Override
+    public void remove(Pane[] layers) {
 
-	@Override
-	public void resize(double x, double y) {
-		// do nothing
-	}
 
-	@Override
-	public void endResize(double x, double y, ProbeManager manager) {
-		// do nothing
-	}
+        layers[LayersName.INPUT_LAYER].getChildren()
+                .removeAll(decoration, name);
 
-	@Override
-	public void reBuildProbes(ProbeManager manager) {
-		// do nothing
-	}
+        target.dispose();
+    }
 
-	@Override
-	public void setStrokeWidth(double width) {
-		// do nothing
-	}
+    @Override
+    public void beginReplace(double x, double y) {
+        origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
+        startPos = new Vector2(x, y);
+        name.setVisible(false);
 
-	@Override
-	public void setStroke(Paint color) {
-		// do nothing
-	}
+        for (NodeConnectionHolder h : attachedConnections) {
+            h.beginResize(this);
+        }
+    }
 
-	@Override
-	public void setFill(Paint color) {
-		// do nothing
-	}
+    @Override
+    public void replace(double x, double y) {
+        Vector2 curPos = new Vector2(x, y);
+        Vector2 delta = startPos.subtract(curPos);
+        double dx = delta.getX();
+        double dy = delta.getY();
 
-	@Override
-	public ScrollPane getInfo(ProbeManager manager) {
-		DoublePropertyEventHandler setX = e -> {
-			if (e != null) {
-				setPosition(e, target.getY());
-			}
-			return target.getX();
-		};
-		DoublePropertyEventHandler setY = e -> {
-			if (e != null) {
-				setPosition(target.getX(), e);
-			}
-			return target.getY();
-		};
 
-		StringPropertyEventHandler setName = e -> {
-			target.setName(e);
-			name.setText(e);
-			setPosition(decoration.getCenterX(), decoration.getCenterY());
-			return target.getName();
+        decoration.setCenterX(origin.getX() + dx);
+        decoration.setCenterY(origin.getY() + dy);
 
-		};
-		StringPropertyEventHandler setDescription = e -> {
-			if (e == null) e = "";
-			target.setDescription(e);
-			return target.getDescription();
-		};
-		EnumPropertyEventHandler<NodeType> setType = e -> {
-			target.setType(e);
-			setFillColor();
-			setTmpNode();
-		};
+        for (NodeConnectionHolder h : attachedConnections) {
+            h.resize(new Vector2(decoration.getCenterX(), decoration.getCenterY()));
+        }
+    }
 
-		BooleanPropertyEventHandler setIsPrime = event -> {
-			target.setPrime(event);
-			return event;
-		};
+    @Override
+    public void endReplace(double x, double y, ProbeManager manager) {
+        replace(x, y);
+        setPosition(decoration.getCenterX(), decoration.getCenterY());
 
-		return new InfoToolDialogLayoutBuilder()
-				.addDoubleProperty("x", target.getX(), setX)
-				.addDoubleProperty("y", target.getY(), setY)
-				.addEnumProperty("Node type", target.getType(), setType)
-				.addBooleanProperty("Is prime",target.isPrime(), setIsPrime)
-				.addStringProperty("Name", target.getName(), setName)
-				.addMultiLineProperty("Description", target.getDescription(), setDescription)
-				.build();
-	}
+        if (target.getType() != NodeType.TEMP) {
+            name.setVisible(true);
+        }
+    }
 
-	@Override
-	public void reBuildHitBoxes() {
-		// do nothing
-	}
+    @Override
+    public void beginResize(double x, double y) {
+        // do nothing
+    }
 
-	@Override
-	public Shape getShape() {
-		return decoration;
-	}
+    @Override
+    public void resize(double x, double y) {
+        // do nothing
+    }
 
-	public Node getTarget() {
-		return target;
-	}
+    @Override
+    public void endResize(double x, double y, ProbeManager manager) {
+        // do nothing
+    }
 
-	public double getX(){
-		return decoration.getCenterX();
-	}
+    @Override
+    public void reBuildProbes(ProbeManager manager) {
+        // do nothing
+    }
 
-	public double getY(){
-		return decoration.getCenterY();
-	}
+    @Override
+    public void setStrokeWidth(double width) {
+        // do nothing
+    }
 
-	@Override
-	public boolean contains(double x, double y) {
-		return decoration.contains(x, y);
-	}
+    @Override
+    public void setStroke(Paint color) {
+        // do nothing
+    }
 
-	@Override
-	public boolean containsInner(double x, double y) {
-		return contains(x, y);
-	}
+    @Override
+    public void setFill(Paint color) {
+        // do nothing
+    }
 
-	public ArrayList<NodeConnectionHolder> getAttachedConnections() {
-		return attachedConnections;
-	}
+    @Override
+    public ScrollPane getInfo(ProbeManager manager) {
+        DoublePropertyEventHandler setX = e -> {
+            if (e != null) {
+                setPosition(e, target.getY());
+            }
+            return target.getX();
+        };
+        DoublePropertyEventHandler setY = e -> {
+            if (e != null) {
+                setPosition(target.getX(), e);
+            }
+            return target.getY();
+        };
 
-	@Override
-	public String toString() {
-		return String.format("Node: \"%s\"", target.getName());
-	}
+        StringPropertyEventHandler setName = e -> {
+            target.setName(e);
+            name.setText(e);
+            setPosition(decoration.getCenterX(), decoration.getCenterY());
+            return target.getName();
+
+        };
+        StringPropertyEventHandler setDescription = e -> {
+            if (e == null) e = "";
+            target.setDescription(e);
+            return target.getDescription();
+        };
+        EnumPropertyEventHandler<NodeType> setType = e -> {
+            target.setType(e);
+            setFillColor();
+            setTmpNode();
+        };
+
+        BooleanPropertyEventHandler setIsPrime = event -> {
+            target.setPrime(event);
+            return event;
+        };
+
+        return new InfoToolDialogLayoutBuilder()
+                .addDoubleProperty("x", target.getX(), setX)
+                .addDoubleProperty("y", target.getY(), setY)
+                .addEnumProperty("Node type", target.getType(), setType)
+                .addBooleanProperty("Is prime", target.isPrime(), setIsPrime)
+                .addStringProperty("Name", target.getName(), setName)
+                .addMultiLineProperty("Description", target.getDescription(), setDescription)
+                .build();
+    }
+
+    @Override
+    public void reBuildHitBoxes() {
+        // do nothing
+    }
+
+    @Override
+    public Shape getShape() {
+        return decoration;
+    }
+
+    public Node getTarget() {
+        return target;
+    }
+
+    public double getX() {
+        return decoration.getCenterX();
+    }
+
+    public double getY() {
+        return decoration.getCenterY();
+    }
+
+    @Override
+    public boolean contains(double x, double y) {
+        return decoration.contains(x, y);
+    }
+
+    @Override
+    public boolean containsInner(double x, double y) {
+        return contains(x, y);
+    }
+
+    public ArrayList<NodeConnectionHolder> getAttachedConnections() {
+        return attachedConnections;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Node: \"%s\"", target.getName());
+    }
 }

@@ -3,6 +3,7 @@ package ru.fbtw.navigator.map_builder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.ui.screens.LoginPage;
 import ru.fbtw.navigator.map_builder.ui.screens.LvlEditScreen;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
@@ -17,7 +18,8 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Screen firstScreen = new LvlEditScreen(new Project());
+		//Screen firstScreen = new LvlEditScreen(new Project());
+		Screen firstScreen = new LoginPage();
 		Navigator.init(primaryStage,firstScreen);
 	}
 

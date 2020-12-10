@@ -5,9 +5,7 @@ import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GraphSolver {
@@ -25,35 +23,21 @@ public class GraphSolver {
 
 	}
 
-	public static boolean testLevelAvailability(HashSet<LevelConnection> connections, List<LevelNode> levels){
+	public static boolean testLevelAvailability(HashSet<LevelConnection> connections, List<LevelNode> levels) {
 		ArrayList<LevelNodeGraphEntry> entries
 				= levels.stream()
 				.map(LevelNodeGraphEntry::new)
 				.collect(Collectors.toCollection(ArrayList::new));
 
-		for(LevelConnection connection : connections){
+		for (LevelConnection connection : connections) {
 			LevelNodeGraphEntry entryA = entries.get(levels.indexOf(connection.getNodeA()));
 			LevelNodeGraphEntry entryB = entries.get(levels.indexOf(connection.getNodeB()));
 
-			LevelNodeGraphEntry.connect(entryA,entryB);
+			LevelNodeGraphEntry.connect(entryA, entryB);
 		}
 
 		return testNodeAvailabilityByDs(entries);
 	}
-
-
-
-	/*@Deprecated
-	public static <T extends MultiGraphNode> boolean testLevelAvailabilityByDs(List<T> levelNodeSystem) {
-		try {
-			final Method getUniqueNeighbors = MultiGraphNode.class.getMethod("getUniqueNeighbors");
-
-			return availabilityDeepSearch(levelNodeSystem, getUniqueNeighbors);
-		} catch (NoSuchMethodException e) {
-			return false;
-		}
-	}*/
-
 
 	@Deprecated
 	private static <T> boolean availabilityDeepSearch(List<T> graph, Method neighborsGetter) {
@@ -86,7 +70,7 @@ public class GraphSolver {
 	}
 
 
-	private static class LevelNodeGraphEntry implements GraphNode<LevelNodeGraphEntry>{
+	private static class LevelNodeGraphEntry implements GraphNode<LevelNodeGraphEntry> {
 		private LevelNode node;
 		private ArrayList<LevelNodeGraphEntry> nodes;
 
@@ -95,7 +79,7 @@ public class GraphSolver {
 			nodes = new ArrayList<>();
 		}
 
-		static void connect(LevelNodeGraphEntry a, LevelNodeGraphEntry b){
+		static void connect(LevelNodeGraphEntry a, LevelNodeGraphEntry b) {
 			a.nodes.add(b);
 			b.nodes.add(a);
 		}

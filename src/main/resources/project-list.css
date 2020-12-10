@@ -1,0 +1,19 @@
+.hbox-group {
+    -fx-background-color: #702873;
+    -fx-padding: 20;
+    -fx-alignment: top+center;
+}
+.username{
+    -fx-font-size: 30pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.projects{
+    -fx-font-size: 30pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.list-view{
+    -fx-background-color: #af6bba;
+}

@@ -1,0 +1,59 @@
+.hbox-group {
+    -fx-background-color: #702873;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+.label-header {
+    -fx-font-size: 50pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.label-disc {
+    -fx-font-size: 20pt;
+    -fx-text-fill: white;
+}
+
+.label-msg {
+    -fx-padding-top: 100px;
+    -fx-font-size: 25pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-graphic-text-gap: 4;
+}
+
+.text-field {
+    -fx-background-color: #af6bba;
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}
+
+.label-form {
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}
+
+.button-sing-up{
+    -fx-background-color: #af6bba;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.button-log-in{
+    -fx-background-color: #8937b8;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.label-err{
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: #ff0000;
+}
+
