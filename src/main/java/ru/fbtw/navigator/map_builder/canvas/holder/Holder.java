@@ -12,6 +12,7 @@ import ru.fbtw.navigator.map_builder.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class Holder {
 	public static final int ADDITIONAL_WIDTH = 5;
@@ -86,4 +87,8 @@ public abstract class Holder {
 	public String toString() {
 		return StringUtils.holderToString(this.getClass());
 	}
+
+    public List<Probe> getProbes() {
+        return probes;
+    }
 }

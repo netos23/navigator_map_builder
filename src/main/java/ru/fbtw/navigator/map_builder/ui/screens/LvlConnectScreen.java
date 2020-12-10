@@ -14,7 +14,7 @@ import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorControlle
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorProperties;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
-import ru.fbtw.navigator.map_builder.io.JsonSerializer;
+import ru.fbtw.navigator.map_builder.io.GraphJsonSerializer;
 import ru.fbtw.navigator.map_builder.io.Printer;
 import ru.fbtw.navigator.map_builder.math.GraphSolver;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
@@ -44,13 +44,13 @@ public class LvlConnectScreen implements Screen {
 	private ConnectionEditorProperties properties;
 	private ConnectionEditorController controller;
 
-	private JsonSerializer  serializer;
+	private GraphJsonSerializer serializer;
 	private Printer printer;
 
 	public LvlConnectScreen(Project project) {
 		this.project = project;
 		project.update();
-		serializer = JsonSerializer.getInstance();
+		serializer = GraphJsonSerializer.getInstance();
 
 		properties = new ConnectionEditorProperties(0);
 		controller = new ConnectionEditorController(properties, project);

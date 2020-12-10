@@ -15,15 +15,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class JsonSerializer {
-	private static JsonSerializer ourInstance = new JsonSerializer();
+public class GraphJsonSerializer {
+	private static GraphJsonSerializer ourInstance = new GraphJsonSerializer();
 	private Gson gson;
 
-	private JsonSerializer() {
+	private GraphJsonSerializer() {
 		gson = new Gson();
 	}
 
-	public static JsonSerializer getInstance() {
+	public static GraphJsonSerializer getInstance() {
 		return ourInstance;
 	}
 

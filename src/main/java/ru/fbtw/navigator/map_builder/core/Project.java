@@ -69,4 +69,8 @@ public class Project implements Serializable {
     public HashSet<LevelConnection> getConnections() {
         return connections;
     }
+
+    public void setLevels(List<Level> levels) {
+        this.levels.addAll(levels);
+    }
 }

@@ -19,6 +19,7 @@ import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.io.Serializer;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
@@ -26,11 +27,9 @@ import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 import ru.fbtw.navigator.map_builder.utils.KeyManager;
+import ru.fbtw.navigator.map_builder.utils.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -296,6 +295,21 @@ public class LvlEditScreen implements Screen {
 		isUseFill.setSelected(false);
 
 		push.setOnAction(event -> Navigator.push(new LvlConnectScreen(project)));
+
+		save.setOnAction(event -> {
+			//todo асинхронно заливать на сервак
+			try {
+				Serializer serializer = new Serializer();
+
+				String res = serializer.writeProject(project);
+				File save = new File("saves/"+ StringUtils.nextHashName()+".json");
+				PrintStream printStream = new PrintStream(save);
+				printStream.print(res);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		});
 
 	}
 

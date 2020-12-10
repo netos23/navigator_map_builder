@@ -24,11 +24,13 @@ public class EllipseHolder extends Holder {
 	private Vector2 editPos;
 	private double rx, ry;
 
-	public EllipseHolder(Ellipse ellipse, Probe start, Probe end) {
-		this.decoration = ellipse;
-		this.tmpStart = start;
-		this.tmpEnd = end;
+	public EllipseHolder(Ellipse ellipse, Probe probe){
+		this(ellipse);
+		super.initProbes(ellipse,probe);
+	}
 
+	private EllipseHolder(Ellipse ellipse){
+		this.decoration = ellipse;
 
 		hitBoxExternal = new Ellipse();
 		hitBoxExternal.setFill(Color.TRANSPARENT);
@@ -44,6 +46,12 @@ public class EllipseHolder extends Holder {
 		//hitBoxInner.setStroke(Color.RED);
 
 		reBuildHitBoxes();
+	}
+
+	public EllipseHolder(Ellipse ellipse, Probe start, Probe end) {
+		this(ellipse);
+		this.tmpStart = start;
+		this.tmpEnd = end;
 
 		initProbes(ellipse, start, end);
 	}
@@ -239,8 +247,8 @@ public class EllipseHolder extends Holder {
 	}
 
 	@Override
-	public Shape getShape() {
-		return null;
+	public Ellipse getShape() {
+		return decoration;
 	}
 
 	@Override

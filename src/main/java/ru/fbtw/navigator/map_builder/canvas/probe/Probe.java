@@ -6,9 +6,11 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
+import ru.fbtw.navigator.map_builder.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.UUID;
 
 import static ru.fbtw.navigator.map_builder.utils.MathUtils.sqr;
 
@@ -19,10 +21,16 @@ public class Probe  {
 	private Circle hitBox;
 	private ArrayList<Shape> attachedShapes;
 	private RadialGradient gradient;
+	private String id;
 
+	public Probe(double x, double y, String id){
+		this(x, y);
+		this.id = id;
+	}
 
 
 	public Probe(double x, double y){
+		this.id = getToken();
 
 		// Setup visible gradient color
 		Stop[] stops = new Stop[]{
@@ -94,6 +102,9 @@ public class Probe  {
 		return hitBox.getCenterY();
 	}
 
+	public String getId() {
+		return id;
+	}
 
 	public static ProbeComparator comparator = new ProbeComparator();
 
@@ -112,6 +123,13 @@ public class Probe  {
 			return -1;
 
 		}
+	}
+
+	private static String getToken(){
+		return UUID.randomUUID()
+				.toString()
+				.replaceAll("-","")
+				.substring(10);
 	}
 
 	@Override

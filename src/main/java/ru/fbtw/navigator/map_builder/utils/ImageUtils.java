@@ -1,10 +1,12 @@
 package ru.fbtw.navigator.map_builder.utils;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -38,6 +40,12 @@ public class ImageUtils {
             return null;
         }
 
+    }
+
+    public static Image fromBase64(String base64) {
+        byte[] bytes = Base64.decodeBase64(base64);
+        ByteInputStream inputStream = new ByteInputStream(bytes, bytes.length);
+        return new Image(inputStream);
     }
 
     public static String nextFilename() {

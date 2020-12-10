@@ -10,6 +10,7 @@ import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class HolderManager {
@@ -135,5 +136,9 @@ public class HolderManager {
 
 	public NodeHolderManager getNodeManager() {
 		return nodeManager;
+	}
+
+	public List<Holder> getHolders() {
+		return holders;
 	}
 }

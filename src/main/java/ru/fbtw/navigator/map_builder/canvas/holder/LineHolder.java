@@ -98,28 +98,33 @@ public class LineHolder extends Holder {
 		final boolean equalsX = MathUtils.doubleEquals(probes.get(0).getX(), decoration.getStartX(), e);
 		final boolean equalsY = MathUtils.doubleEquals(probes.get(0).getY(), decoration.getStartY(), e);
 
-		if (equalsX && equalsY) {
+		if(probes.size() != 1) {
+			if (equalsX && equalsY) {
+				start = probes.get(0);
+				end = probes.get(1);
+			} else {
+				start = probes.get(1);
+				end = probes.get(0);
+			}
+			if (start.getDistanceToPoint(x, y) >= end.getDistanceToPoint(x, y)) {
+				editPoint = LinePoints.END;
+				editProbe = end;
+			} else {
+				editPoint = LinePoints.START;
+				editProbe = start;
+			}
+		}else{
+			editPoint = LinePoints.SINGLETON;
 
-			start = probes.get(0);
-			end = probes.get(1);
-		} else {
-			start = probes.get(1);
-			end = probes.get(0);
 		}
 
-		if (start.getDistanceToPoint(x, y) >= end.getDistanceToPoint(x, y)) {
-			editPoint = LinePoints.END;
-			editProbe = end;
-		} else {
-			editPoint = LinePoints.START;
-			editProbe = start;
-		}
 	}
 
 	@Override
 	public void resize(double x, double y) {
 		if (editPoint != null) {
 			switch (editPoint) {
+				case SINGLETON:
 				case START:
 					decoration.setStartX(x);
 					decoration.setStartY(y);
@@ -147,7 +152,7 @@ public class LineHolder extends Holder {
 
 	@Override
 	public void reBuildProbes(ProbeManager manager) {
-		if (editPoint != LinePoints.ALL) {
+		if (editPoint != LinePoints.ALL && editPoint != LinePoints.SINGLETON) {
 			editProbe.getAttachedShapes().remove(decoration);
 			manager.removeEmptyProbe(editProbe);
 			probes.remove(editProbe);
@@ -170,10 +175,11 @@ public class LineHolder extends Holder {
 			Probe endProbe = manager
 					.getPosOfExistingPoint(decoration.getEndX(), decoration.getEndY());
 
-			beginResize(decoration.getStartX(), decoration.getStartY());
+			// todo: мало тестировалось
+			editPoint = LinePoints.START;
 			resize(startProbe.getX(), startProbe.getY());
 
-			beginResize(decoration.getEndX(), decoration.getEndY());
+			editPoint = LinePoints.END;
 			resize(endProbe.getX(), endProbe.getY());
 
 			manager.remove(decoration);

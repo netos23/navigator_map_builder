@@ -23,11 +23,13 @@ public class CircleHolder extends Holder {
 	private Vector2 origin;
 	private Vector2 editPos;
 
-	public CircleHolder(Circle circle, Probe start, Probe end) {
-		this.decoration = circle;
-		this.tmpStart = start;
-		this.tmpEnd = end;
+	public CircleHolder(Circle circle, Probe probe){
+		this(circle);
+		super.initProbes(circle,probe);
+	}
 
+	private CircleHolder(Circle circle){
+		this.decoration = circle;
 
 		hitBoxExternal = new Circle();
 		hitBoxExternal.setFill(Color.TRANSPARENT);
@@ -43,7 +45,12 @@ public class CircleHolder extends Holder {
 		origin = new Vector2(decoration.getCenterX(), decoration.getCenterY());
 
 		reBuildHitBoxes();
+	}
 
+	public CircleHolder(Circle circle, Probe start, Probe end) {
+		this(circle);
+		this.tmpStart = start;
+		this.tmpEnd = end;
 		initProbes(circle, start, end);
 	}
 
@@ -213,7 +220,7 @@ public class CircleHolder extends Holder {
 	}
 
 	@Override
-	public Shape getShape() {
+	public Circle getShape() {
 		return decoration;
 	}
 

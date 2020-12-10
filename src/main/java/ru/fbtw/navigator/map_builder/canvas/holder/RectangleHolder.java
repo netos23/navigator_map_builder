@@ -26,7 +26,17 @@ public class RectangleHolder extends Holder {
 	private Vector2 editPos, editBounds;
 	private Vector2 origin;
 
-	public RectangleHolder(Rectangle rectangle, Probe start, Probe end) {
+	public RectangleHolder(Rectangle rectangle, Probe[] probe) throws Exception {
+		this(rectangle);
+
+		if(probe.length != 4){
+			throw  new Exception("Wrong probe combination");
+		}
+
+		super.initProbes(rectangle,probe);
+	}
+
+	private RectangleHolder(Rectangle rectangle){
 		this.decoration = rectangle;
 
 
@@ -41,7 +51,10 @@ public class RectangleHolder extends Holder {
 //		hitBoxInner.setStroke(Color.RED);
 
 		reBuildHitBoxes();
+	}
 
+	public RectangleHolder(Rectangle rectangle, Probe start, Probe end) {
+		this(rectangle);
 		initProbes(rectangle, start, end);
 	}
 

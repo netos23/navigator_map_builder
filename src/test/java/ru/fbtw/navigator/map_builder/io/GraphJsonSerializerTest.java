@@ -11,7 +11,7 @@ import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 
 import java.util.ArrayList;
 
-public class JsonSerializerTest {
+public class GraphJsonSerializerTest {
 	private Gson gson;
 	private Node testNode;
 	private ArrayList<Node> testNodes;
@@ -43,7 +43,7 @@ public class JsonSerializerTest {
 	public void nodeTest() {
 		printTest("node");
 		try {
-			JsonSerializer serializer = JsonSerializer.getInstance();
+			GraphJsonSerializer serializer = GraphJsonSerializer.getInstance();
 
 			JsonElement nodeJson = serializer.nodeToJsonEl(testNode);
 			System.out.println(gson.toJson(nodeJson));
@@ -57,7 +57,7 @@ public class JsonSerializerTest {
 	public void nodeArrTest() {
 		printTest("node array");
 		try {
-			JsonSerializer serializer = JsonSerializer.getInstance();
+			GraphJsonSerializer serializer = GraphJsonSerializer.getInstance();
 
 			JsonArray nodeJson = serializer.nodesToJsonEl(testNodes);
 			System.out.println(gson.toJson(nodeJson));
@@ -70,7 +70,7 @@ public class JsonSerializerTest {
 	public void nodeConnectionsTest() {
 		printTest("node connections array");
 		try {
-			JsonSerializer serializer = JsonSerializer.getInstance();
+			GraphJsonSerializer serializer = GraphJsonSerializer.getInstance();
 
 			JsonArray nodeJson = serializer.nodeConnectionsToJson(testNodes);
 			System.out.println(gson.toJson(nodeJson));
