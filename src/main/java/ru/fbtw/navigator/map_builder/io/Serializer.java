@@ -12,13 +12,16 @@ import ru.fbtw.navigator.map_builder.canvas.holder.*;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Serializer {
     private Gson gson;
     private JsonObject levelRoot;
+    private GraphJsonSerializer graphJsonSerializer;
     private JsonArray levels;
 
 
@@ -26,6 +29,7 @@ public class Serializer {
         gson = new Gson();
         levelRoot = new JsonObject();
         levels = new JsonArray();
+        graphJsonSerializer = GraphJsonSerializer.getInstance();
     }
 
     private JsonObject write(Probe probe) {
@@ -179,16 +183,25 @@ public class Serializer {
         for (Level level : project.getLevels()) {
             levelRoot = new JsonObject();
 
+            levelRoot.addProperty("name",level.getName());
             writeBg(level.getBackground());
             writeHolders(level.getController().getHolders());
             writeProbes(level.getController().getProbes());
+            writeNodeSystem(level.getNodeSystem());
 
             levels.add(levelRoot);
         }
 
         projJson.add("levels", levels);
+        JsonArray connections = graphJsonSerializer.levelSystemToJson(project.getConnections());
+        projJson.add("connections",connections);
 
         return gson.toJson(projJson);
+    }
+
+    private void writeNodeSystem(ArrayList<Node> nodeSystem) {
+        JsonElement element = graphJsonSerializer.nodeSystemToJson(nodeSystem);
+        levelRoot.add("nodeSystem",element);
     }
 
 

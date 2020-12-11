@@ -245,4 +245,13 @@ public class LevelEntity {
 		return beginSocketId != -1 && beginSocketId < sockets.size()
 				? sockets.get(beginSocketId) : null;
 	}
+
+	public Circle getSocketByName(String name) {
+		for(int i = 0; i< socketsHashNames.size(); i++){
+			if(socketsHashNames.get(i).equals(name)){
+				return sockets.get(i);
+			}
+		}
+		return null;
+	}
 }

@@ -22,7 +22,7 @@ public class NodeHolder extends Holder {
 
     private final static Color STROKE_COLOR = Color.BLACK;
     private final static double WIDTH = 15;
-    private static HashMap<NodeType, Color> fillColor;
+    private static final HashMap<NodeType, Color> fillColor;
 
     static {
         fillColor = new HashMap<>();

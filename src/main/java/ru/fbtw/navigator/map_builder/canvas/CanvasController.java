@@ -6,6 +6,7 @@ import javafx.scene.layout.Pane;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeConnectTool;
+import ru.fbtw.navigator.map_builder.canvas.node.NodeHolder;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeHolderManager;
 import ru.fbtw.navigator.map_builder.canvas.node.NodeTool;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
@@ -146,5 +147,35 @@ public class CanvasController {
             holderManager.push(holder);
             layers[LayersName.DECORATION].getChildren().add(holder.getShape());
         });
+    }
+
+    public void setNodes(Map<String, Node> nodeMap, Map<String, String> connections) {
+        NodeHolderManager nodeManager = holderManager.getNodeManager();
+
+        nodeMap.values().forEach(node -> {
+            NodeHolder holder = new NodeHolder(node);
+            nodeManager.push(holder);
+            holder.splitLayers(layers);
+        });
+
+        NodeConnectTool connectTool = (NodeConnectTool) tools[12];
+        ReplaceTool replaceTool = (ReplaceTool) tools[6];
+        // setup node connections
+        for (Map.Entry<String, String> entry : connections.entrySet()) {
+            String nameA = entry.getKey();
+            String nameB = entry.getValue();
+
+            Node a = nodeMap.get(nameA);
+            Node b = nodeMap.get(nameB);
+
+            connectTool.onPressed(a.getX(), a.getY());
+            connectTool.onReleased(b.getX(), b.getY());
+
+            replaceTool.onPressed(a.getX(), a.getY());
+            replaceTool.onReleased(a.getX(), a.getY());
+
+            replaceTool.onPressed(b.getX(), b.getY());
+            replaceTool.onReleased(b.getX(), b.getY());
+        }
     }
 }

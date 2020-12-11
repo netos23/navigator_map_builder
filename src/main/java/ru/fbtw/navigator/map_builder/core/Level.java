@@ -15,6 +15,8 @@ import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class Level {
 	private static final String DEFAULT_NAME = "Level ";
@@ -115,5 +117,9 @@ public class Level {
 			 node = controller.getLayers()[LayersName.DECORATION];
 		}
 		return ImageUtils.getImageFromNode(node, width, height);
+	}
+
+	public void setNodeSystem(Collection<Node> nodes) {
+		nodeSystem.addAll(nodes);
 	}
 }

@@ -80,7 +80,7 @@ public class LvlEditScreen implements Screen {
 		levelListWidget = new ListView<>(levels);
 		levelListWidget.setMaxHeight(300.0);
 
-		properties = CanvasProperties.DEFAULT_PROPERTIES;
+		properties = CanvasProperties.DEFAULT_CANVAS_PROPERTIES;
 
 
 		settingsToolButtons = new ToggleButtonGridBuilder()
@@ -390,6 +390,7 @@ public class LvlEditScreen implements Screen {
 		levelName.setText(level.getName());
 
 		CanvasController controller = level.getController();
+		properties.setSource(controller);
 		rootCanvas.getChildren().clear();
 		rootCanvas.getChildren().addAll(controller.getLayers());
 

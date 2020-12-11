@@ -12,27 +12,31 @@ import ru.fbtw.navigator.map_builder.canvas.holder.*;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelConnection;
+import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.fbtw.navigator.map_builder.io.HolderSerializeType.*;
 
 public class ProjectLoader {
 
     private JsonObject root;
+    Map<String, Node> nodesStorage;
 
     public ProjectLoader(File file) throws FileNotFoundException {
         Reader reader = new FileReader(file);
         root = JsonParser.parseReader(reader)
                 .getAsJsonObject();
+        nodesStorage = new HashMap<>();
     }
 
     public ProjectLoader(String json) {
@@ -43,9 +47,52 @@ public class ProjectLoader {
     public Project load() throws Exception {
         JsonArray levelsJson = root.getAsJsonArray("levels");
         List<Level> levels = parseLevels(levelsJson);
+
+
         Project project = new Project();
         project.setLevels(levels);
+        Map<String, LevelNode> levelNodeMap = project.getNodeSystem()
+                .stream()
+                .collect(Collectors.toMap(LevelNode::getName, lvl -> lvl, (prev, cur) -> prev));
+
+        JsonArray connectionsJson = root.getAsJsonArray("connections");
+        setupLevelConnections(project, connectionsJson, levelNodeMap);
+
         return project;
+    }
+
+    private void setupLevelConnections(
+            Project project,
+            JsonArray connections,
+            Map<String, LevelNode> levelNodeMap
+    ) {
+
+        HashSet<LevelConnection> storage = project.getConnections();
+        for (JsonElement element : connections) {
+
+            String nodeNameA = element.getAsJsonObject()
+                    .get("nodeA")
+                    .getAsString();
+            String nodeNameB = element.getAsJsonObject()
+                    .get("nodeB")
+                    .getAsString();
+            String socketNameA = element.getAsJsonObject()
+                    .get("socketA")
+                    .getAsString();
+            String socketNameB = element.getAsJsonObject()
+                    .get("socketB")
+                    .getAsString();
+
+            LevelConnection connection = new LevelConnection(
+                    levelNodeMap.get(nodeNameA),
+                    levelNodeMap.get(nodeNameB),
+                    nodesStorage.get(socketNameA),
+                    nodesStorage.get(socketNameB),
+                    storage
+            );
+
+            storage.add(connection);
+        }
     }
 
     private List<Level> parseLevels(JsonArray levelsJson) throws Exception {
@@ -53,6 +100,8 @@ public class ProjectLoader {
         int id = 0;
         for (JsonElement data : levelsJson) {
             JsonObject levelRoot = data.getAsJsonObject();
+
+            String name = levelRoot.get("name").getAsString();
 
             String imageBase64 = levelRoot.get("image").getAsString();
             Image backGround = ImageUtils.fromBase64(imageBase64);
@@ -63,15 +112,64 @@ public class ProjectLoader {
             JsonArray holdersJson = levelRoot.get("holders").getAsJsonArray();
             List<Holder> holders = parseHolders(holdersJson, probes);
 
-            Level level = new Level(id, CanvasProperties.DEFAULT_PROPERTIES);
+            JsonObject nodeSystemJson = levelRoot.get("nodeSystem").getAsJsonObject();
+            Map<String, String> connections = parseNodeConnections(nodeSystemJson);
+            Map<String, Node> nodeMap = parseNodes(nodeSystemJson);
+            nodesStorage.putAll(nodeMap);
+
+            Level level = new Level(id, CanvasProperties.DEFAULT_CANVAS_PROPERTIES);
             level.setBackground(backGround);
+            level.setName(name);
             level.getController().setProbes(probes.values());
             level.getController().setHolders(holders);
+            level.getController().setNodes(nodeMap, connections);
+            //  level.setNodeSystem(nodeMap.values());
             levels.add(level);
             id++;
         }
 
         return levels;
+    }
+
+    private Map<String, Node> parseNodes(JsonObject nodeSystemJson) {
+        Map<String, Node> map = new HashMap<>();
+        JsonArray nodes = nodeSystemJson.getAsJsonArray("nodes");
+
+        for (JsonElement element : nodes) {
+            JsonObject nodeRoot = element.getAsJsonObject();
+
+            int x = nodeRoot.get("x").getAsInt();
+            int y = nodeRoot.get("y").getAsInt();
+            NodeType type = NodeType.values()[nodeRoot.get("type").getAsInt()];
+            String name = nodeRoot.get("name").getAsString();
+            String description = nodeRoot.get("description").getAsString();
+            Node node = new Node(x, y, name, description, type);
+
+            if (type == NodeType.ZONE_CONNECTION) {
+                boolean isPrime = nodeRoot.get("isPrime").getAsBoolean();
+                node.setPrime(isPrime);
+            }
+
+            map.put(name, node);
+        }
+        return map;
+    }
+
+    private Map<String, String> parseNodeConnections(JsonObject nodeSystemJson) {
+        Map<String, String> map = new HashMap<>();
+        JsonArray nodesConnections = nodeSystemJson.getAsJsonArray("connections");
+
+        for (JsonElement element : nodesConnections) {
+            String nodeNameA = element.getAsJsonObject()
+                    .get("a")
+                    .getAsString();
+            String nodeNameB = element.getAsJsonObject()
+                    .get("b")
+                    .getAsString();
+
+            map.put(nodeNameA, nodeNameB);
+        }
+        return map;
     }
 
     private List<Holder> parseHolders(JsonArray holdersJson, Map<String, Probe> probes)
@@ -156,8 +254,8 @@ public class ProjectLoader {
 
         Circle shape = new Circle(x, y, r);
 
-        setupFill(holderJson,shape);
-        setupPaint(holderJson,shape);
+        setupFill(holderJson, shape);
+        setupPaint(holderJson, shape);
 
         JsonArray attachedProbesJson = holderJson.get("probes").getAsJsonArray();
         Probe[] attachedProbes = getAttachedProbes(attachedProbesJson, probes);
@@ -176,10 +274,10 @@ public class ProjectLoader {
         double width = holderJson.get("width").getAsDouble();
         double height = holderJson.get("height").getAsDouble();
 
-        Rectangle shape = new Rectangle(x,y,width,height);
+        Rectangle shape = new Rectangle(x, y, width, height);
 
-        setupPaint(holderJson,shape);
-        setupFill(holderJson,shape);
+        setupPaint(holderJson, shape);
+        setupFill(holderJson, shape);
 
         JsonArray attachedProbesJson = holderJson.get("probes").getAsJsonArray();
         Probe[] attachedProbes = getAttachedProbes(attachedProbesJson, probes);
@@ -187,7 +285,7 @@ public class ProjectLoader {
         if (attachedProbes.length != 4) {
             throw new Exception("Wrong or broken data");
         }
-        return new RectangleHolder(shape,attachedProbes);
+        return new RectangleHolder(shape, attachedProbes);
     }
 
     private Holder parseLine(JsonObject holderJson, Map<String, Probe> probes) throws Exception {
@@ -196,8 +294,8 @@ public class ProjectLoader {
         double endX = holderJson.get("endX").getAsDouble();
         double endY = holderJson.get("endY").getAsDouble();
 
-        Line shape = new Line(startX,startY,endX,endY);
-        setupPaint(holderJson,shape);
+        Line shape = new Line(startX, startY, endX, endY);
+        setupPaint(holderJson, shape);
 
         JsonArray attachedProbesJson = holderJson.get("probes").getAsJsonArray();
         Probe[] attachedProbes = getAttachedProbes(attachedProbesJson, probes);
@@ -205,7 +303,7 @@ public class ProjectLoader {
         if (attachedProbes.length != 2) {
             throw new Exception("Wrong or broken data");
         }
-        return new LineHolder(shape,attachedProbes[0],attachedProbes[1]);
+        return new LineHolder(shape, attachedProbes[0], attachedProbes[1]);
     }
 
     private Map<String, Probe> parseProbes(JsonArray probesJson) {
