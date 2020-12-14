@@ -22,10 +22,10 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		ProjectLoader loader = new ProjectLoader(new File("saves/471355bfa0a04f7f.json"));
-		Screen firstScreen = new LvlEditScreen(loader.load());
+		/*ProjectLoader loader = new ProjectLoader(new File("saves/471355bfa0a04f7f.json"));
+		Screen firstScreen = new LvlEditScreen(loader.load());*/
 		//Screen firstScreen = new LvlEditScreen(new Project());
-		//Screen firstScreen = new LoginPage();
+		Screen firstScreen = new LoginPage();
 		Navigator.init(primaryStage,firstScreen);
 	}
 

@@ -15,15 +15,14 @@ import ru.fbtw.navigator.map_builder.ui.control.Screen;
 public class ProjectListPage implements Screen {
 
     private BorderPane mainLayout;
-    private Label userName;
+
     private ObservableList<Project> projects;
     private Scene scene;
     private ListView<Project> projectListView;
 
     private UserData userData;
 
-    public ProjectListPage(UserData userData) {
-        this.userData = userData;
+    public ProjectListPage() {
 
         mainLayout = new BorderPane();
         projects = FXCollections.observableArrayList();
@@ -32,8 +31,7 @@ public class ProjectListPage implements Screen {
     }
 
     private VBox getLeftLayout() {
-        Label userName = new Label(userData.getUserName());
-        userName.getStyleClass().add("username");
+
 
         Label projectsLabel = new Label("Projects");
         projectsLabel.getStyleClass().add("projects");
@@ -44,7 +42,7 @@ public class ProjectListPage implements Screen {
 
         vBox.getStyleClass().add("hbox-group");
 
-        vBox.getChildren().addAll(userName, projectsLabel,projectListView);
+        vBox.getChildren().addAll(projectsLabel,projectListView);
         return vBox;
     }
 

@@ -1,19 +1,12 @@
 package ru.fbtw.navigator.map_builder.auth;
 
 public class UserData {
-    private String token;
-    private String userName;
-
-    public UserData(String token, String userName) {
-        this.token = token;
-        this.userName = userName;
-    }
-
-    public String getToken() {
+    private static String token;
+    public static String getToken(){
         return token;
     }
 
-    public String getUserName() {
-        return userName;
+    public static void setToken(String token) {
+        UserData.token = token;
     }
 }

@@ -14,6 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.fbtw.navigator.map_builder.auth.UserData;
+import ru.fbtw.navigator.map_builder.controller.AuthResponse;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
@@ -143,14 +145,17 @@ public class LoginPage implements Screen {
             String login = loginInput.getText();
             String password = passwordInput.getText();
 
-            if (controller.isCorrect()) {
-                Navigator.replase(new ProjectListPage(controller.getUserData()));
+            AuthResponse response = controller.execute(login, password);
+
+            if (response.isSuccess()) {
+                UserData.setToken(response.getToken());
+                Navigator.replase(new ProjectListPage());
             } else {
-                setErr("Неверная комбинация логина и пароля");
+                setErr(response.getMessage());
             }
 
         } catch (Exception ex) {
-            setErr("Возникла ошибка. Проверте соединение с интернетом");
+            setErr("An error occurred. Check your Internet connection");
         }
 
     }
