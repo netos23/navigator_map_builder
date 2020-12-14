@@ -1,0 +1,44 @@
+.hbox-group {
+    -fx-background-color: #702873;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+.label-header {
+    -fx-font-size: 30pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.text-field {
+    -fx-background-color: #af6bba;
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}
+.label-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 20pt;
+    -fx-text-alignment: left;
+    -fx-text-fill: white;
+}
+.label-plat {
+    -fx-font-weight: bold;
+    -fx-font-size: 20pt;
+    -fx-text-fill: white;
+}
+
+.check-box {
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}
+.button{
+    -fx-background-color: #8937b8;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.label-err{
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: #ff0000;
+}

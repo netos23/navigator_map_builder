@@ -1,8 +1,8 @@
 package ru.fbtw.navigator.map_builder.core;
 
 public enum  Platforms {
-	APP,
 	TG_BOT,
+	APP,
+	MAP_STATION,
 	PAPER_MAP,
-	MAP_STATION
 }
