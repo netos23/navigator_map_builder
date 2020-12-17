@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class Project implements Serializable {
+public class Project /*implements Serializable*/ {
     private static Callback<Project, Observable[]> callback = param -> new Observable[]{param.name};
     private StringProperty name;
 

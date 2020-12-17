@@ -1,8 +1,14 @@
 package ru.fbtw.navigator.map_builder.core;
 
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.util.Callback;
+
 import java.util.Set;
 
 public class ProjectModel {
+    private Long id;
     private String name;
     private Set<Platform> platforms;
     private String telegramName;
@@ -10,6 +16,10 @@ public class ProjectModel {
     private String appName;
     private String userPackage;
     private String body;
+
+    public ProjectModel(){
+
+    }
 
     public ProjectModel(
             String name,
@@ -26,6 +36,7 @@ public class ProjectModel {
         this.appName = appName;
         this.userPackage = userPackage;
         this.body = body;
+
     }
 
     public String getName() {
@@ -82,5 +93,18 @@ public class ProjectModel {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

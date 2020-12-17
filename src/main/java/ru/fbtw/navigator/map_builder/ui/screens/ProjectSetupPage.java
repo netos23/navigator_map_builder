@@ -29,10 +29,11 @@ public class ProjectSetupPage implements Screen {
     private final TextField botName, botApi;
     private final TextField appName, webSite;
 
-    private  Button back, create;
+    private Button back, create;
 
     private final CheckBox[] platforms;
     private boolean isCreate;
+    private ProjectModel model;
 
     private Node botSetup;
     private Node appSetup;
@@ -40,8 +41,9 @@ public class ProjectSetupPage implements Screen {
     private Label error;
 
 
-    public ProjectSetupPage(boolean isCreate) {
-        this.isCreate = isCreate;
+    public ProjectSetupPage(ProjectModel model) {
+        isCreate = model == null;
+        this.model = model;
         mainLayout = new VBox();
         platforms = new CheckBox[Platform.values().length];
 
@@ -143,28 +145,65 @@ public class ProjectSetupPage implements Screen {
         return layout;
     }
 
+    private void setModel() {
+        projectNameInput.setText(model.getName());
+
+        for (Platform platform : model.getPlatforms()) {
+            platforms[platform.ordinal()].setSelected(true);
+        }
+
+        if (platforms[Platform.TG_BOT.ordinal()].isSelected()) {
+            botName.setText(model.getTelegramName());
+            botApi.setText(model.getTelegramApiKey());
+            botSetup.setDisable(false);
+        }
+
+        if (platforms[Platform.APP.ordinal()].isSelected()) {
+            appName.setText(model.getAppName());
+            webSite.setText(model.getUserPackage());
+            appSetup.setDisable(false);
+        }
+    }
+
     private void update(ActionEvent actionEvent) {
         ProjectModel projectModel = getProjectModel();
+        ProjectUpdateController controller = ProjectUpdateController.getInstance();
+        BaseResponse response = controller.setMethod(ProjectUpdateController.UPDATE)
+                .setCredentials(projectModel)
+                .execute();
+
+        if (response != null) {
+            if (response.isSuccess()) {
+                Navigator.replace(new ProjectListPage());
+            } else {
+                setError(response.getMessage());
+            }
+        } else {
+            setError("Internal error, please reboot or update app");
+        }
     }
 
     private void create(ActionEvent actionEvent) {
         ProjectModel projectModel = getProjectModel();
         ProjectUpdateController controller = ProjectUpdateController.getInstance();
-        BaseResponse response = controller.setCreditLines(projectModel).execute();
+        BaseResponse response = controller.setMethod(ProjectUpdateController.CREATE)
+                .setCredentials(projectModel)
+                .execute();
 
-        if(response != null){
-            if(response.isSuccess()){
+        if (response != null) {
+            if (response.isSuccess()) {
                 Navigator.replace(new ProjectListPage());
-            }else {
+            } else {
                 setError(response.getMessage());
             }
-        }else{
+        } else {
             setError("Internal error, please reboot or update app");
         }
 
     }
 
     private ProjectModel getProjectModel() {
+
         ProjectModelBuilder builder = new ProjectModelBuilder();
 
         builder.setName(projectNameInput.getText());
@@ -180,7 +219,13 @@ public class ProjectSetupPage implements Screen {
                     .setUserPackage(webSite.getText());
         }
 
-        return builder.createProjectModel();
+        ProjectModel projectModel = builder.createProjectModel();
+
+        if(model != null) {
+            projectModel.setId(model.getId());
+        }
+
+        return projectModel;
     }
 
     private void back(ActionEvent actionEvent) {
@@ -203,7 +248,7 @@ public class ProjectSetupPage implements Screen {
         };
     }
 
-    private void setError(String text){
+    private void setError(String text) {
         error.setVisible(true);
         error.setText(text);
     }
@@ -235,6 +280,9 @@ public class ProjectSetupPage implements Screen {
         pane.setFitToWidth(true);
         pane.setPannable(true);
 
+        if (!isCreate) {
+            setModel();
+        }
         scene = new Scene(pane);
         scene.getStylesheets().add("project-setup.css");
     }

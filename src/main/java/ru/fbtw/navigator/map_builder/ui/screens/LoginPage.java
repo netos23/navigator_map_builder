@@ -145,19 +145,20 @@ public class LoginPage implements Screen {
             String login = loginInput.getText();
             String password = passwordInput.getText();
 
-            AuthResponse response = controller.setCreditLines(login, password)
+            AuthResponse response = controller.setCredentials(login, password)
                     .execute();
 
             if (response.isSuccess()) {
                 UserData.setToken(response.getToken());
-                //Navigator.replace(new ProjectListPage());
-                Screen firstScreen = new ProjectSetupPage(true);
-                Navigator.replace(firstScreen);
+                Navigator.replace(new ProjectListPage());
+                /*Screen firstScreen = new ProjectSetupPage(true);
+                Navigator.replace(firstScreen);*/
             } else {
                 setErr(response.getMessage());
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             setErr("An error occurred. Check your Internet connection");
         }
 

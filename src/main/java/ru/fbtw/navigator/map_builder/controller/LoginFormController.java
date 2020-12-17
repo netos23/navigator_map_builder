@@ -14,7 +14,6 @@ public class LoginFormController implements Controller {
     private String login;
     private String password;
     private OkHttpClient client;
-    private String token;
 
     private static final LoginFormController instance = new LoginFormController();
     private final AuthResponse EMPTY_RESPONSE;
@@ -32,7 +31,7 @@ public class LoginFormController implements Controller {
         EMPTY_RESPONSE.setMessage("Fields should not be empty");
 
     }
-    public LoginFormController setCreditLines(String login, String password){
+    public LoginFormController setCredentials(String login, String password){
         this.login = login;
         this.password = password;
 
@@ -99,8 +98,5 @@ public class LoginFormController implements Controller {
         return responseJson.get("token").getAsString();
     }
 
-    public boolean isCorrect() {
-        return true;
-    }
 
 }

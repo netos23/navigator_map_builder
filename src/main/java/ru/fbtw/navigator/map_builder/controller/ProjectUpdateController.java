@@ -1,11 +1,9 @@
 package ru.fbtw.navigator.map_builder.controller;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 import ru.fbtw.navigator.map_builder.auth.UserData;
-import ru.fbtw.navigator.map_builder.controller.response.AuthResponse;
 import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.controller.response.Response;
 import ru.fbtw.navigator.map_builder.core.ProjectModel;
@@ -13,10 +11,13 @@ import ru.fbtw.navigator.map_builder.core.ProjectModel;
 import java.io.IOException;
 import java.util.Objects;
 
-public class ProjectUpdateController implements Controller{
+public class ProjectUpdateController implements Controller {
 
-    private static final String URL = "http://localhost:8080/api/create_project";
+    public static final String UPDATE = "update_project";
+    public static final String CREATE = "create_project";
+    private static final String URL = "http://localhost:8080/api/";
     private ProjectModel projectModel;
+    private String method;
     private OkHttpClient client;
 
     private static final ProjectUpdateController instance = new ProjectUpdateController();
@@ -27,12 +28,13 @@ public class ProjectUpdateController implements Controller{
     }
 
 
-    private ProjectUpdateController(){
+    private ProjectUpdateController() {
         client = new OkHttpClient().newBuilder()
                 .build();
+        method = "";
     }
 
-    public ProjectUpdateController setCreditLines(ProjectModel projectModel){
+    public ProjectUpdateController setCredentials(ProjectModel projectModel) {
         this.projectModel = projectModel;
 
         return this;
@@ -40,11 +42,10 @@ public class ProjectUpdateController implements Controller{
 
     @Override
     public BaseResponse execute() {
-        if(projectModel != null){
+        if (projectModel != null) {
             String requestBody = RequestUtil.parseBody(projectModel);
-
             return createProject(requestBody);
-        }else{
+        } else {
             return null;
         }
     }
@@ -57,7 +58,7 @@ public class ProjectUpdateController implements Controller{
             RequestBody requestBody = RequestBody.create(body, mediaType);
 
             Request request = new Request.Builder()
-                    .url(URL)
+                    .url(URL + method)
                     .method("POST", requestBody)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("Authorization", "Bearer " + UserData.getToken())
@@ -77,11 +78,20 @@ public class ProjectUpdateController implements Controller{
         return response;
     }
 
-    private Response parseBody(ResponseBody body) throws  IOException {
+    private Response parseBody(ResponseBody body) throws IOException {
         Response response = new Response();
         JsonObject jsonResponse = JsonParser.parseString(body.string()).getAsJsonObject();
         response.setSuccess(jsonResponse.get("status").getAsInt() == 200);
         response.setMessage(jsonResponse.get("message").getAsString());
         return response;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public ProjectUpdateController setMethod(String method) {
+        this.method = method;
+        return this;
     }
 }
