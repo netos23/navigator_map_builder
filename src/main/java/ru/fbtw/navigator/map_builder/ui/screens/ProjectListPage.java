@@ -20,8 +20,6 @@ public class ProjectListPage implements Screen {
     private Scene scene;
     private ListView<Project> projectListView;
 
-    private UserData userData;
-
     public ProjectListPage() {
 
         mainLayout = new BorderPane();

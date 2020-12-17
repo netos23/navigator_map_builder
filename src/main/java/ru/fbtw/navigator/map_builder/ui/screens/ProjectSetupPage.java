@@ -11,14 +11,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.fbtw.navigator.map_builder.core.Platforms;
+import ru.fbtw.navigator.map_builder.controller.ProjectUpdateController;
+import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
+import ru.fbtw.navigator.map_builder.core.Platform;
+import ru.fbtw.navigator.map_builder.core.ProjectModel;
+import ru.fbtw.navigator.map_builder.core.ProjectModelBuilder;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 public class ProjectSetupPage implements Screen {
@@ -26,13 +25,11 @@ public class ProjectSetupPage implements Screen {
     private final VBox mainLayout;
     private Scene scene;
 
-    private TextField projectNameInput;
+    private final TextField projectNameInput;
+    private final TextField botName, botApi;
+    private final TextField appName, webSite;
 
-    private TextField botName, botApi;
-
-    private TextField appName, webSite;
-
-    private Button back, create;
+    private  Button back, create;
 
     private final CheckBox[] platforms;
     private boolean isCreate;
@@ -46,7 +43,14 @@ public class ProjectSetupPage implements Screen {
     public ProjectSetupPage(boolean isCreate) {
         this.isCreate = isCreate;
         mainLayout = new VBox();
-        platforms = new CheckBox[Platforms.values().length];
+        platforms = new CheckBox[Platform.values().length];
+
+
+        projectNameInput = new TextField();
+        botName = new TextField();
+        botApi = new TextField();
+        appName = new TextField();
+        webSite = new TextField();
         initScene();
     }
 
@@ -66,7 +70,7 @@ public class ProjectSetupPage implements Screen {
         Label name = new Label(text);
         name.getStyleClass().add("label-name");
 
-        input = new TextField();
+
         input.setPrefWidth(width);
         input.getStyleClass().add("text-field");
 
@@ -76,20 +80,20 @@ public class ProjectSetupPage implements Screen {
 
     private Node buildPlatformChose() {
         HBox layout = new HBox(15);
-        layout.setPadding(new Insets(0,0,30,0));
+        layout.setPadding(new Insets(0, 0, 30, 0));
 
-        platforms[Platforms.TG_BOT.ordinal()] = new CheckBox("Telegram bot");
-        platforms[Platforms.TG_BOT.ordinal()].setOnAction(getOnClick(botSetup));
+        platforms[Platform.TG_BOT.ordinal()] = new CheckBox("Telegram bot");
+        platforms[Platform.TG_BOT.ordinal()].setOnAction(getOnClick(botSetup));
 
 
-        platforms[Platforms.APP.ordinal()] = new CheckBox("Mobile app");
-        platforms[Platforms.APP.ordinal()].setOnAction(getOnClick(appSetup));
+        platforms[Platform.APP.ordinal()] = new CheckBox("Mobile app");
+        platforms[Platform.APP.ordinal()].setOnAction(getOnClick(appSetup));
 
-        platforms[Platforms.MAP_STATION.ordinal()] = new CheckBox("Map station");
-        platforms[Platforms.MAP_STATION.ordinal()].setDisable(true);
+        platforms[Platform.MAP_STATION.ordinal()] = new CheckBox("Map station");
+        platforms[Platform.MAP_STATION.ordinal()].setDisable(true);
 
-        platforms[Platforms.PAPER_MAP.ordinal()] = new CheckBox("Paper map");
-        platforms[Platforms.PAPER_MAP.ordinal()].setDisable(true);
+        platforms[Platform.PAPER_MAP.ordinal()] = new CheckBox("Paper map");
+        platforms[Platform.PAPER_MAP.ordinal()].setDisable(true);
 
         layout.getChildren().addAll(platforms);
 
@@ -100,8 +104,8 @@ public class ProjectSetupPage implements Screen {
         VBox layout = new VBox(10);
 
         layout.getChildren().addAll(
-          buildInputPair("Bot name",botName,700),
-          buildInputPair("Bot apiKey",botApi,685)
+                buildInputPair("Bot name", botName, 700),
+                buildInputPair("Bot apiKey", botApi, 685)
         );
 
         return layout;
@@ -109,7 +113,7 @@ public class ProjectSetupPage implements Screen {
 
     private Node buildAppSetup() {
         VBox layout = new VBox(10);
-        layout.setPadding(new Insets(10,0,20,0));
+        layout.setPadding(new Insets(10, 0, 20, 0));
 
         layout.getChildren().addAll(
                 buildInputPair("Mobile app name", appName, 600),
@@ -119,12 +123,13 @@ public class ProjectSetupPage implements Screen {
         return layout;
     }
 
-    private Node buildFooterButtons(){
+    private Node buildFooterButtons() {
         HBox layout = new HBox(20);
         layout.setAlignment(Pos.CENTER_RIGHT);
 
         error = new Label("");
         error.getStyleClass().add("label-err");
+        error.setVisible(false);
 
         String buttonText = isCreate ? "Create" : "Save";
         create = new Button(buttonText);
@@ -133,35 +138,53 @@ public class ProjectSetupPage implements Screen {
         back = new Button("Back");
         back.setOnAction(this::back);
 
-        layout.getChildren().addAll(error,back,create);
+        layout.getChildren().addAll(error, back, create);
 
         return layout;
     }
 
     private void update(ActionEvent actionEvent) {
-
+        ProjectModel projectModel = getProjectModel();
     }
 
     private void create(ActionEvent actionEvent) {
-        String name = appName.getText();
+        ProjectModel projectModel = getProjectModel();
+        ProjectUpdateController controller = ProjectUpdateController.getInstance();
+        BaseResponse response = controller.setCreditLines(projectModel).execute();
 
-        Set<Platforms> platformsSet = new HashSet<>();
-        for(int i =0; i < platforms.length; i++){
-            if(platforms[i] != null && platforms[i].isSelected()){
-                platformsSet.add(Platforms.values()[i]);
+        if(response != null){
+            if(response.isSuccess()){
+                Navigator.replace(new ProjectListPage());
+            }else {
+                setError(response.getMessage());
             }
+        }else{
+            setError("Internal error, please reboot or update app");
         }
 
-        if(platformsSet.contains(Platforms.TG_BOT)){
+    }
 
-        }
-        if(platformsSet.contains(Platforms.TG_BOT)){
+    private ProjectModel getProjectModel() {
+        ProjectModelBuilder builder = new ProjectModelBuilder();
 
+        builder.setName(projectNameInput.getText());
+
+        if (platforms[Platform.TG_BOT.ordinal()].isSelected()) {
+            builder.addPlatform(Platform.TG_BOT)
+                    .setTelegramName(botName.getText())
+                    .setTelegramApiKey(botApi.getText());
         }
+        if (platforms[Platform.APP.ordinal()].isSelected()) {
+            builder.addPlatform(Platform.APP)
+                    .setAppName(appName.getText())
+                    .setUserPackage(webSite.getText());
+        }
+
+        return builder.createProjectModel();
     }
 
     private void back(ActionEvent actionEvent) {
-        Navigator.replase(new ProjectListPage());
+        Navigator.replace(new ProjectListPage());
     }
 
     private Node buildPlatformsHeader() {
@@ -173,11 +196,16 @@ public class ProjectSetupPage implements Screen {
         return title;
     }
 
-    private EventHandler<ActionEvent> getOnClick(Node target){
-        return event ->{
+    private EventHandler<ActionEvent> getOnClick(Node target) {
+        return event -> {
             CheckBox checkBox = (CheckBox) event.getSource();
             target.setDisable(!checkBox.isSelected());
         };
+    }
+
+    private void setError(String text){
+        error.setVisible(true);
+        error.setText(text);
     }
 
 
@@ -193,7 +221,7 @@ public class ProjectSetupPage implements Screen {
 
         mainLayout.getChildren().addAll(
                 buildHeader(),
-                buildInputPair("Name",projectNameInput,745),
+                buildInputPair("Name", projectNameInput, 745),
                 buildPlatformsHeader(),
                 buildPlatformChose(),
                 botSetup,

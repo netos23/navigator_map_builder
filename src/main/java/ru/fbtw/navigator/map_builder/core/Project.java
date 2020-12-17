@@ -17,7 +17,7 @@ import java.util.List;
 public class Project implements Serializable {
     private static Callback<Project, Observable[]> callback = param -> new Observable[]{param.name};
     private StringProperty name;
-    private HashSet<Platforms> platforms;
+
     private ObservableList<Level> levels;
 
     private ArrayList<LevelNode> levelNodeSystem;
@@ -48,9 +48,6 @@ public class Project implements Serializable {
         }
     }
 
-    public HashSet<Platforms> getPlatforms() {
-        return platforms;
-    }
 
     public ObservableList<Level> getLevels() {
         return levels;

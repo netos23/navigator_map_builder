@@ -37,7 +37,7 @@ public class Navigator {
 		reShow(screens.peek());
 	}
 
-	public static void replase(Screen screen){
+	public static void replace(Screen screen){
 		screens.pop();
 		push(screen);
 	}

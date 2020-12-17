@@ -3,11 +3,12 @@ package ru.fbtw.navigator.map_builder.controller;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
+import ru.fbtw.navigator.map_builder.controller.response.AuthResponse;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class LoginFormController {
+public class LoginFormController implements Controller {
     private static final String URL = "http://localhost:8080/auth";
 
     private String login;
@@ -16,6 +17,7 @@ public class LoginFormController {
     private String token;
 
     private static final LoginFormController instance = new LoginFormController();
+    private final AuthResponse EMPTY_RESPONSE;
 
     public static LoginFormController getInstance() {
         return instance;
@@ -25,11 +27,25 @@ public class LoginFormController {
         client = new OkHttpClient().newBuilder()
                 .build();
 
+        EMPTY_RESPONSE = new AuthResponse();
+        EMPTY_RESPONSE.setSuccess(false);
+        EMPTY_RESPONSE.setMessage("Fields should not be empty");
+
+    }
+    public LoginFormController setCreditLines(String login, String password){
+        this.login = login;
+        this.password = password;
+
+        return this;
     }
 
-    public AuthResponse execute(String login, String password) {
-        String body = AuthUtil.parseBody(login, password);
-        return getToken(body);
+    public AuthResponse execute() {
+        if(login != null && password != null) {
+            String body = RequestUtil.parseBody(login, password);
+            return getToken(body);
+        }
+
+        return EMPTY_RESPONSE;
     }
 
     private AuthResponse getToken(String body) {

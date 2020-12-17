@@ -6,5 +6,4 @@ public final class LayersName {
 	public static final int NODE_CONNECTIONS = 2;
 	public static final int NODES = 3;
 	public static final int INPUT_LAYER = 4;
-	//public static final int PROBE_LAYER = 5;
 }

@@ -15,7 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.auth.UserData;
-import ru.fbtw.navigator.map_builder.controller.AuthResponse;
+import ru.fbtw.navigator.map_builder.controller.response.AuthResponse;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
@@ -119,7 +119,7 @@ public class LoginPage implements Screen {
     }
 
     private Label getOnError() {
-        Label label = new Label("Возникла неизвестная ошибка. Попробуйте позже");
+        Label label = new Label("An error occurred.");
         label.getStyleClass().add("label-err");
         label.setVisible(false);
         label.setPadding(new Insets(5, 0, 0, 0));
@@ -136,7 +136,7 @@ public class LoginPage implements Screen {
             Desktop.getDesktop().browse(registrationUrl);
         } catch (Exception e) {
             e.printStackTrace();
-            setErr("Возникла неизвестная ошибка. Попробуйте позже");
+            setErr("An error occurred.");
         }
     }
 
@@ -145,11 +145,14 @@ public class LoginPage implements Screen {
             String login = loginInput.getText();
             String password = passwordInput.getText();
 
-            AuthResponse response = controller.execute(login, password);
+            AuthResponse response = controller.setCreditLines(login, password)
+                    .execute();
 
             if (response.isSuccess()) {
                 UserData.setToken(response.getToken());
-                Navigator.replase(new ProjectListPage());
+                //Navigator.replace(new ProjectListPage());
+                Screen firstScreen = new ProjectSetupPage(true);
+                Navigator.replace(firstScreen);
             } else {
                 setErr(response.getMessage());
             }

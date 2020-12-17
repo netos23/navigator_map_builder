@@ -1,17 +1,16 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.controller.response;
 
-public class AuthResponse {
+public class AuthResponse implements BaseResponse{
     private boolean isSuccess;
     private String token;
     private String message;
 
-    public AuthResponse() {
-    }
-
+    @Override
     public boolean isSuccess() {
         return isSuccess;
     }
 
+    @Override
     public void setSuccess(boolean success) {
         isSuccess = success;
     }
@@ -24,10 +23,12 @@ public class AuthResponse {
         this.token = token;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }
