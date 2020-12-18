@@ -32,14 +32,22 @@ public class ProjectLoader {
     private JsonObject root;
     Map<String, Node> nodesStorage;
 
-    public ProjectLoader(File file) throws FileNotFoundException {
-        Reader reader = new FileReader(file);
-        root = JsonParser.parseReader(reader)
-                .getAsJsonObject();
+    private ProjectLoader(){
         nodesStorage = new HashMap<>();
     }
 
+    public ProjectLoader(File file) throws FileNotFoundException {
+        this();
+
+        Reader reader = new FileReader(file);
+        root = JsonParser.parseReader(reader)
+                .getAsJsonObject();
+
+    }
+
     public ProjectLoader(String json) {
+        this();
+
         root = JsonParser.parseString(json)
                 .getAsJsonObject();
     }
@@ -172,29 +180,33 @@ public class ProjectLoader {
         return map;
     }
 
-    private List<Holder> parseHolders(JsonArray holdersJson, Map<String, Probe> probes)
-            throws Exception {
+    private List<Holder> parseHolders(JsonArray holdersJson, Map<String, Probe> probes) {
         List<Holder> holders = new ArrayList<>();
         for (JsonElement data : holdersJson) {
             JsonObject holderJson = data.getAsJsonObject();
             int type = holderJson.get("type").getAsInt();
 
-            switch (type) {
-                case LINE:
-                    holders.add(parseLine(holderJson, probes));
-                    break;
-                case RECTANGLE:
-                    holders.add(parseRectangle(holderJson, probes));
-                    break;
-                case CIRCLE:
-                    holders.add(parseCircle(holderJson, probes));
-                    break;
-                case ELLIPSE:
-                    holders.add(parseEllipse(holderJson, probes));
-                    break;
-                default:
-                    throw new Exception("Unsupported type");
+            try {
+                switch (type) {
+                    case LINE:
+                        holders.add(parseLine(holderJson, probes));
+                        break;
+                    case RECTANGLE:
+                        holders.add(parseRectangle(holderJson, probes));
+                        break;
+                    case CIRCLE:
+                        holders.add(parseCircle(holderJson, probes));
+                        break;
+                    case ELLIPSE:
+                        holders.add(parseEllipse(holderJson, probes));
+                        break;
+                    default:
+                        throw new Exception("Unsupported type");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
         return holders;
     }
@@ -300,10 +312,15 @@ public class ProjectLoader {
         JsonArray attachedProbesJson = holderJson.get("probes").getAsJsonArray();
         Probe[] attachedProbes = getAttachedProbes(attachedProbesJson, probes);
 
-        if (attachedProbes.length != 2) {
+        if (attachedProbes.length > 2 || attachedProbes.length==0) {
             throw new Exception("Wrong or broken data");
         }
-        return new LineHolder(shape, attachedProbes[0], attachedProbes[1]);
+
+        if(attachedProbes.length == 2) {
+            return new LineHolder(shape, attachedProbes[0], attachedProbes[1]);
+        }else{
+            return new LineHolder(shape, attachedProbes[0], attachedProbes[0]);
+        }
     }
 
     private Map<String, Probe> parseProbes(JsonArray probesJson) {

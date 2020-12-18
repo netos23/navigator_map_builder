@@ -23,6 +23,8 @@ public class Project /*implements Serializable*/ {
     private ArrayList<LevelNode> levelNodeSystem;
     private HashSet<LevelConnection> connections;
 
+    private ProjectModel model;
+
     public Project() {
         levels = FXCollections.observableArrayList(Level.getCallback());
         levels.addListener(this::updateLevelNodeSystem);
@@ -69,5 +71,14 @@ public class Project /*implements Serializable*/ {
 
     public void setLevels(List<Level> levels) {
         this.levels.addAll(levels);
+    }
+
+    public ProjectModel getModel() {
+        return model;
+    }
+
+    public Project setModel(ProjectModel model) {
+        this.model = model;
+        return this;
     }
 }

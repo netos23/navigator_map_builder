@@ -17,6 +17,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
+import ru.fbtw.navigator.map_builder.controller.EditorController;
+import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.io.Serializer;
@@ -302,9 +304,16 @@ public class LvlEditScreen implements Screen {
 				Serializer serializer = new Serializer();
 
 				String res = serializer.writeProject(project);
+				//saves locally
 				File save = new File("saves/"+ StringUtils.nextHashName()+".json");
 				PrintStream printStream = new PrintStream(save);
 				printStream.print(res);
+
+				EditorController editorController = EditorController.getInstance();
+				BaseResponse response = editorController.setCredentials(project)
+						.execute();
+				System.out.println(response.getMessage());
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

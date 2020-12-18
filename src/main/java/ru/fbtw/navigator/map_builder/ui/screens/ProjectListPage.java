@@ -14,7 +14,9 @@ import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.controller.ProjectListController;
 import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.controller.response.ListResponse;
+import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.ProjectModel;
+import ru.fbtw.navigator.map_builder.io.ProjectLoader;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
@@ -96,6 +98,7 @@ public class ProjectListPage implements Screen {
         add.setOnAction(this::addOnClick);
         settings.setOnAction(this::settingsOnClick);
         remove.setOnAction(this::removeOnClick);
+        edit.setOnAction(this::editOnClick);
 
         enableButtons(false);
         layout.getChildren().addAll(add,remove,settings,edit);
@@ -124,6 +127,31 @@ public class ProjectListPage implements Screen {
         }
 
         updateBody();
+    }
+
+    private void editOnClick(ActionEvent actionEvent){
+
+            int selectedIndex = projectListView.getSelectionModel().getSelectedIndex();
+            ProjectModel model = projects.get(selectedIndex);
+
+            Project project;
+            if(model.getBody() != null && !model.getBody().isEmpty()) {
+                try {
+
+                ProjectLoader loader = new ProjectLoader(model.getBody());
+                project = loader.load();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    project = new Project();
+                }
+            }else {
+                project = new Project();
+            }
+            project.setModel(model);
+
+            Navigator.replace(new LvlEditScreen(project));
+
     }
 
 
