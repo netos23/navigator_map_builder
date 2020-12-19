@@ -2,17 +2,9 @@ package ru.fbtw.navigator.map_builder;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import ru.fbtw.navigator.map_builder.core.Project;
-import ru.fbtw.navigator.map_builder.io.ProjectLoader;
-import ru.fbtw.navigator.map_builder.io.Serializer;
-import ru.fbtw.navigator.map_builder.ui.screens.LoginPage;
-import ru.fbtw.navigator.map_builder.ui.screens.LvlEditScreen;
+import ru.fbtw.navigator.map_builder.ui.screens.LoginScreen;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
-import ru.fbtw.navigator.map_builder.ui.screens.ProjectListPage;
-import ru.fbtw.navigator.map_builder.ui.screens.ProjectSetupPage;
-
-import java.io.File;
 
 
 public class App extends Application {
@@ -27,7 +19,7 @@ public class App extends Application {
 		/*ProjectLoader loader = new ProjectLoader(new File("saves/471355bfa0a04f7f.json"));
 		Screen firstScreen = new LvlEditScreen(loader.load());*/
 		//Screen firstScreen = new LvlEditScreen(new Project());
-		Screen firstScreen = new LoginPage();
+		Screen firstScreen = new LoginScreen();
 		//Screen firstScreen = new ProjectListPage();
 		//Screen firstScreen = new ProjectSetupPage(true);
 		Navigator.init(primaryStage,firstScreen);

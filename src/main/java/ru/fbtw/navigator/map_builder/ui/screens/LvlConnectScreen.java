@@ -12,18 +12,23 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorController;
 import ru.fbtw.navigator.map_builder.connection_editor.ConnectionEditorProperties;
+import ru.fbtw.navigator.map_builder.controller.EditorController;
+import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.io.GraphJsonSerializer;
 import ru.fbtw.navigator.map_builder.io.Printer;
+import ru.fbtw.navigator.map_builder.io.Serializer;
 import ru.fbtw.navigator.map_builder.math.GraphSolver;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
+import ru.fbtw.navigator.map_builder.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 public class LvlConnectScreen implements Screen {
@@ -44,13 +49,13 @@ public class LvlConnectScreen implements Screen {
 	private ConnectionEditorProperties properties;
 	private ConnectionEditorController controller;
 
-	private GraphJsonSerializer serializer;
+	private GraphJsonSerializer graphJsonSerializer;
 	private Printer printer;
 
 	public LvlConnectScreen(Project project) {
 		this.project = project;
 		project.update();
-		serializer = GraphJsonSerializer.getInstance();
+		graphJsonSerializer = GraphJsonSerializer.getInstance();
 
 		properties = new ConnectionEditorProperties(0);
 		controller = new ConnectionEditorController(properties, project);
@@ -128,7 +133,20 @@ public class LvlConnectScreen implements Screen {
 
 
 		save.setOnAction(event -> {
-			extractProject(primaryStage,chooser);
+
+			//extractProject(primaryStage,chooser);
+			Serializer serializer = new Serializer();
+
+			String res = serializer.writeProject(project);
+			//saves locally
+			/*File save = new File("saves/"+ StringUtils.nextHashName()+".json");
+			PrintStream printStream = new PrintStream(save);
+			printStream.print(res);*/
+
+			EditorController editorController = EditorController.getInstance();
+			BaseResponse response = editorController.setCredentials(project)
+					.execute();
+			System.out.println(response.getMessage());
 		});
 
 		back.setOnAction(event -> Navigator.pop());
@@ -146,7 +164,7 @@ public class LvlConnectScreen implements Screen {
 				}
 
 				printer = new Printer(saveFile);
-				printer.write(serializer.extractProject(project));
+				printer.write(graphJsonSerializer.extractProject(project));
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

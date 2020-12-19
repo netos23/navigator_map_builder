@@ -49,3 +49,8 @@
 .button{
     -fx-background-color: #8937b8;
 }
+.label-err{
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: #ff0000;
+}

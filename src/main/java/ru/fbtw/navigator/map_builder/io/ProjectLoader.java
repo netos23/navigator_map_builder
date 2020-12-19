@@ -12,10 +12,7 @@ import ru.fbtw.navigator.map_builder.canvas.holder.*;
 import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
-import ru.fbtw.navigator.map_builder.core.navigation.LevelConnection;
-import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
-import ru.fbtw.navigator.map_builder.core.navigation.Node;
-import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
+import ru.fbtw.navigator.map_builder.core.navigation.*;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.io.File;
@@ -77,29 +74,42 @@ public class ProjectLoader {
 
         HashSet<LevelConnection> storage = project.getConnections();
         for (JsonElement element : connections) {
+            try {
+                String nodeNameA = element.getAsJsonObject()
+                        .get("nodeA")
+                        .getAsString();
+                String nodeNameB = element.getAsJsonObject()
+                        .get("nodeB")
+                        .getAsString();
+                String socketNameA = element.getAsJsonObject()
+                        .get("socketA")
+                        .getAsString();
+                String socketNameB = element.getAsJsonObject()
+                        .get("socketB")
+                        .getAsString();
 
-            String nodeNameA = element.getAsJsonObject()
-                    .get("nodeA")
-                    .getAsString();
-            String nodeNameB = element.getAsJsonObject()
-                    .get("nodeB")
-                    .getAsString();
-            String socketNameA = element.getAsJsonObject()
-                    .get("socketA")
-                    .getAsString();
-            String socketNameB = element.getAsJsonObject()
-                    .get("socketB")
-                    .getAsString();
+                Node socketA = nodesStorage.get(socketNameA);
+                Node socketB = nodesStorage.get(socketNameB);
 
-            LevelConnection connection = new LevelConnection(
-                    levelNodeMap.get(nodeNameA),
-                    levelNodeMap.get(nodeNameB),
-                    nodesStorage.get(socketNameA),
-                    nodesStorage.get(socketNameB),
-                    storage
-            );
+                LevelConnection connection = new LevelConnection(
+                        levelNodeMap.get(nodeNameA),
+                        levelNodeMap.get(nodeNameB),
+                        socketA,
+                        socketB,
+                        storage
+                );
 
-            storage.add(connection);
+                socketA.getLevelConnections().add(connection);
+                socketB.getLevelConnections().add(connection);
+
+                storage.add(connection);
+            }catch (NullPointerException ex){
+                System.out.println("Missing node, skip connection");
+                //ex.printStackTrace();
+            } catch (ConnectionFormatException e) {
+                System.out.println("Cycle connection, skip connection");
+                //e.printStackTrace();
+            }
         }
     }
 
@@ -164,7 +174,7 @@ public class ProjectLoader {
     }
 
     private Map<String, String> parseNodeConnections(JsonObject nodeSystemJson) {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new TreeMap<>(new NodeNameComparator());
         JsonArray nodesConnections = nodeSystemJson.getAsJsonArray("connections");
 
         for (JsonElement element : nodesConnections) {
@@ -336,6 +346,23 @@ public class ProjectLoader {
         }
 
         return res;
+    }
+
+
+    /**
+     * Special comparator, which excludes the equality of the keys.
+     * It is guaranteed that the pairs are unique.
+     */
+    private class NodeNameComparator implements Comparator<String>{
+
+        @Override
+        public int compare(String o1, String o2) {
+            if(o1.equals(o2)){
+                return 1;
+            }else{
+                return o1.compareTo(o2);
+            }
+        }
     }
 
 }

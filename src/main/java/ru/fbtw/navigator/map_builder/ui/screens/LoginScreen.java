@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class LoginPage implements Screen {
+public class LoginScreen implements Screen {
     private final URI registrationUrl = new URI("https://yandex.ru");
 
     private TextField loginInput;
@@ -42,7 +42,7 @@ public class LoginPage implements Screen {
     private LoginFormController controller;
 
 
-    public LoginPage() throws IOException, URISyntaxException {
+    public LoginScreen() throws IOException, URISyntaxException {
         mainLayout = new VBox();
         controller = LoginFormController.getInstance();
         initScene();
@@ -150,7 +150,7 @@ public class LoginPage implements Screen {
 
             if (response.isSuccess()) {
                 UserData.setToken(response.getToken());
-                Navigator.replace(new ProjectListPage());
+                Navigator.replace(new ProjectListScreen());
                 /*Screen firstScreen = new ProjectSetupPage(true);
                 Navigator.replace(firstScreen);*/
             } else {

@@ -20,7 +20,7 @@ import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 
 
-public class ProjectSetupPage implements Screen {
+public class ProjectSetupScreen implements Screen {
 
     private final VBox mainLayout;
     private Scene scene;
@@ -41,7 +41,7 @@ public class ProjectSetupPage implements Screen {
     private Label error;
 
 
-    public ProjectSetupPage(ProjectModel model) {
+    public ProjectSetupScreen(ProjectModel model) {
         isCreate = model == null;
         this.model = model;
         mainLayout = new VBox();
@@ -174,7 +174,7 @@ public class ProjectSetupPage implements Screen {
 
         if (response != null) {
             if (response.isSuccess()) {
-                Navigator.replace(new ProjectListPage());
+                Navigator.replace(new ProjectListScreen());
             } else {
                 setError(response.getMessage());
             }
@@ -192,7 +192,7 @@ public class ProjectSetupPage implements Screen {
 
         if (response != null) {
             if (response.isSuccess()) {
-                Navigator.replace(new ProjectListPage());
+                Navigator.replace(new ProjectListScreen());
             } else {
                 setError(response.getMessage());
             }
@@ -229,7 +229,7 @@ public class ProjectSetupPage implements Screen {
     }
 
     private void back(ActionEvent actionEvent) {
-        Navigator.replace(new ProjectListPage());
+        Navigator.replace(new ProjectListScreen());
     }
 
     private Node buildPlatformsHeader() {

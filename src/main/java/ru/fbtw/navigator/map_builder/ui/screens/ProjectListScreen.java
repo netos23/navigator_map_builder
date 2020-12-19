@@ -5,9 +5,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,18 +24,19 @@ import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.io.IOException;
 
-public class ProjectListPage implements Screen {
+public class ProjectListScreen implements Screen {
 
-    private BorderPane mainLayout;
+
 
     private ObservableList<ProjectModel> projects;
     private Scene scene;
     private ListView<ProjectModel> projectListView;
     private Button add, edit, remove, settings;
+    private Label error;
 
-    public ProjectListPage() {
+    public ProjectListScreen() {
 
-        mainLayout = new BorderPane();
+
         projects = FXCollections.observableArrayList();
         projectListView = new ListView<>(projects);
 
@@ -68,7 +69,7 @@ public class ProjectListPage implements Screen {
         edit.setDisable(!isEnable);
     }
 
-    private VBox getLeftLayout() {
+    private VBox getMainLayout() {
 
 
         Label projectsLabel = new Label("Projects");
@@ -80,7 +81,12 @@ public class ProjectListPage implements Screen {
 
         vBox.getStyleClass().add("hbox-group");
 
-        vBox.getChildren().addAll(projectsLabel, projectListView,buildButtonsBar());
+        vBox.getChildren().addAll(
+                projectsLabel,
+                projectListView,
+                buildButtonsBar(),
+                buildErr()
+        );
         return vBox;
     }
 
@@ -106,13 +112,20 @@ public class ProjectListPage implements Screen {
         return layout;
     }
 
+    private Node buildErr(){
+        error = new Label();
+        error.getStyleClass().add("label-err");
+        error.setVisible(false);
+        return error;
+    }
+
     private void addOnClick(ActionEvent event){
-        Navigator.replace(new ProjectSetupPage(null));
+        Navigator.replace(new ProjectSetupScreen(null));
     }
 
     private void settingsOnClick(ActionEvent event){
         int selectedIndex = projectListView.getSelectionModel().getSelectedIndex();
-        Navigator.replace(new ProjectSetupPage(projects.get(selectedIndex)));
+        Navigator.replace(new ProjectSetupScreen(projects.get(selectedIndex)));
     }
 
     private void removeOnClick(ActionEvent event){
@@ -158,7 +171,7 @@ public class ProjectListPage implements Screen {
     @Override
     public void initScene() {
         setupListView();
-        mainLayout.setLeft(getLeftLayout());
+        Parent mainLayout = getMainLayout();
 
         scene = new Scene(mainLayout);
         scene.getStylesheets().add("project-list.css");
@@ -166,7 +179,7 @@ public class ProjectListPage implements Screen {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
         updateBody();
     }
 
@@ -187,7 +200,8 @@ public class ProjectListPage implements Screen {
     }
 
     private void setErr(String text) {
-
+        error.setVisible(true);
+        error.setText(text);
     }
 
     @Override

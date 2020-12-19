@@ -182,6 +182,7 @@ public class LvlEditScreen implements Screen {
 
 	@Override
 	public void start(Stage primaryStage) {
+		primaryStage.setResizable(true);
 		setOnClicks(primaryStage);
 	}
 

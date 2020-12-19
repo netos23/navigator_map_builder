@@ -22,12 +22,16 @@ public class LevelConnection implements Disposable {
 			Node socketA,
 			Node socketB,
 			HashSet<LevelConnection> storage
-	) {
+	) throws ConnectionFormatException {
 		this.nodeA = nodeA;
 		this.nodeB = nodeB;
 		this.socketA = socketA;
 		this.socketB = socketB;
 		this.storage = storage;
+
+		if(nodeA.equals(nodeB)){
+			throw new ConnectionFormatException();
+		}
 	}
 
 	public LevelConnection(
@@ -36,7 +40,7 @@ public class LevelConnection implements Disposable {
 			String socketAName,
 			String socketBName,
 			HashSet<LevelConnection> storage
-	) {
+	) throws ConnectionFormatException {
 		this.storage = storage;
 
 		nodeA = nodeAEntity.getNode();
@@ -44,6 +48,10 @@ public class LevelConnection implements Disposable {
 
 		socketA = nodeA.getSocketByHashName(socketAName);
 		socketB = nodeB.getSocketByHashName(socketBName);
+
+		if(nodeA.equals(nodeB)){
+			throw new ConnectionFormatException();
+		}
 	}
 
 
