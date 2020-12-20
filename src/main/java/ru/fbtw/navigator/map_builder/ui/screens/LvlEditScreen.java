@@ -17,19 +17,20 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
-import ru.fbtw.navigator.map_builder.controller.EditorController;
-import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
-import ru.fbtw.navigator.map_builder.io.Serializer;
+import ru.fbtw.navigator.map_builder.ui.DialogViewer;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
+import ru.fbtw.navigator.map_builder.ui.dialogs.SaveAction;
+import ru.fbtw.navigator.map_builder.ui.dialogs.SimpleExecutableDialog;
+import ru.fbtw.navigator.map_builder.ui.widget.ExecutableDialog;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 import ru.fbtw.navigator.map_builder.utils.KeyManager;
-import ru.fbtw.navigator.map_builder.utils.StringUtils;
+import ru.fbtw.navigator.map_builder.utils.common.Action;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -300,27 +301,15 @@ public class LvlEditScreen implements Screen {
 		push.setOnAction(event -> Navigator.push(new LvlConnectScreen(project)));
 
 		save.setOnAction(event -> {
-			//todo асинхронно заливать на сервак
-			try {
-				Serializer serializer = new Serializer();
-
-				String res = serializer.writeProject(project);
-				//saves locally
-				File save = new File("saves/"+ StringUtils.nextHashName()+".json");
-				PrintStream printStream = new PrintStream(save);
-				printStream.print(res);
-
-				EditorController editorController = EditorController.getInstance();
-				BaseResponse response = editorController.setCredentials(project)
-						.execute();
-				System.out.println(response.getMessage());
-
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
+			save();
 		});
 
+	}
+
+	private void save() {
+		Action action = new SaveAction(project);
+		ExecutableDialog executable = new SimpleExecutableDialog("saving",action);
+		DialogViewer.showExecutableDialog(executable);
 	}
 
 	private void getInfoFromDialog() {

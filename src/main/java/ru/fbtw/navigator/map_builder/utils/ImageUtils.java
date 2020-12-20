@@ -1,6 +1,7 @@
 package ru.fbtw.navigator.map_builder.utils;
 
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -63,10 +64,13 @@ public class ImageUtils {
     }
 
 
-    public static byte[] getImageFromNode(Node node, int width, int height) {
+    public static byte[] getImageFromNode(Node node, int width, int height, boolean async) {
         WritableImage image = new WritableImage(width, height);
-        node.snapshot(null, image);
-
+        if(async){
+            Platform.runLater(() -> node.snapshot(null, image));
+        }else{
+            node.snapshot(null, image);
+        }
 
         RenderedImage renderedImage = SwingFXUtils.fromFXImage(image, null);
         ByteArrayOutputStream output = new ByteArrayOutputStream();

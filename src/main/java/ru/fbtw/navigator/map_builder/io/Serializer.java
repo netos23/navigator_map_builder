@@ -171,7 +171,12 @@ public class Serializer {
     }
 
     private Serializer writeBg(Image bg) {
-        byte[] image = ImageUtils.getImageFromNode(new ImageView(bg), (int) bg.getWidth(), (int) bg.getHeight());
+        ImageView view = new ImageView(bg);
+        int width = (int) bg.getWidth();
+        int height = (int) bg.getHeight();
+
+        byte[] image = ImageUtils.getImageFromNode(view, width, height,true);
+
         String base64Image = Base64.encodeBase64String(image);
         levelRoot.addProperty("image", base64Image);
 

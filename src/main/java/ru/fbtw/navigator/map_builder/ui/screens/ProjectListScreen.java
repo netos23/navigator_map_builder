@@ -27,7 +27,6 @@ import java.io.IOException;
 public class ProjectListScreen implements Screen {
 
 
-
     private ObservableList<ProjectModel> projects;
     private Scene scene;
     private ListView<ProjectModel> projectListView;
@@ -49,7 +48,7 @@ public class ProjectListScreen implements Screen {
         initScene();
     }
 
-    private void setupListView(){
+    private void setupListView() {
         MultipleSelectionModel<ProjectModel> selectionModel = projectListView.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -59,7 +58,7 @@ public class ProjectListScreen implements Screen {
     private void changed(
             ObservableValue<? extends ProjectModel> changed,
             ProjectModel oldValue, ProjectModel newValue
-    ){
+    ) {
         enableButtons(newValue != null);
     }
 
@@ -90,7 +89,7 @@ public class ProjectListScreen implements Screen {
         return vBox;
     }
 
-    private Node buildButtonsBar(){
+    private Node buildButtonsBar() {
         HBox layout = new HBox(20);
         try {
             add.setGraphic(ImageUtils.loadImage("common/buttons/add.png"));
@@ -107,28 +106,28 @@ public class ProjectListScreen implements Screen {
         edit.setOnAction(this::editOnClick);
 
         enableButtons(false);
-        layout.getChildren().addAll(add,remove,settings,edit);
+        layout.getChildren().addAll(add, remove, settings, edit);
 
         return layout;
     }
 
-    private Node buildErr(){
+    private Node buildErr() {
         error = new Label();
         error.getStyleClass().add("label-err");
         error.setVisible(false);
         return error;
     }
 
-    private void addOnClick(ActionEvent event){
+    private void addOnClick(ActionEvent event) {
         Navigator.replace(new ProjectSetupScreen(null));
     }
 
-    private void settingsOnClick(ActionEvent event){
+    private void settingsOnClick(ActionEvent event) {
         int selectedIndex = projectListView.getSelectionModel().getSelectedIndex();
         Navigator.replace(new ProjectSetupScreen(projects.get(selectedIndex)));
     }
 
-    private void removeOnClick(ActionEvent event){
+    private void removeOnClick(ActionEvent event) {
         int selectedIndex = projectListView.getSelectionModel().getSelectedIndex();
         BaseResponse baseResponse = ProjectListController.getInstance()
                 .setMethod(ProjectListController.REMOVE)
@@ -142,29 +141,27 @@ public class ProjectListScreen implements Screen {
         updateBody();
     }
 
-    private void editOnClick(ActionEvent actionEvent){
+    private void editOnClick(ActionEvent actionEvent) {
+        int selectedIndex = projectListView.getSelectionModel().getSelectedIndex();
+        ProjectModel model = projects.get(selectedIndex);
 
-            int selectedIndex = projectListView.getSelectionModel().getSelectedIndex();
-            ProjectModel model = projects.get(selectedIndex);
-
-            Project project;
-            if(model.getBody() != null && !model.getBody().isEmpty()) {
-                try {
+        Project project;
+        if (model.getBody() != null && !model.getBody().isEmpty()) {
+            try {
 
                 ProjectLoader loader = new ProjectLoader(model.getBody());
                 project = loader.load();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    project = new Project();
-                }
-            }else {
+            } catch (Exception e) {
+                e.printStackTrace();
                 project = new Project();
             }
-            project.setModel(model);
+        } else {
+            project = new Project();
+        }
+        project.setModel(model);
 
-            Navigator.replace(new LvlEditScreen(project));
-
+        Navigator.replace(new LvlEditScreen(project));
     }
 
 
@@ -194,7 +191,7 @@ public class ProjectListScreen implements Screen {
             ListResponse<ProjectModel> response = (ListResponse<ProjectModel>) baseResponse;
             projects.addAll(response.getBody());
 
-        }else{
+        } else {
             setErr("Something went wrong update page");
         }
     }

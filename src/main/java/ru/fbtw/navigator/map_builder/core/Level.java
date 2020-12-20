@@ -116,7 +116,7 @@ public class Level {
 		}else {
 			 node = controller.getLayers()[LayersName.DECORATION];
 		}
-		return ImageUtils.getImageFromNode(node, width, height);
+		return ImageUtils.getImageFromNode(node, width, height,true);
 	}
 
 	public void setNodeSystem(Collection<Node> nodes) {

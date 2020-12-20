@@ -1,0 +1,15 @@
+.hbox {
+    -fx-background-color: #702873;
+    -fx-alignment: center;
+    -fx-padding: 5;
+}
+.label{
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 25;
+    -fx-padding: 20;
+}
+.progress-indicator{
+    -fx-progress-color: white;
+
+}
