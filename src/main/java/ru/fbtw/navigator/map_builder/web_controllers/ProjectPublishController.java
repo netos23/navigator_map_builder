@@ -5,12 +5,15 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import okhttp3.*;
 import ru.fbtw.navigator.map_builder.auth.UserData;
+import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.io.GraphJsonSerializer;
+import ru.fbtw.navigator.map_builder.utils.common.Action;
 import ru.fbtw.navigator.map_builder.web_controllers.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.web_controllers.response.Response;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 public class ProjectPublishController implements Controller{
@@ -18,6 +21,7 @@ public class ProjectPublishController implements Controller{
 	private static final ProjectPublishController instance = new ProjectPublishController();
 	private OkHttpClient client;
 	private Project project;
+	private Map<Level, byte[]> levelMap;
 
 	public ProjectPublishController() {
 		client = new OkHttpClient().newBuilder()
@@ -65,18 +69,31 @@ public class ProjectPublishController implements Controller{
 	}
 
 	private RequestBody buildBody() {
-		if(project != null){
+
+		if(project != null && levelMap!= null){
+			GraphJsonSerializer graphJsonSerializer = GraphJsonSerializer.getInstance();
+			String body = graphJsonSerializer.extractProject(project,levelMap);
+			MediaType mediaType = MediaType.parse("application/json");
+
+			return   RequestBody.create(body, mediaType);
+		}else if(levelMap == null){
 			GraphJsonSerializer graphJsonSerializer = GraphJsonSerializer.getInstance();
 			String body = graphJsonSerializer.extractProject(project);
 			MediaType mediaType = MediaType.parse("application/json");
 
 			return   RequestBody.create(body, mediaType);
 		}
+
 		return null;
 	}
 
 	public ProjectPublishController setProject(Project project) {
 		this.project = project;
 		return this;
+	}
+
+	public ProjectPublishController setProject(Project project, Map<Level, byte[]> levelMap) {
+		this.levelMap = levelMap;
+		return setProject(project);
 	}
 }

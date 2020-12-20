@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Level {
+public class Level{
 	private static final String DEFAULT_NAME = "Level ";
 	private static Callback<Level, Observable[]> callback = param -> new Observable[]{param.name};
 	private Image background;
@@ -28,6 +28,7 @@ public class Level {
 	private CanvasController controller;
 	private CanvasProperties properties;
 	private ArrayList<Node> nodeSystem;
+
 
 	public Level(int id, CanvasProperties properties) {
 		this.properties = properties;

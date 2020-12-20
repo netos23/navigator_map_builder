@@ -141,6 +141,8 @@ public class ProjectLoader {
             level.getController().setProbes(probes.values());
             level.getController().setHolders(holders);
             level.getController().setNodes(nodeMap, connections);
+            level.getController().setBackground(backGround);
+            level.getController().enableBackground(true);
             //  level.setNodeSystem(nodeMap.values());
             levels.add(level);
             id++;

@@ -5,15 +5,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
+import org.jetbrains.annotations.NotNull;
+import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelConnection;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
 import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
+import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class GraphJsonSerializer {
 	private static GraphJsonSerializer ourInstance = new GraphJsonSerializer();
@@ -86,11 +90,15 @@ public class GraphJsonSerializer {
 	}
 
 	public JsonElement levelToJson(LevelNode level) {
-		JsonObject jsonObject = new JsonObject();
+		byte[] imageBytes = level.getLevel().getImage();
+		return levelToJson(level, imageBytes);
+	}
 
+
+	private JsonObject levelToJson(LevelNode level, byte[] imageBytes) {
+		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("name", level.getName());
 
-		byte[] imageBytes = level.getLevel().getImage();
 		String base64Image = Base64.encodeBase64String(imageBytes);
 		jsonObject.addProperty("image", base64Image);
 
@@ -135,7 +143,7 @@ public class GraphJsonSerializer {
 	public JsonElement projectToJson(Project project) {
 		JsonObject element = new JsonObject();
 
-		element.addProperty("id",project.getModel().getId());
+		element.addProperty("id", project.getModel().getId());
 		element.add("levels", levelNodesToJson(project.getNodeSystem()));
 		element.add("connections", levelSystemToJson(project.getConnections()));
 
@@ -165,9 +173,30 @@ public class GraphJsonSerializer {
 		}
 	}
 
-	@Deprecated
-	private int getIntHash(String a, String b) {
-		return getStringHash(a, b).hashCode();
+	public String extractProject(Project project, Map<Level, byte[]> levelMap) {
+		JsonElement root = projectToJson(project, levelMap);
+
+		return gson.toJson(root);
+	}
+
+	private JsonElement projectToJson(Project project, Map<Level, byte[]> levelMap) {
+		JsonObject element = new JsonObject();
+
+		element.addProperty("id", project.getModel().getId());
+		element.add("levels", levelNodesToJson(project.getNodeSystem(), levelMap));
+		element.add("connections", levelSystemToJson(project.getConnections()));
+
+		return element;
+	}
+
+	private JsonElement levelNodesToJson(ArrayList<LevelNode> nodes, Map<Level, byte[]> levelMap) {
+		JsonArray levelsArray = new JsonArray(nodes.size());
+		for (LevelNode node : nodes) {
+			byte[] bg = levelMap.get(node.getLevel());
+			levelsArray.add(levelToJson(node, bg));
+		}
+
+		return levelsArray;
 	}
 
 }

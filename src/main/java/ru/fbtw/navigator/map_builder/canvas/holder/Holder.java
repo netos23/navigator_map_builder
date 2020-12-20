@@ -9,10 +9,7 @@ import ru.fbtw.navigator.map_builder.canvas.probe.Probe;
 import ru.fbtw.navigator.map_builder.canvas.probe.ProbeManager;
 import ru.fbtw.navigator.map_builder.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public abstract class Holder {
 	public static final int ADDITIONAL_WIDTH = 5;
@@ -72,9 +69,15 @@ public abstract class Holder {
 		HashSet<Probe> uniqueProbes = new HashSet<>();
 		Collections.addAll(uniqueProbes, probes);
 
-		for (Probe probe : uniqueProbes) {
-			probe.getAttachedShapes().add(shape);
-			this.probes.add(probe);
+		for (Iterator<Probe> iterator = uniqueProbes.iterator(); iterator.hasNext(); ) {
+			Probe probe = iterator.next();
+			if (probe != null) {
+				probe.getAttachedShapes().add(shape);
+				this.probes.add(probe);
+			}else{
+				System.out.println("Err while init new holder");
+				iterator.remove();
+			}
 		}
 
 	}
@@ -88,7 +91,7 @@ public abstract class Holder {
 		return StringUtils.holderToString(this.getClass());
 	}
 
-    public List<Probe> getProbes() {
-        return probes;
-    }
+	public List<Probe> getProbes() {
+		return probes;
+	}
 }

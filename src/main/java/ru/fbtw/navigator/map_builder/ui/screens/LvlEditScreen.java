@@ -312,7 +312,8 @@ public class LvlEditScreen implements Screen {
 	}
 
 	private void save() {
-		Action action = new SaveAction(project);
+		SaveAction action = new SaveAction(project);
+		//action.setLocalSave(true);
 		ExecutableDialog executable = new SimpleExecutableDialog("saving",action);
 		DialogViewer.showExecutableDialog(executable);
 	}
