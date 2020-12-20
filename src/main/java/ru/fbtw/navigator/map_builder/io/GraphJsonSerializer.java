@@ -135,6 +135,7 @@ public class GraphJsonSerializer {
 	public JsonElement projectToJson(Project project) {
 		JsonObject element = new JsonObject();
 
+		element.addProperty("id",project.getModel().getId());
 		element.add("levels", levelNodesToJson(project.getNodeSystem()));
 		element.add("connections", levelSystemToJson(project.getConnections()));
 

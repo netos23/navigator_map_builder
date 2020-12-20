@@ -4,7 +4,7 @@ import javafx.scene.Parent;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
 import ru.fbtw.navigator.map_builder.canvas.tools.Tool;
 import ru.fbtw.navigator.map_builder.core.navigation.Node;
-import ru.fbtw.navigator.map_builder.ui.DialogViewer;
+import ru.fbtw.navigator.map_builder.ui.dialogs.DialogViewer;
 
 public class NodeTool extends Tool {
 

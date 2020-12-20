@@ -19,12 +19,13 @@ import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
-import ru.fbtw.navigator.map_builder.ui.DialogViewer;
+import ru.fbtw.navigator.map_builder.ui.dialogs.DialogViewer;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
 import ru.fbtw.navigator.map_builder.ui.ToggleButtonGridBuilder;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
+import ru.fbtw.navigator.map_builder.ui.dialogs.PublishAction;
 import ru.fbtw.navigator.map_builder.ui.dialogs.SaveAction;
 import ru.fbtw.navigator.map_builder.ui.dialogs.SimpleExecutableDialog;
 import ru.fbtw.navigator.map_builder.ui.widget.ExecutableDialog;
@@ -304,11 +305,22 @@ public class LvlEditScreen implements Screen {
 			save();
 		});
 
+		load.setOnAction(event -> {
+			publish();
+		});
+
 	}
 
 	private void save() {
 		Action action = new SaveAction(project);
 		ExecutableDialog executable = new SimpleExecutableDialog("saving",action);
+		DialogViewer.showExecutableDialog(executable);
+	}
+
+	private void publish() {
+		//todo: проверка безопасности проекта
+		Action action = new PublishAction(project);
+		ExecutableDialog executable = new SimpleExecutableDialog("publishing", action);
 		DialogViewer.showExecutableDialog(executable);
 	}
 

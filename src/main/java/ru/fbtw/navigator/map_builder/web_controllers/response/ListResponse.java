@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.controller.response;
+package ru.fbtw.navigator.map_builder.web_controllers.response;
 
 import java.util.List;
 

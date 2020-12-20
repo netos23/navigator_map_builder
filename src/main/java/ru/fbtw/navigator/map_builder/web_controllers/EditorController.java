@@ -1,6 +1,6 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.web_controllers;
 
-import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.core.ProjectModel;
 import ru.fbtw.navigator.map_builder.io.Serializer;

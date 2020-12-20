@@ -1,9 +1,9 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.web_controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
-import ru.fbtw.navigator.map_builder.controller.response.AuthResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.response.AuthResponse;
 
 import java.io.IOException;
 import java.util.Objects;

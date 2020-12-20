@@ -15,11 +15,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.fbtw.navigator.map_builder.auth.UserData;
-import ru.fbtw.navigator.map_builder.controller.response.AuthResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.response.AuthResponse;
 import ru.fbtw.navigator.map_builder.ui.control.Navigator;
 import ru.fbtw.navigator.map_builder.ui.control.Screen;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
-import ru.fbtw.navigator.map_builder.controller.LoginFormController;
+import ru.fbtw.navigator.map_builder.web_controllers.LoginFormController;
 
 import java.awt.*;
 import java.io.IOException;

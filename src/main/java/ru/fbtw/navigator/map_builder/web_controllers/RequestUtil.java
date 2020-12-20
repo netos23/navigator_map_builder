@@ -1,7 +1,6 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.web_controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ru.fbtw.navigator.map_builder.core.ProjectModel;
 

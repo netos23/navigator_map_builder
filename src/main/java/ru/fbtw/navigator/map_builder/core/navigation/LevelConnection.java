@@ -29,7 +29,7 @@ public class LevelConnection implements Disposable {
 		this.socketB = socketB;
 		this.storage = storage;
 
-		if(nodeA.equals(nodeB)){
+		if (nodeA.equals(nodeB)) {
 			throw new ConnectionFormatException();
 		}
 	}
@@ -49,7 +49,7 @@ public class LevelConnection implements Disposable {
 		socketA = nodeA.getSocketByHashName(socketAName);
 		socketB = nodeB.getSocketByHashName(socketBName);
 
-		if(nodeA.equals(nodeB)){
+		if (nodeA.equals(nodeB)) {
 			throw new ConnectionFormatException();
 		}
 	}

@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.web_controllers;
 
 public class PermissionDeniedException extends Exception{
 

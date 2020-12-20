@@ -1,7 +1,7 @@
 package ru.fbtw.navigator.map_builder.ui.dialogs;
 
-import ru.fbtw.navigator.map_builder.controller.EditorController;
-import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.EditorController;
+import ru.fbtw.navigator.map_builder.web_controllers.response.BaseResponse;
 import ru.fbtw.navigator.map_builder.core.Project;
 import ru.fbtw.navigator.map_builder.io.Serializer;
 import ru.fbtw.navigator.map_builder.utils.StringUtils;
@@ -23,12 +23,12 @@ public class SaveAction extends AsyncAction {
 
     @Override
     public void run() {
-        Serializer serializer = new Serializer();
-        String res = serializer.writeProject(project);
-
         if (localSave) {
             try {
                 //saves locally
+                Serializer serializer = new Serializer();
+                String res = serializer.writeProject(project);
+
                 File save = new File("saves/" + StringUtils.nextHashName() + ".json");
                 PrintStream printStream = new PrintStream(save);
                 printStream.print(res);

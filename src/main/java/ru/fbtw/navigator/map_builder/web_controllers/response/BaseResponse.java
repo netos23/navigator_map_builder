@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.controller.response;
+package ru.fbtw.navigator.map_builder.web_controllers.response;
 
 public interface BaseResponse {
     boolean isSuccess();

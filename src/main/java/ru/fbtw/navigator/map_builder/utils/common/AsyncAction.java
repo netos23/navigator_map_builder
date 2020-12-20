@@ -22,6 +22,10 @@ public abstract class AsyncAction extends Thread implements Action {
 
     @Override
     public void andThen(Action action) {
-        thenAction = action;
+        if(thenAction == null) {
+            thenAction = action;
+        }else{
+            thenAction.andThen(action);
+        }
     }
 }

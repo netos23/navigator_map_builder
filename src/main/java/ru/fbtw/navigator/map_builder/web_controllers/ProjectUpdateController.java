@@ -1,11 +1,11 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.web_controllers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 import ru.fbtw.navigator.map_builder.auth.UserData;
-import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
-import ru.fbtw.navigator.map_builder.controller.response.Response;
+import ru.fbtw.navigator.map_builder.web_controllers.response.BaseResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.response.Response;
 import ru.fbtw.navigator.map_builder.core.ProjectModel;
 
 import java.io.IOException;
@@ -78,13 +78,14 @@ public class ProjectUpdateController implements Controller {
         return response;
     }
 
-    private Response parseBody(ResponseBody body) throws IOException {
+    private BaseResponse parseBody(ResponseBody body) throws IOException {
         Response response = new Response();
         JsonObject jsonResponse = JsonParser.parseString(body.string()).getAsJsonObject();
         response.setSuccess(jsonResponse.get("status").getAsInt() == 200);
         response.setMessage(jsonResponse.get("message").getAsString());
         return response;
     }
+
 
     public String getMethod() {
         return method;

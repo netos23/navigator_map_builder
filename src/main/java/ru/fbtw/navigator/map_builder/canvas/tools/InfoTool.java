@@ -1,15 +1,9 @@
 package ru.fbtw.navigator.map_builder.canvas.tools;
 
-import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import ru.fbtw.navigator.map_builder.canvas.holder.Holder;
 import ru.fbtw.navigator.map_builder.canvas.holder.HolderManager;
-import ru.fbtw.navigator.map_builder.ui.DialogViewer;
-import ru.fbtw.navigator.map_builder.utils.KeyManager;
-import ru.fbtw.navigator.map_builder.utils.StringUtils;
+import ru.fbtw.navigator.map_builder.ui.dialogs.DialogViewer;
 
 public class InfoTool extends Tool {
 

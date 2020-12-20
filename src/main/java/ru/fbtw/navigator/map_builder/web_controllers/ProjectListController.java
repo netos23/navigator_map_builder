@@ -1,11 +1,11 @@
-package ru.fbtw.navigator.map_builder.controller;
+package ru.fbtw.navigator.map_builder.web_controllers;
 
 import com.google.gson.*;
 import okhttp3.*;
 import ru.fbtw.navigator.map_builder.auth.UserData;
-import ru.fbtw.navigator.map_builder.controller.response.BaseResponse;
-import ru.fbtw.navigator.map_builder.controller.response.ListResponse;
-import ru.fbtw.navigator.map_builder.controller.response.Response;
+import ru.fbtw.navigator.map_builder.web_controllers.response.BaseResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.response.ListResponse;
+import ru.fbtw.navigator.map_builder.web_controllers.response.Response;
 import ru.fbtw.navigator.map_builder.core.ProjectModel;
 
 import java.io.IOException;
@@ -18,18 +18,14 @@ public class ProjectListController implements Controller {
     public static final String REMOVE = "remove_project";
     public static final String LIST = "project_list";
 
+    private static final ProjectListController instance = new ProjectListController();
+
     private OkHttpClient client;
     private Gson gson;
 
     private String method;
     private String request_method;
     private ProjectModel target;
-
-    private static final ProjectListController instance = new ProjectListController();
-
-    public static ProjectListController getInstance() {
-        return instance;
-    }
 
     private ProjectListController() {
         client = new OkHttpClient().newBuilder()
@@ -39,14 +35,17 @@ public class ProjectListController implements Controller {
         request_method = "GET";
     }
 
+    public static ProjectListController getInstance() {
+        return instance;
+    }
+
     private RequestBody buildBody() {
         if (method.equals(REMOVE)) {
             try {
                 MediaType mediaType = MediaType.parse("application/json");
                 String body = RequestUtil.parseBody(target);
-                RequestBody requestBody = RequestBody.create(body, mediaType);
 
-                return requestBody;
+                return RequestBody.create(body, mediaType);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }

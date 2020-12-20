@@ -1,4 +1,4 @@
-package ru.fbtw.navigator.map_builder.ui;
+package ru.fbtw.navigator.map_builder.ui.dialogs;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,21 +12,18 @@ import ru.fbtw.navigator.map_builder.utils.KeyManager;
 import ru.fbtw.navigator.map_builder.utils.common.Action;
 
 public class DialogViewer {
-	public static void showAlert(String s, Alert.AlertType error) {
 
-	}
-
-	public static void showExecutableDialog(ExecutableDialog dialog){
+	public static void showExecutableDialog(ExecutableDialog dialog) {
 		Stage dialogStage = new Stage();
 
 		Action executableAction = dialog.getExecutableAction();
 		executableAction.andThen(dialogStage::close);
 		executableAction.execute();
 
-		showDialog(dialog,dialogStage);
+		showDialog(dialog, dialogStage);
 	}
 
-	private static void showDialog(Dialog dialog, Stage dialogStage){
+	private static void showDialog(Dialog dialog, Stage dialogStage) {
 		Scene mainScene = new Scene(dialog.getLayout());
 		mainScene.getStylesheets().add(dialog.getCssName());
 		KeyManager.attachKeyManagerToScene(mainScene);
@@ -38,12 +35,12 @@ public class DialogViewer {
 		dialogStage.show();
 	}
 
-	public static void showDialog(Dialog dialog){
+	public static void showDialog(Dialog dialog) {
 		Stage dialogStage = new Stage();
-		showDialog(dialog,dialogStage);
+		showDialog(dialog, dialogStage);
 	}
 
-	public static void showDialog(String title, Parent layout){
+	public static void showDialog(String title, Parent layout) {
 		Scene mainScene = new Scene(layout);
 		KeyManager.attachKeyManagerToScene(mainScene);
 		showStage(title, mainScene);
