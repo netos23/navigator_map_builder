@@ -3,6 +3,7 @@ package ru.fbtw.navigator.map_builder.ui;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 import ru.fbtw.navigator.map_builder.utils.ImageUtils;
 
 import java.io.IOException;
@@ -46,14 +47,21 @@ public class ToggleButtonGridBuilder {
 
 			toggleButton.setOnAction(onClick);
 
+			toggleButton.setMinSize(50,50);
+			toggleButton.setPrefSize(50,50);
+			toggleButton.setMaxSize(50,50);
+
 			try {
 				if (isUseImage && name != null && !name.isEmpty()) {
-					toggleButton.setGraphic(
-							ImageUtils.loadImage("image/buttons/" + name + ".png")
-					);
+					ImageView graphic = ImageUtils.loadImage("image/buttons/" + name + ".png");
+					toggleButton.setGraphic(graphic);
+					graphic.setFitWidth(47);
+					graphic.setFitHeight(47);
 				}
-			}catch (IOException ex){
-				//todo сделать ошибку в лог
+			} catch (IOException ex) {
+				System.out.println("Error while reading layout");
+			}catch (NullPointerException ex){
+				System.out.println("Image not found");
 			}
 			result.add(toggleButton);
 		}

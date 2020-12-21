@@ -1,6 +1,7 @@
 package ru.fbtw.navigator.map_builder.ui;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -21,10 +22,11 @@ public  class LayoutBuilder {
 
 	public LayoutBuilder(double spacing) {
 		layout = new VBox(spacing);
+		layout.getStyleClass().add("hbox-group");
 		layout.setPadding(new Insets(5));
 		styleBuilder = new StyleBuilder();
 		tools = new ToggleGroup();
-		styleBuilder.setMenuBgStyle().apply(layout);
+
 	}
 
 	public  LayoutBuilder setTitle(String title){
@@ -36,8 +38,7 @@ public  class LayoutBuilder {
 
 	private Label buildTitle(String title) {
 		Label titleWidget = new Label(title);
-
-		FontStyler.setHeaderStyle(titleWidget,25);
+		titleWidget.getStyleClass().add("label-head");
 		return titleWidget;
 	}
 
@@ -56,6 +57,7 @@ public  class LayoutBuilder {
 
 	public LayoutBuilder addButtonsGrid(int colCount, ArrayList<ToggleButton> buttons, boolean isDefault) {
 		GridPane localLayout = new GridPane();
+		localLayout.setAlignment(Pos.CENTER);
 		localLayout.setHgap(5);
 		localLayout.setVgap(10);
 
@@ -63,7 +65,7 @@ public  class LayoutBuilder {
 
 		for (int i = 0, row = 0, col =0; i < buttons.size(); i++, row= i/colCount, col=i%colCount) {
 			ToggleButton button = buttons.get(i);
-			button.setMinWidth(90);
+			//button.setMinWidth(90);
 			button.setToggleGroup(tools);
 			button.setCursor(Cursor.HAND);
 			//styleBuilder.setAccentBgStyle().apply(button);
@@ -79,14 +81,16 @@ public  class LayoutBuilder {
 	}
 
 
-	public LayoutBuilder addHorizontalButtonsPanel(Button ... buttons){
+	public LayoutBuilder addHorizontalButtonsPanel(boolean fitWidth, double spacing, Button ... buttons){
 		for(Button button : buttons){
-			button.setMinWidth(90);
+			if(fitWidth) {
+				button.setMinWidth(90);
+			}
 			button.setCursor(Cursor.HAND);
-			button.setTextFill(Color.WHITE);
-			styleBuilder.setAccentBgStyle().apply(button);
+			//button.setTextFill(Color.WHITE);
+			//styleBuilder.setAccentBgStyle().apply(button);
 		}
-		layout.getChildren().add(new HBox(5,buttons));
+		layout.getChildren().add(new HBox(spacing,buttons));
 		return this;
 	}
 

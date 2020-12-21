@@ -7,10 +7,14 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import ru.fbtw.navigator.map_builder.connection_editor.LayersName;
 import ru.fbtw.navigator.map_builder.core.navigation.LevelNode;
+import ru.fbtw.navigator.map_builder.core.navigation.Node;
+import ru.fbtw.navigator.map_builder.core.navigation.NodeType;
 import ru.fbtw.navigator.map_builder.utils.Vector2;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LevelEntity {
 	private static final double SOCKET_RADIUS = 30.0;
@@ -18,8 +22,9 @@ public class LevelEntity {
 	private static final double OFFSET = 15.0;
 	private Circle bg;
 	private Label lvlName;
-	private ArrayList<Circle> sockets;
-	private ArrayList<String> socketsHashNames;
+	private List<Circle> sockets;
+	private List<Label> tooltips;
+	private List<String> socketsHashNames;
 	private HashSet<LevelConnectionEntity> connections;
 	private LevelNode node;
 
@@ -37,8 +42,16 @@ public class LevelEntity {
 		lvlName = new Label(node.getName());
 
 		connections = new HashSet<>();
+		tooltips = new ArrayList<>();
 
-		initSockets(socketsHashNames);
+		List<String> names = node.getLevel()
+				.getNodeSystem()
+				.stream()
+				.filter(v -> v.getType() == NodeType.ZONE_CONNECTION)
+				.map(Node::getName)
+				.collect(Collectors.toList());
+
+		initSockets(names);
 	}
 
 	public LevelEntity(double x, double y, LevelNode node) {
@@ -46,17 +59,21 @@ public class LevelEntity {
 		setPosition(x, y);
 	}
 
-	private void initSockets(ArrayList<String> strings) {
-		if (strings.size() == 1) {
-			initSingleton(strings.iterator().next());
-		} else if (strings.size() == 0) {
-			initNoneSocket();
-		} else {
-			initMultiSockets(strings);
+	private void initSockets(List<String> strings) {
+		switch (strings.size()) {
+			case 1:
+				initSingleton(strings.iterator().next());
+				break;
+			case 0:
+				initNoneSocket();
+				break;
+			default:
+				initMultiSockets(strings);
+				break;
 		}
 	}
 
-	private void initMultiSockets(ArrayList<String> strings) {
+	private void initMultiSockets(List<String> strings) {
 		final Paint socketColor = Color.GREEN;
 		final Paint bgColor = Color.CORAL;
 
@@ -73,7 +90,13 @@ public class LevelEntity {
 			double y = r * Math.sin(tmpAngle);
 
 			Circle socket = new Circle(x, y, SOCKET_RADIUS, socketColor);
+
+			Label label = new Label(strings.get(i));
+			label.setStyle("-fx-text-fill: #e9c8ab;");
+			//setToolTipPos(label,socket);
+
 			sockets.add(socket);
+			tooltips.add(label);
 		}
 
 	}
@@ -94,8 +117,13 @@ public class LevelEntity {
 		bg = new Circle(r);
 		bg.setFill(socketColor);
 
-		sockets.add(bg);
+		Label label = new Label(name);
 
+		label.setStyle("-fx-text-fill: pink;");
+		setToolTipPos(label,bg);
+
+		sockets.add(bg);
+		tooltips.add(label);
 	}
 
 	public void setPosition(double x, double y) {
@@ -111,6 +139,8 @@ public class LevelEntity {
 		for (int i = 0; i < sockets.size(); i++) {
 			Circle socket = sockets.get(i);
 			socketsPositions[i] = new Vector2(socket.getCenterX(), socket.getCenterY());
+
+			tooltips.get(i).setVisible(false);
 		}
 
 		lvlName.setVisible(false);
@@ -151,9 +181,22 @@ public class LevelEntity {
 				? bg.getCenterY() + r + SOCKET_RADIUS * 0.5
 				: bg.getCenterY() + r + SOCKET_RADIUS * 1.5;
 
+		for (int i = 0; i < tooltips.size(); i++) {
+			Label label = tooltips.get(i);
+			Circle socket = sockets.get(i);
+
+			setToolTipPos(label, socket);
+			tooltips.get(i).setVisible(true);
+		}
+
 		lvlName.setLayoutX(nameX);
 		lvlName.setLayoutY(nameY);
 		lvlName.setVisible(true);
+	}
+
+	private void setToolTipPos(Label label, Circle socket) {
+		label.setLayoutX(socket.getCenterX()-socket.getRadius()*0.8);
+		label.setLayoutY(socket.getCenterY()-socket.getRadius()*0.3);
 	}
 
 	private double getNameWidth() {
@@ -209,6 +252,9 @@ public class LevelEntity {
 			layers[LayersName.MAIN].getChildren()
 					.addAll(sockets);
 		}
+
+		layers[LayersName.MAIN].getChildren()
+				.addAll(tooltips);
 	}
 
 	public LevelNode getNode() {

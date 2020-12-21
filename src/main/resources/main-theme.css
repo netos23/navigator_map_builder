@@ -1,0 +1,94 @@
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: #6e33be;
+    -fx-font-size: 20pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.list-cell:odd {
+    -fx-background-color: #af6bba;
+    -fx-font-size: 20pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.list-cell:even {
+    -fx-background-color: #832691;
+    -fx-font-size: 20pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #6e4b9f;
+    -fx-font-size: 20pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-background-color: #8937b8;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.toggle-button {
+    -fx-background-color: #af6bba;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.toggle-button:selected {
+    -fx-background-color: #6e33be;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.label-head {
+    -fx-font-weight: bold;
+    -fx-font-size: 25pt;
+    -fx-text-fill: white;
+}
+
+.check-box {
+    -fx-font-weight: bold;
+    -fx-font-size: 12pt;
+    -fx-text-fill: white;
+}
+
+.text-field {
+    -fx-background-color: #af6bba;
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}
+
+.hbox-group {
+    -fx-background-color: #702873;
+    -fx-padding: 10;
+}
+
+.scroll-pane {
+    -fx-background-color: #af6bba;
+}
+
+.canvas {
+    -fx-background-color: #af6bba;
+}
+
+.color-picker {
+    -fx-background-color: #6e4b9f;
+}
+
+.text {
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}
+
+.slider {
+    -fx-font-weight: bold;
+    -fx-font-size: 15pt;
+    -fx-text-fill: white;
+}

@@ -9,8 +9,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -19,6 +21,7 @@ import ru.fbtw.navigator.map_builder.canvas.CanvasController;
 import ru.fbtw.navigator.map_builder.canvas.CanvasProperties;
 import ru.fbtw.navigator.map_builder.core.Level;
 import ru.fbtw.navigator.map_builder.core.Project;
+import ru.fbtw.navigator.map_builder.ui.LayoutUtils;
 import ru.fbtw.navigator.map_builder.ui.dialogs.DialogViewer;
 import ru.fbtw.navigator.map_builder.ui.FontStyler;
 import ru.fbtw.navigator.map_builder.ui.LayoutBuilder;
@@ -38,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LvlEditScreen implements Screen {
-	private Button imageChooserBtn, emptyBtn;
+	private Button imageChooserBtn, emptyBtn, remove;
 	private ListView<Level> levelListWidget;
 	private CheckBox isBg, isTmpNodes;
 	private TextField levelName;
@@ -50,8 +53,7 @@ public class LvlEditScreen implements Screen {
 	private ColorPicker mainColor, fillColor;
 	private CheckBox isUseFill;
 	private Slider widthPicker;
-	private Button clear, undo, redo;
-	private Button save, load, push;
+	private Button back, clear, undo, redo, save, publish, push;
 
 	private ObservableList<Level> levels;
 	private int selectedLevel;
@@ -64,19 +66,20 @@ public class LvlEditScreen implements Screen {
 
 	private Project project;
 
-	public LvlEditScreen(Project project)  {
+	public LvlEditScreen(Project project) {
 		this.project = project;
 		this.levels = project.getLevels();
 
-		imageChooserBtn = new Button("Add image");
-		emptyBtn = new Button("Add empty");
-
+		imageChooserBtn = LayoutUtils.getImageButton("add image", 50, 50);
+		emptyBtn = LayoutUtils.getImageButton("add", 50, 50);
+		remove = LayoutUtils.getImageButton("delete", 50, 50);
 
 		imageChooser = getFileChooser();
 		selectedLevel = -1;
 
 		isBg = new CheckBox("Use background");
 		isTmpNodes = new CheckBox("Use temp nodes");
+		isTmpNodes.setDisable(true);
 
 		levelName = new TextField();
 		nameUpdater = new Button("Update name");
@@ -89,28 +92,26 @@ public class LvlEditScreen implements Screen {
 
 		settingsToolButtons = new ToggleButtonGridBuilder()
 				.setOnClick(this::selectTool)
-				.setUseName(true)
-				.setUseImage(false)
+				.setUseName(false)
+				.setUseImage(true)
 				.setSource(CanvasController.settingsToolNames)
 				.build();
 		drawingToolButtons = new ToggleButtonGridBuilder()
 				.setOnClick(this::selectTool)
-				.setUseName(true)
-				.setUseImage(false)
+				.setUseName(false)
+				.setUseImage(true)
 				.setSource(CanvasController.drawingToolsNames)
 				.build();
 		nodeToolButtons = new ToggleButtonGridBuilder()
 				.setOnClick(this::selectTool)
-				.setUseName(true)
-				.setUseImage(false)
+				.setUseName(false)
+				.setUseImage(true)
 				.setSource(CanvasController.nodeToolNames)
 				.build();
 
 		mainColor = new ColorPicker(Color.BLACK);
-		mainColor.setMinHeight(minHeight);
 		fillColor = new ColorPicker(Color.WHITE);
-		fillColor.setMinHeight(minHeight);
-		isUseFill = new CheckBox();
+		isUseFill = new CheckBox("Use fill?");
 
 
 		widthPicker = new Slider(5, 50, 10);
@@ -118,13 +119,20 @@ public class LvlEditScreen implements Screen {
 		widthPicker.setShowTickLabels(true);
 		widthPicker.setShowTickMarks(true);
 
-		clear = new Button("Clear");
-		undo = new Button("<-");
-		redo = new Button("->");
+		back = LayoutUtils.getImageButton("close",80,80);
 
-		save = new Button("Save");
-		load = new Button("Load");
-		push = new Button("Push");
+		clear = LayoutUtils.getImageButton("clear",80,80);
+		clear.setDisable(true);
+
+		undo = LayoutUtils.getImageButton("undo",80,80);
+		undo.setDisable(true);
+
+		redo = LayoutUtils.getImageButton("redo",80,80);
+		redo.setDisable(true);
+
+		save = LayoutUtils.getImageButton("save",80,80);
+		publish = LayoutUtils.getImageButton("publish",80,80);
+		push = LayoutUtils.getImageButton("connect levels",80,80);
 
 		initScene();
 	}
@@ -132,9 +140,9 @@ public class LvlEditScreen implements Screen {
 	public void initScene() {
 		BorderPane mainLayout = new BorderPane();
 
-		Node leftMenu = new LayoutBuilder(10)
+		Node levelsMenu = new LayoutBuilder(10)
 				.setTitle("Rooms")
-				.addHorizontalButtonsPanel(imageChooserBtn, emptyBtn)
+				.addHorizontalButtonsPanel(false, 5, imageChooserBtn, emptyBtn, remove)
 				//.addList(levelListWidget)
 				.addContent(levelListWidget)
 				.setTitle("Level settings")
@@ -142,44 +150,71 @@ public class LvlEditScreen implements Screen {
 				.addContent(isTmpNodes)
 				.setTitle("Level name")
 				.addContent(levelName)
-				.addHorizontalButtonsPanel(nameUpdater)
+				.wrapWithScrolView()
+				.addHorizontalButtonsPanel(false, 20, nameUpdater)
 				.build();
 
-		Node rightMenu = new LayoutBuilder(10)
+		Node toolsMenu = new LayoutBuilder(10)
 				.setTitle("Primitives")
-				.addButtonsGrid(3, drawingToolButtons, true)
+				.addButtonsGrid(2, drawingToolButtons, true)
 				.setTitle("Tools")
-				.addButtonsGrid(3, settingsToolButtons, false)
+				.addButtonsGrid(2, settingsToolButtons, false)
 				.setTitle("Nodes")
-				.addButtonsGrid(3, nodeToolButtons, false)
-				.setTitle("Line color")
-				.addContent(mainColor)
-				.wrapWithScrolView()
-				.setOptionalTitle("Fill color", isUseFill)
-				.addContent(fillColor)
-				.setTitle("Line WIDTH")
+				.addButtonsGrid(2, nodeToolButtons, false)
+				.setTitle("Paint")
+				.addContent(isUseFill)
+				.addContent(buildLineColor())
+				.addContent(buildFillColor())
 				.addContent(widthPicker)
-				.addHorizontalButtonsPanel(clear, undo, redo)
-				.addContent(save)
-				.addContent(load)
-				.addContent(push)
+				.wrapWithScrolView()
+				.build();
+
+		Node topMenu = new LayoutBuilder(10)
+				.addHorizontalButtonsPanel(false, 20, back, clear, undo, redo,
+						save, publish, push)
 				.build();
 
 		rootCanvas = new StackPane();
-		rootCanvas.setStyle("-fx-background-color: #666666;");
+		rootCanvas.getStyleClass().add("canvas");
 		ScrollPane scrollPane = new ScrollPane(rootCanvas);
 		scrollPane.setMinSize(800.0, 600);
 		scrollPane.setPadding(new Insets(5));
 
 
 		mainLayout.setPadding(new Insets(3));
-		mainLayout.setStyle("-fx-background-color: #666666;");
+		mainLayout.getStyleClass().add("canvas");
 		mainLayout.setCenter(scrollPane);
-		mainLayout.setLeft(leftMenu);
-		mainLayout.setRight(rightMenu);
+		mainLayout.setLeft(toolsMenu);
+		mainLayout.setRight(levelsMenu);
+		mainLayout.setTop(topMenu);
 
 		scene = new Scene(mainLayout);
+		scene.getStylesheets().add("main-theme.css");
 		KeyManager.attachKeyManagerToScene(scene);
+	}
+
+	/*private Node buildFillAccept() {
+		HBox layout = new HBox(10);
+		Text text = new Text("Use fill?");
+		layout.getChildren().addAll(isUseFill,text);
+		return layout;
+	}*/
+
+	private Node buildLineColor(){
+		HBox layout = new HBox(10);
+		LayoutUtils.setSize(mainColor,50,50);
+		Label text = new Label("line color");
+		text.getStyleClass().add("text");
+		layout.getChildren().addAll(mainColor,text);
+		return layout;
+	}
+	private Node buildFillColor(){
+		HBox layout = new HBox(10);
+		LayoutUtils.setSize(fillColor,50,50);
+		Label text = new Label("fill color");
+		text.getStyleClass().add("text");
+		layout.getChildren().addAll(fillColor,text);
+		return layout;
 	}
 
 	@Override
@@ -211,7 +246,7 @@ public class LvlEditScreen implements Screen {
 		return fileChooser;
 	}
 
-	private void setOnClicks(final Stage stage){
+	private void setOnClicks(final Stage stage) {
 
 		imageChooserBtn.setOnAction(event -> {
 			List<File> selectedImg = imageChooser.showOpenMultipleDialog(stage);
@@ -300,21 +335,16 @@ public class LvlEditScreen implements Screen {
 		isUseFill.setSelected(false);
 
 		push.setOnAction(event -> Navigator.push(new LvlConnectScreen(project)));
-
-		save.setOnAction(event -> {
-			save();
-		});
-
-		load.setOnAction(event -> {
-			publish();
-		});
+		save.setOnAction(event -> save());
+		publish.setOnAction(event -> publish());
+		back.setOnAction(event -> Navigator.replace(new ProjectListScreen()));
 
 	}
 
 	private void save() {
 		SaveAction action = new SaveAction(project);
 		//action.setLocalSave(true);
-		ExecutableDialog executable = new SimpleExecutableDialog("saving",action);
+		ExecutableDialog executable = new SimpleExecutableDialog("saving", action);
 		DialogViewer.showExecutableDialog(executable);
 	}
 
