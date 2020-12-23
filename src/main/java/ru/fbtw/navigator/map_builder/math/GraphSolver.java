@@ -15,7 +15,7 @@ public class GraphSolver {
 		try {
 			final Method getNeighbors = GraphNode.class.getMethod("getNeighbors");
 
-			return availabilityDeepSearch(nodeSystem, getNeighbors);
+			return availabilityWideSearch(nodeSystem, getNeighbors);
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 			return false;
@@ -40,7 +40,7 @@ public class GraphSolver {
 	}
 
 	@Deprecated
-	private static <T> boolean availabilityDeepSearch(List<T> graph, Method neighborsGetter) {
+	private static <T> boolean availabilityWideSearch(List<T> graph, Method neighborsGetter) {
 		HashSet<T> unchecked = new HashSet<>(graph);
 
 		LinkedList<T> queue = new LinkedList<>();

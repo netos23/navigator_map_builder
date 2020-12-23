@@ -4,5 +4,5 @@ package ru.fbtw.navigator.map_builder.utils.common;
 public interface Action {
     void execute();
 
-    default void andThen(Action action){ }
+    default void andThen(Action action){}
 }
