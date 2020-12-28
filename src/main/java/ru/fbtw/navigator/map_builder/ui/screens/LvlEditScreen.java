@@ -73,6 +73,7 @@ public class LvlEditScreen implements Screen {
 		imageChooserBtn = LayoutUtils.getImageButton("add image", 50, 50);
 		emptyBtn = LayoutUtils.getImageButton("add", 50, 50);
 		remove = LayoutUtils.getImageButton("delete", 50, 50);
+		remove.setDisable(true);
 
 		imageChooser = getFileChooser();
 		selectedLevel = -1;

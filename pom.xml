@@ -43,6 +43,15 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.8.3</version>
+                <configuration>
+                    <vendor>FBTW</vendor>
+                    <mainClass>ru.fbtw.navigator.map_builder.App</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

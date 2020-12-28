@@ -306,9 +306,9 @@ public class ProjectLoader {
         JsonArray attachedProbesJson = holderJson.get("probes").getAsJsonArray();
         Probe[] attachedProbes = getAttachedProbes(attachedProbesJson, probes);
 
-        if (attachedProbes.length != 4) {
+        /*if (attachedProbes.length != 4) {
             throw new Exception("Wrong or broken data");
-        }
+        }*/
         return new RectangleHolder(shape, attachedProbes);
     }
 

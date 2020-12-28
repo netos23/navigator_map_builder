@@ -223,6 +223,7 @@ public class ProjectSetupScreen implements Screen {
 
         if(model != null) {
             projectModel.setId(model.getId());
+            projectModel.setBody(model.getBody());
         }
 
         return projectModel;

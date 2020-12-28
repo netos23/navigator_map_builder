@@ -29,9 +29,9 @@ public class RectangleHolder extends Holder {
 	public RectangleHolder(Rectangle rectangle, Probe[] probe) throws Exception {
 		this(rectangle);
 
-		if(probe.length != 4){
+		/*if(probe.length != 4){
 			throw  new Exception("Wrong probe combination");
-		}
+		}*/
 
 		super.initProbes(rectangle,probe);
 	}
